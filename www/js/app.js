@@ -1,6 +1,7 @@
 
 var baseUrl = "http://10.0.2.2:8080";
 var pathItems = "/api/v1/barley/items";
+var pathUsers = "/api/v1/barley/users";
 
 /*
 var idPedidoOnline=0;
@@ -244,18 +245,44 @@ function trigger_autologin(){
 
 function perfilInfo(){
   cambiar_menu('perfil');
-  setTimeout(function(){
-    var tdsinfo = '<ons-card>\
-        <div class="title center"><center>Isaac Cerna</div>\
-        <div class="content"><br>\
-        <center><img id="img_rep" width="40%" height="40%" src="img/perfil.png" style="border-radius:10px;"></center><br><br><br>\
-        <label>E-mail: <b> isaac.cerna@mail.com </b></center></label><br><br>\
-        <br><button class="button--cta" style=" width:100%;" onclick="cerrarSesion();"><i class="fa fa-check" aria-hidden="true"></i> Cerrar Sesión</button></center>\
-        </div>\
-      </ons-card>';
 
-    $("#lst_info").html(tdsinfo);
-  },200);
+  webservice = baseUrl + pathUsers + "/2";
+
+	$.ajax({
+		url: webservice,
+		type: 'get',
+		data: null,
+		headers: {
+			"Content-Type": 'application/json',
+			"Content-Length": '1',
+			"Host": '1'
+		},
+		dataType: 'json',
+		success: function (data) {
+			if (data.error == null) {
+				//document.querySelector('#myNavigator').pushPage('detailService.html');
+
+        setTimeout(function(){
+          var tdsinfo = '<ons-card>\
+              <div class="title center"><center> ¡Hola!  <strong style="color: #F84C09"> ' + data.response.nickname + '</strong> </div>\
+              <div class="content"><br>\
+              <center><img id="img_rep" width="40%" height="40%" src="img/perfil.png" style="border-radius:10px;"></center><br><br><br>\
+              <label>Nombre: <b> ' + data.response.name + ' </b></center></label>\
+              <label>Número: <b> ' + data.response.phone + ' </b></center></label>\
+              <label>Correo: <b> ' + data.response.mail + ' </b></center></label>\
+              <label>Dirección: <b> ' + data.response.address + ' </b></center></label><br><br>\
+              <br><button class="button--cta" style=" width:100%;" onclick="cerrarSesion();"><i class="fa fa-check" aria-hidden="true"></i> Cerrar Sesión</button></center>\
+              </div>\
+            </ons-card>';
+
+          $("#lst_info").html(tdsinfo);
+      },200);
+			} else {
+				alert(JSON.stringify(data.error));
+			}
+		}
+	});
+
   /* webservice =  web+"profile.php?jsoncallback=?";
   console.log(id_repartidor);
   $.getJSON(webservice,{id_repartidor:id_repartidor})
@@ -365,7 +392,7 @@ function loadItems(){
 
     }
 
-    setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 1000);
+    setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
     
   }
 
