@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/onsenui.css">
+  <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <link rel="stylesheet" href="css/barley_station.css">
+  <link href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+  rel="stylesheet">
+  <link href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" rel="stylesheet"/>
+  <script src="js/jquery-3.2.1.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="js/globals.js"></script>
+  <script src="js/onsenui.js"></script>
+</head>
+<body>
+    <ons-navigator id="myNavigator" page="login.html"></ons-navigator>
+
+    <template id="login.html">
+      <ons-page id="login"> 
+        <div style="height: 50px; width: auto;">
+        </div> 
+        <div style="height: 200px; width: auto;">
+            <img src="img/beer.png" width="100px">
+        </div>
+        <div style="text-align: center; margin-top: 100; height: 100px;">
+            <p>
+                <ons-input type="email" id="rep_correo" style="width: 75%; text-align: center!important;" modifier="underbar" placeholder="Correo electrónico" value="" ></ons-input>
+            </p>
+            <p>
+                <ons-input type="password" id="rep_pass" style="width: 75%; text-align: center!important;" modifier="underbar"  placeholder="Contraseña" value=""></ons-input>
+            </p>
+        </div>
+        <div style="height: 50px; width: auto;">
+            <ons-button  onclick="login()" >Iniciar</ons-button>
+        </div>
+        <div>
+            <footer>
+                <label >Powered by BarleyStation &reg 2021</label><br>
+                <small>Versión 1.0.0</small>
+            </footer>
+        </div>
+      </ons-page>
+    </template>
+
+    <template id="page_menu.html" >
+      <ons-page id="menu" >
+        <ons-splitter>
+        <ons-splitter-side id="menus" side="left" width="0px" collapse swipeable>
+          <ons-page>
+            <ons-list>
+              <ons-list-item onclick="" tappable>
+                <img src="img/logo.jpg" width="185px" height="100px" ><br>
+               
+              </ons-list-item>
+              <ons-list-item onclick="perfilInfo();" tappable>
+                <img src="img/Circle_Orange.png" style="width:10px;"> Mí Perfil</img>      
+              </ons-list-item>
+             <!-- <ons-list-item onclick="MostrarPedsPreview()" tappable>
+               <i class="fa fa-map-pin" aria-hidden="true"> Pedidos (Crear Ruta)</i> 
+              </ons-list-item> -->
+            </ons-list>
+          </ons-page>
+        </ons-splitter-side>
+        <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
+      </ons-splitter>
+    </template>
+            
+    <template id="home.html">
+      <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button >
+            </ons-toolbar-button>
+          </div>
+          <div class="center" style="display: block;">
+            <span style="float: left;">BarleyStation</span>
+          </div>
+        </ons-toolbar>
+
+      <ons-tabbar swipeable position="auto">
+        <ons-tab page="tab1.html" label="Bebidas" onclick="loadItems()" active>
+        </ons-tab>
+        <ons-tab page="tab2.html" label="party tool" >  
+        </ons-tab>
+      </ons-tabbar>
+
+      <p style="text-align: center; margin-top: 10px;">
+      <!--  <ons-search-input
+          placeholder="Search"
+          onchange="ons.notification.alert('Searched for: ' + this.value)"
+        ></ons-search-input> -->
+      </p>
+
+       <ons-speed-dial position="bottom right" direction="up">
+        <ons-fab>
+            <i class="fas fa-beer" ></i>
+        </ons-fab>
+        <ons-speed-dial-item>
+            <i class="fas fa-user" onclick="perfilInfo();"></i>
+        </ons-speed-dial-item>
+        <ons-speed-dial-item>
+          <i class="fas fa-shopping-cart" onclick="cambiar_menu('carrito')"></i>
+        </ons-speed-dial-item>        
+        <ons-speed-dial-item>
+            <i class="fas fa-share-alt"></i>
+        </ons-speed-dial-item>   
+        <ons-speed-dial-item>
+            <i class="fas fa-question"></i>
+        </ons-speed-dial-item>   
+      </ons-speed-dial>
+
+      </ons-page>
+    </template>
+
+    <template id="perfil.html">
+        <ons-page id="page_pedidos">
+            <ons-toolbar>
+              <div class="left"><ons-back-button>Inicio</ons-back-button></div>
+              <div class="center">Perfil</div>
+            </ons-toolbar>
+              <div id="lst_info"></div>
+              <br>
+        </ons-page>
+    </template>  
+
+    <template id="carrito.html">
+      <ons-page id="carrito_compra">
+          <ons-toolbar>
+            <div class="left"><ons-back-button>Inicio</ons-back-button></div>
+            <div class="center">En mi carrito</div>
+          </ons-toolbar>
+      </ons-page>
+  </template>  
+
+    <template id="tab1.html">
+      <ons-page id="Tab1">
+
+          <ons-carousel swipeable auto-scroll overscrollable id="carousel" style="height: 250px;">
+            <ons-carousel-item style="background-image:url(img/banner.JPG);      background-repeat: no-repeat;
+         background-size: cover;">
+              <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff; ">
+              </div>
+            </ons-carousel-item>
+            <ons-carousel-item style="background-color: #373B44;">
+              <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff;">
+                INFO
+              </div>
+            </ons-carousel-item>
+          </ons-carousel>
+          
+          <table class="bs-table">
+            <div id="dinamicItems"> </div>
+          </table>
+
+ 
+      </ons-page>
+    </template>
+
+    <template id="tab2.html">
+      <ons-page id="Tab2">
+        <p style="text-align: center;">
+        <ons-button id="BtnCreateNewInv" onclick="nuevoInventario();">Crear nuevo</ons-button>
+        <div id="ConstruirInventario" style="display:none;">
+          <label>Tipo de Gas</label><br>
+          <ons-select class="select">
+            <select class="select-input">
+              <option>Estacionario</option>
+              <option>Tipos</option>
+            </select>
+          </ons-select>
+        </div><br><br>
+        <ons-button id="BtnCancelCreate" onclick="CancelMakeInv()" style="display:none;">Cancelar</ons-button>
+        </p>
+      </ons-page>
+    </template>
+
+    <template id="tab3.html">
+      <ons-page id="Tab3">
+        <p style="text-align: center;">
+          <ons-list id="PedidosAtendidos">
+            <ons-list-header>latlng</ons-list-header>
+            <ons-lazy-repeat id="infinite-list">
+            </ons-lazy-repeat>
+          </ons-list>
+        </p>
+      </ons-page>
+    </template>
+
+    <ons-dialog id="alert-pop">
+      <div style="text-align: center; padding: 10px;background: white;">
+        <center><img src="img/farmazon3.png" width="100px"></center>
+        <label></label>
+        <p id="text-msg">
+        </p>
+        <p>
+          <ons-button class="button--cta" style="background: #3498db" onclick="hideDialog('alert-pop')">Aceptar</ons-button>
+        </p>
+      </div>
+    </ons-dialog>
+ 
+    <ons-modal direction="up">
+      <div style="text-align: center">
+        <p>
+          <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Espera un momento...
+        </p>
+      </div>
+    </ons-modal>
+
+    <ons-dialog id="dialog-1">
+        <ons-card > 
+            <center>
+              <table class="bs-table">
+                <tr>
+                  <td><strong> Precio unidad: </strong></td>
+                  <td><span style="color:#F84C09;">$600.00</span></td>
+                </tr>
+                <tr>
+                  <td><strong> Disponible: </strong></td>
+                  <td><span  style="color:#F84C09;" >23</span></td>
+                </tr>
+              </table>
+              <table class="bs-table">
+                  <tr>
+                      <td></td>
+                      <td><button style="visibility: hidden;">space</button></td>
+                      <td></td>
+                  </tr>
+                  <tr>
+                      <td> <center><ons-button onclick="plusUnit(23)" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>
+                      <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black;" id="units"></center></td>
+                      <td> <center><ons-button onclick="lessUnit()" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> </td>
+                  </tr>
+                  <tr>
+                      <td></td>
+                      <td><button style="visibility: hidden;">space</button></td>
+                      <td></td>
+                  </tr>
+              </table>
+              <table class="bs-table">
+                <tr>
+                  <td><center><ons-button onclick="addToCart()" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>
+                  <td><button style="visibility: hidden;">space</button></td>
+                  <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>
+              </tr>
+              </table>
+            </center>
+        </ons-card>
+    </ons-dialog>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/storage.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+
+   <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDBi155hirsTgLdO5ZvOTmcePpnFOcpIKQ"></script> -->
+    <script type="text/javascript">
+
+      window.fn = {};
+
+      window.fn.open = function() {
+      var menu = document.getElementById('menus');
+      menu.open();
+      //consultarRutas();
+      };
+
+      window.fn.load = function(page) {
+      var content = document.getElementById('content');
+      var menu = document.getElementById('menus');
+      content.load(page)
+      .then(menu.close.bind(menu));
+      };
+
+      function close(){
+        $("#units").val(0);
+        document
+        .getElementById('dialog-1')
+        .hide();
+      }
+
+  
+    </script>
+</body>
+</html>

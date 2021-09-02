@@ -1,0 +1,16 @@
+<svg width="156" height="64" xmlns="http://www.w3.org/2000/svg">
+
+ <title/>
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="66" width="158" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <polyline stroke-width="2px" stroke-linejoin="round" stroke-linecap="round" stroke="#ffffff" fill="none" id="svg_1" points="6 10 15 10 19 39 54 39 57 18 21 18 23.3 34" class="cls-1"/>
+  <line stroke-width="2px" stroke-linejoin="round" stroke-linecap="round" stroke="#ffffff" fill="none" id="svg_2" y2="50" y1="50" x2="37" x1="31" class="cls-1"/>
+  <circle stroke-width="2px" stroke-linejoin="round" stroke-linecap="round" stroke="#ffffff" fill="none" id="svg_3" r="5" cy="50" cx="47" class="cls-1"/>
+  <circle stroke-width="2px" stroke-linejoin="round" stroke-linecap="round" stroke="#ffffff" fill="none" id="svg_4" r="5" cy="50" cx="26" class="cls-1"/>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_6" y="37.302995" x="64.469667" stroke-width="0" stroke="#ffffff" fill="#ffffff">Agregar</text>
+ </g>
+</svg>
