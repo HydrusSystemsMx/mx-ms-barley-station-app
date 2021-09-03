@@ -151,11 +151,26 @@
               </div>
             </ons-carousel-item>
           </ons-carousel>
-          
-          <table class="bs-table">
-            <div id="dinamicItems"> </div>
-          </table>
 
+          <h3>Buscar por:</h3>
+          <ons-select id="choose-sel" onchange="editSelects(event)">
+            <option value="basic">Marca</option>
+            <option value="material">Material</option>
+            <option value="underbar">Underbar</option>
+          </ons-select>
+          <ons-select id="choose-sel" onchange="editSelects(event)">
+            <option value="basic">Tipo</option>
+            <option value="material">Material</option>
+            <option value="underbar">Underbar</option>
+          </ons-select>
+          <button style="visibility: hidden; width: 10%;">space</button>
+          <ons-button><div><i class="fas fa-search"></i></div></ons-button>
+
+          <ons-list> 
+            <div id="dinamicItems"> 
+              
+            </div>
+          </ons-list>
  
       </ons-page>
     </template>

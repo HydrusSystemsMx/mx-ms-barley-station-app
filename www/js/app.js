@@ -372,29 +372,28 @@ function loadItems(){
     var tdsp="";
     for(var i=0;i<data.length;i++){
 
-      tdsp +='<tr>\
-                <td>>\
-                  <ons-card id="item_'+ data[i].response.idItem +'">\
-                    <div class="left">\
-                      <center><img class="list-item__thumbnail" src="img/'+ data[i].response.image +'.jpg"></center>\
-                    </div>\
-                    <div class="center">\
-                      <small><span class="list-item__title"><strong><span>Producto: </span></strong>'+ data[i].response.nameItem +'</span><span class="list-item__subtitle"></span></small>\
-                      <small><span class="list-item__title"><strong><span>Detalle:: </span></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span></small>\
-                      <small><span class="list-item__title"><strong><span>Precio unidad: </span></strong>'+ data[i].response.price +'</span><span class="list-item__subtitle"></span></small>\
-                    </div>\
-                    <div class="right">\
-                      <center><ons-button onclick="showDialog('+ data[i].response.price +"," + data[i].response.statatus + ')"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
-                    </div>\
-                  </ons-card>\
-                </td>\
-              </tr>';
+      tdsp +='\
+        <ons-list-item id="item_'+ data[i].response.idItem +'">\
+        <center>\
+          <table>\
+            <tr>\
+              <td></td>\
+              <td><center><img style="width:30%; heigth:30%" src="img/titanium.jpg"></center></td>\
+              <td></td>\
+            </tr>\
+          </table>\
+          <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
+          <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
+          <span><strong><strong> $ '+ data[i].response.price +'</strong><br><br>\
+          <ons-button style="width:50%;" onclick="showDialog('+ data[i].response.price +"," + data[i].response.statatus + ')"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
+        </ons-list-item>';
 
     }
 
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
     
   }
+
 
 
 }
