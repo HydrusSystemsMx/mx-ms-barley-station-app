@@ -246,7 +246,7 @@ function trigger_autologin(){
 function perfilInfo(){
   cambiar_menu('perfil');
 
-  webservice = baseUrl + pathUsers + "/2";
+  webservice = baseUrl + pathUsers + "/4";
 
 	$.ajax({
 		url: webservice,
@@ -360,7 +360,12 @@ function loadItems(){
 		success: function (data) {
 			if (data.error == null) {
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
-       setItems(data)
+        if(data != null || data != undefined){
+              setItems(data);
+        } else{
+          noItemsFound();
+        }
+   
 			} else {
 				alert(JSON.stringify(data.error));
 			}
@@ -378,7 +383,7 @@ function loadItems(){
           <table>\
             <tr>\
               <td></td>\
-              <td><center><img style="width:30%; heigth:30%" src="img/titanium.jpg"></center></td>\
+              <td><center><img style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
               <td></td>\
             </tr>\
           </table>\
@@ -393,6 +398,27 @@ function loadItems(){
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
     
   }
+
+  function noItemsFound(){
+    var tdsp="";
+
+    tdsp +='\
+      <ons-list-item id="item_not_found">\
+      <center>\
+        <table>\
+          <tr>\
+            <td></td>\
+            <td><center><img style="width:30%; heigth:30%" src="img/beer.png"></center></td>\
+            <td></td>\
+          </tr>\
+        </table>\
+        <span><strong></strong>No se encontraron resultados</span><span class="list-item__subtitle"></span><br>\
+      </ons-list-item>';
+        
+    
+    setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
+  }
+
 
 
 
