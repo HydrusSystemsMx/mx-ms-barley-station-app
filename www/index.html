@@ -39,7 +39,7 @@
         </div>
         <div>
             <footer>
-                <label >Powered by BarleyStation &reg 2021</label><br>
+                <label >Powered by Hydrus Systems Mx &reg 2021</label><br>
                 <small>Versión 1.0.0</small>
             </footer>
         </div>
@@ -82,7 +82,7 @@
         </ons-toolbar>
 
       <ons-tabbar swipeable position="auto">
-        <ons-tab page="tab1.html" label="Bebidas" onclick="loadItems()" active>
+        <ons-tab page="tab1.html" label="Bebidas" onclick="loadLogic()" active>
         </ons-tab>
         <ons-tab page="tab2.html" label="party tool" >  
         </ons-tab>
@@ -153,16 +153,8 @@
           </ons-carousel>
 
           <h3>Buscar por:</h3>
-          <ons-select id="choose-sel" onchange="editSelects(event)">
-            <option value="basic">Marca</option>
-            <option value="material">Material</option>
-            <option value="underbar">Underbar</option>
-          </ons-select>
-          <ons-select id="choose-sel" onchange="editSelects(event)">
-            <option value="basic">Tipo</option>
-            <option value="material">Material</option>
-            <option value="underbar">Underbar</option>
-          </ons-select>
+          <div id="dinamicBrands"></div>
+          
           <button style="visibility: hidden; width: 10%;">space</button>
           <ons-button><div><i class="fas fa-search"></i></div></ons-button>
 

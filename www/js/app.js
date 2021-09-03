@@ -2,6 +2,7 @@
 var baseUrl = "http://10.0.2.2:8080";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
+var pathBrands = "/api/v1/barley/brand";
 
 /*
 var idPedidoOnline=0;
@@ -179,6 +180,8 @@ var time_delivery;
 function login(){
         cambiar_menu("page_menu");
         loadItems();
+        loadBrands();
+
   /*
   email = $("#rep_correo").val();
   pass = $("#rep_pass").val();
@@ -343,8 +346,50 @@ function addToCart(){
   cambiar_menu('carrito')
 }
 
-function loadItems(){
+function loadBrands(){
 
+  webservice = baseUrl + pathBrands + "/all";
+	$.ajax({
+		url: webservice,
+		type: 'get',
+		data: null,
+		headers: {
+			"Content-Type": 'application/json',
+			"Content-Length": '1',
+			"Host": '1'
+		},
+		dataType: 'json',
+		success: function (data) {
+			if (data.error == null) {
+				//document.querySelector('#myNavigator').pushPage('detailService.html');
+        if(data != null || data != undefined){
+          setBrands(data);
+        }
+   
+			} else {
+				alert(JSON.stringify(data.error));
+			}
+		}
+	});
+}
+
+function setBrands(data){
+  var init = '<ons-select id="choose-sel" onchange="editSelects(event)">';
+  var tdsp="";
+  var final = "";
+    for(var i=0;i<data.length;i++){
+      tdsp +='\
+            <option value="basic">'+ data[i].response.brandName +'</option>\
+       ';
+    }
+
+    final = init + tdsp + '</ons-select>';
+
+    setTimeout(function(){ $("#dinamicBrands").html(final); }, 100);
+}
+
+
+function loadItems(){
   webservice = baseUrl + pathItems + "/all";
 
 	$.ajax({
@@ -362,8 +407,6 @@ function loadItems(){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data != null || data != undefined){
               setItems(data);
-        } else{
-          noItemsFound();
         }
    
 			} else {
@@ -419,9 +462,11 @@ function loadItems(){
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
   }
 
+}
 
-
-
+function loadLogic(){
+  loadBrands();
+  loadItems();
 }
 
 
