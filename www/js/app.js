@@ -374,20 +374,55 @@ function loadBrands(){
 }
 
 function setBrands(data){
-  var init = '<ons-select id="choose-sel" onchange="editSelects(event)">';
+  var start = '<center><table><tr>';
+  
+  var init = '<td><ons-select id="choose-sel" onchange="editSelects(event)">';
   var tdsp="";
   var final = "";
     for(var i=0;i<data.length;i++){
       tdsp +='\
-            <option value="basic">'+ data[i].response.brandName +'</option>\
+          <option value="'+ data[i].response.idBrand +'">'+ data[i].response.brandName +'</option>\
        ';
     }
 
-    final = init + tdsp + '</ons-select>';
+    var last = '<td><ons-button onclick="searchByIdBrand()"><div><i class="fas fa-search"></i></div></ons-button></td></tr></table></center';
+
+    final = start + init + tdsp + '<option value="1000">Buscar todas..</option></ons-select></td>' + final + last;
 
     setTimeout(function(){ $("#dinamicBrands").html(final); }, 100);
 }
 
+function searchByIdBrand(){
+  
+  var idBrand = $("#choose-sel").val();
+  if (idBrand == 1000){
+    loadItems();
+  } else{
+  webservice = baseUrl + pathItems + "/search/?idBrand=" + idBrand;
+
+    $.ajax({
+      url: webservice,
+      type: 'get',
+      data: null,
+      headers: {
+        "Content-Type": 'application/json',
+        "Content-Length": '1',
+        "Host": '1'
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data != null ) {
+          //document.querySelector('#myNavigator').pushPage('detailService.html');
+            setItemsBrand(data);
+        } else {
+          alert("No se encontraron productos disponibles para esta marca..");
+          loadItems();
+        }
+      }
+    });
+  }
+  
+}
 
 function loadItems(){
   webservice = baseUrl + pathItems + "/all";
@@ -406,7 +441,7 @@ function loadItems(){
 			if (data.error == null) {
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data != null || data != undefined){
-              setItems(data);
+          setItems(data);
         }
    
 			} else {
@@ -415,9 +450,11 @@ function loadItems(){
 		}
 	});
 
+
   function setItems(data){
 
     var tdsp="";
+
     for(var i=0;i<data.length;i++){
 
       tdsp +='\
