@@ -214,46 +214,7 @@
       </div>
     </ons-modal>
 
-    <ons-dialog id="dialog-1">
-        <ons-card > 
-            <center>
-              <table class="bs-table">
-                <tr>
-                  <td><strong> Precio unidad: </strong></td>
-                  <td><span style="color:#F84C09;">$600.00</span></td>
-                </tr>
-                <tr>
-                  <td><strong> Disponible: </strong></td>
-                  <td><span  style="color:#F84C09;" >23</span></td>
-                </tr>
-              </table>
-              <table class="bs-table">
-                  <tr>
-                      <td></td>
-                      <td><button style="visibility: hidden;">space</button></td>
-                      <td></td>
-                  </tr>
-                  <tr>
-                      <td> <center><ons-button onclick="plusUnit(23)" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>
-                      <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black;" id="units"></center></td>
-                      <td> <center><ons-button onclick="lessUnit()" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> </td>
-                  </tr>
-                  <tr>
-                      <td></td>
-                      <td><button style="visibility: hidden;">space</button></td>
-                      <td></td>
-                  </tr>
-              </table>
-              <table class="bs-table">
-                <tr>
-                  <td><center><ons-button onclick="addToCart()" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>
-                  <td><button style="visibility: hidden;">space</button></td>
-                  <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>
-              </tr>
-              </table>
-            </center>
-        </ons-card>
-    </ons-dialog>
+    <div id="dinamicDialog"></div>
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/storage.js"></script>

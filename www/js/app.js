@@ -320,10 +320,50 @@ function plusUnit(maxUnit){
 }
 
 
-function showDialog(){
-  document
-  .getElementById('dialog-1')
-  .show();
+function showDialog(price){
+  var dialog = '<ons-dialog id="dialog-1">\
+  <ons-card > \
+      <center>\
+        <table class="bs-table">\
+          <tr>\
+            <td><strong> Precio: </strong></td>\
+            <td><span style="color:#F84C09;">$  ' + price.toFixed(2) +' </span></td>\
+          </tr>\
+        </table>\
+        <table class="bs-table">\
+            <tr>\
+                <td></td>\
+                <td><button style="visibility: hidden;">space</button></td>\
+                <td></td>\
+            </tr>\
+            <tr>\
+                <td> <center><ons-button onclick="plusUnit(23)" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>\
+                <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black;" id="units"></center></td>\
+                <td> <center><ons-button onclick="lessUnit()" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> </td>\
+            </tr>\
+            <tr>\
+                <td></td>\
+                <td><button style="visibility: hidden;">space</button></td>\
+                <td></td>\
+            </tr>\
+        </table>\
+        <table class="bs-table">\
+          <tr>\
+            <td><center><ons-button onclick="addToCart()" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
+            <td><button style="visibility: hidden;">space</button></td>\
+            <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>\
+        </tr>\
+        </table>\
+      </center>\
+  </ons-card>\
+</ons-dialog>';
+
+$("#dinamicDialog").html(dialog);
+
+document
+.getElementById('dialog-1')
+.show();
+
 }
 
 function hideDialog(){
@@ -469,8 +509,8 @@ function loadItems(){
           </table>\
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
           <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-          <span><strong><strong> $ '+ data[i].response.price +'</strong><br><br>\
-          <ons-button style="width:50%;" onclick="showDialog('+ data[i].response.price +"," + data[i].response.statatus + ')"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
+          <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+          <ons-button style="width:50%;" onclick="showDialog('+ data[i].response.price + ')"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
         </ons-list-item>';
 
     }
