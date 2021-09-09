@@ -320,7 +320,7 @@ function plusUnit(maxUnit){
 }
 
 
-function showDialog(price){
+function showDialog(idItem, price, stack){
   var dialog = '<ons-dialog id="dialog-1">\
   <ons-card > \
       <center>\
@@ -328,6 +328,10 @@ function showDialog(price){
           <tr>\
             <td><strong> Precio: </strong></td>\
             <td><span style="color:#F84C09;">$  ' + price.toFixed(2) +' </span></td>\
+          </tr>\
+          <tr>\
+          <td><strong> Disponibles: </strong></td>\
+          <td><span style="color:#F84C09;">  ' + stack +' </span></td>\
           </tr>\
         </table>\
         <table class="bs-table">\
@@ -337,7 +341,7 @@ function showDialog(price){
                 <td></td>\
             </tr>\
             <tr>\
-                <td> <center><ons-button onclick="plusUnit(23)" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>\
+                <td> <center><ons-button onclick="plusUnit('+ stack +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>\
                 <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black;" id="units"></center></td>\
                 <td> <center><ons-button onclick="lessUnit()" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> </td>\
             </tr>\
@@ -349,7 +353,7 @@ function showDialog(price){
         </table>\
         <table class="bs-table">\
           <tr>\
-            <td><center><ons-button onclick="addToCart()" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
+            <td><center><ons-button onclick="addToCart(' + stack + ', ' + idItem +')" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
             <td><button style="visibility: hidden;">space</button></td>\
             <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>\
         </tr>\
@@ -381,9 +385,16 @@ function lessUnit(){
   }
 }
 
-function addToCart(){
-  close();
-  cambiar_menu('carrito')
+function addToCart(stack, idItem){
+  
+  var units = $("#units").val();
+  if(units > stack ){
+    alert("cantidad no disponible para agregar. Max: " + stack);
+  } else{
+    close();
+    cambiar_menu('carrito')
+    alert(idItem)
+  }
 }
 
 function loadBrands(){
@@ -451,7 +462,7 @@ function searchByIdBrand(){
       },
       dataType: 'json',
       success: function (data) {
-        if (data != null ) {
+        if (data.length > 0 ) {
           //document.querySelector('#myNavigator').pushPage('detailService.html');
             setItemsBrand(data);
         } else {
@@ -495,6 +506,7 @@ function loadItems(){
 
     var tdsp="";
 
+
     for(var i=0;i<data.length;i++){
 
       tdsp +='\
@@ -510,7 +522,7 @@ function loadItems(){
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
           <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
           <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
-          <ons-button style="width:50%;" onclick="showDialog('+ data[i].response.price + ')"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
+          <ons-button style="width:50%;" onclick="showDialog( '+ data[i].response.idItem + ' , '+ data[i].response.price + ' , '+ data[i].stack + ' )"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
         </ons-list-item>';
 
     }
