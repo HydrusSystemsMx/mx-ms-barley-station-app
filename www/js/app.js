@@ -353,7 +353,7 @@ function showDialog(idItem, price, stack){
         </table>\
         <table class="bs-table">\
           <tr>\
-            <td><center><ons-button onclick="addToCart(' + stack + ', ' + idItem +')" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
+            <td><center><ons-button onclick="addToCart(' + price.toFixed(2) + ', '+ stack + ', ' + idItem +')" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
             <td><button style="visibility: hidden;">space</button></td>\
             <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>\
         </tr>\
@@ -385,15 +385,43 @@ function lessUnit(){
   }
 }
 
-function addToCart(stack, idItem){
-  
+function addToCart(price, stack, idItem){
+  var cartElement = "";
   var units = $("#units").val();
+
   if(units > stack ){
     alert("cantidad no disponible para agregar. Max: " + stack);
-  } else{
+    $("#units").val(stack);
+  } else if(units == 0){
+    alert("La cantidad no puede ser 0")
+    $("#units").val(1);
+  } else {
     close();
     cambiar_menu('carrito')
-    alert(idItem)
+      var img = $('#img_'+ idItem).val();
+      var dtl = $('#dtl_'+ idItem).val();
+
+      cartElement +=  '<ons-card>\
+      <center><img src="'+ img +'" alt="Onsen UI" style="width: 50%">\
+      <div class="title">\
+       <strong>' + dtl + ' </strong>\
+      </div></center>\
+      <div class="content">\
+        <ons-list>\
+          <ons-list-item>Precio unidad: $ ' + price + '</ons-list-item>\
+          <ons-list-item>Cantidad: ' + units + '</ons-list-item>\
+        </ons-list>\
+        <center><div>\
+          <ons-button><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-button>\
+        </div></center>\
+        <ons-list-header><strong style="font-family: Arial;"> $ '+ units * (price) +'</strong></ons-list-header>\
+      </div>\
+    </ons-card>\
+    <ons-list-header><center><strong style="font-family: Arial;"> TOTAL: $ '+ units * (price) +'</strong></center></ons-list-header>\
+    ';
+
+    setTimeout(function(){ $("#dCart").html(cartElement); }, 100);
+    
   }
 }
 
@@ -514,9 +542,9 @@ function loadItems(){
         <center>\
           <table>\
             <tr>\
-              <td></td>\
+              <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
               <td><center><img style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
-              <td></td>\
+              <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
             </tr>\
           </table>\
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\

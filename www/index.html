@@ -133,6 +133,7 @@
             <div class="left"><ons-back-button>Inicio</ons-back-button></div>
             <div class="center">En mi carrito</div>
           </ons-toolbar>
+          <div id="dCart"></div>
       </ons-page>
   </template>  
 
@@ -258,9 +259,9 @@
         <center>\
           <table>\
             <tr>\
-              <td></td>\
+              <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
               <td><center><img style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
-              <td></td>\
+              <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
             </tr>\
           </table>\
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
