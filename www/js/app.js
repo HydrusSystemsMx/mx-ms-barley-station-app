@@ -93,7 +93,7 @@ var time_delivery;
       longitud2 = position.coords.longitude;
       ultimaDistancia=DistanciaGPS(latitud1,longitud1,latitud2,longitud2);
       console.log("Ultima distancia "+ultimaDistancia);
-      //alert(ultimaDistancia);
+      //alerta(ultimaDistancia);
       if(ultimaDistancia>primeraDistancia||ultimaDistancia>=8){
       // $("#imgStatus").attr("src","img/blue.png");
        primeraDistancia=ultimaDistancia;
@@ -161,11 +161,11 @@ var time_delivery;
       $.getJSON(webservice,{id_repartidor:id_repartidor,latitud:latitud ,longitud:longitud, id_pedido:id_pedido, token_ruta:token_ruta})
       .done(function(data){
         if(data.validacion){
-          //showAdvise("FillGas Repartidor",data.mensaje,"alert");
+          //showAdvise("FillGas Repartidor",data.mensaje,"alerta");
         
           $("#PedidosAtendidos").append('<ons-list-item>'+latitud+","+longitud+'</ons-list-item>');
         }else{
-          showAdvise("FillGas Repartidor",data.mensaje,"alert");
+          showAdvise("FillGas Repartidor",data.mensaje,"alerta");
         }
       }) */
 
@@ -198,15 +198,15 @@ function login(){
      
       //console.log(data.lng_suc);
       //getLocalStorage();
-      showAdvise("FillGas Repartidor",data.mensaje,"alert");
+      showAdvise("FillGas Repartidor",data.mensaje,"alerta");
       cambiar_menu("page_menu");
       //window.addEventListener("batterystatus", onBatteryStatus, false); 
     }else{
-      showAdvise("FillGas Repartidor",data.mensaje,"alert");
+      showAdvise("FillGas Repartidor",data.mensaje,"alerta");
       
     }
   }).fail(function(err){
-    alert("Intentalo en un momento más");
+    alerta("Intentalo en un momento más");
   }) */
 }
 
@@ -225,23 +225,23 @@ function trigger_autologin(){
   if (states[networkState] == states[Connection.WIFI]  || states[networkState] == states[Connection.CELL_4G]) {
     email = getData("user");
     pass = getData("pass");
-    //alert(email+","+pass);
+    //alerta(email+","+pass);
 
     webservice =  web+"login.php?jsoncallback=?";
     $.getJSON(webservice,{email:email, pass:pass })
       .done(function(data,err){
         if(data.validacion){
-          //showAdvise("FillGas Repartidor",data.validacion,"alert");
+          //showAdvise("FillGas Repartidor",data.validacion,"alerta");
           //id_repartidor = data.id_repartidor;
           cambiar_menu('page_menu');
 
         }else{
-        showAdvise("FillGas Repartidor",data.mensaje,"alert");          
+        showAdvise("FillGas Repartidor",data.mensaje,"alerta");          
       }
       
     })
     .fail(function(err){
-      alert("Estamos teniendo intermitencias, intentalo en un momento más");
+      alerta("Estamos teniendo intermitencias, intentalo en un momento más");
     });
   }
 }
@@ -281,7 +281,7 @@ function perfilInfo(){
           $("#lst_info").html(tdsinfo);
       },200);
 			} else {
-				alert(JSON.stringify(data.error));
+				alerta(JSON.stringify(data.error));
 			}
 		}
 	});
@@ -293,7 +293,7 @@ function perfilInfo(){
     if(datos.validacion){
       
     }else{
-      alert(datos.mensaje);
+      alerta(datos.mensaje);
     }
   });  
   */
@@ -386,20 +386,51 @@ function lessUnit(){
 }
 
 function addToCart(price, stack, idItem){
+
   var cartElement = "";
   var units = $("#units").val();
 
   if(units > stack ){
-    alert("cantidad no disponible para agregar. Max: " + stack);
+    alerta("cantidad no disponible para agregar. Max: " + stack);
     $("#units").val(stack);
+    close();
   } else if(units == 0){
-    alert("La cantidad no puede ser 0")
+    alerta("La cantidad no puede ser 0")
     $("#units").val(1);
+    close();
   } else {
     close();
     cambiar_menu('carrito')
       var img = $('#img_'+ idItem).val();
       var dtl = $('#dtl_'+ idItem).val();
+
+      myDB.transaction(function (transaction) {
+        var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price) VALUES (?,?,?,?,?)";
+        transaction.executeSql(executeQuery, [idItem, 4, units, img, price]
+        , function(tx, result) {
+          console.log("Added element to sql lite card succesfully");
+        },
+        function(error){
+          er = JSON.stringify(error);
+          alerta('Error occurred');
+        });
+      });
+
+
+      myDB.transaction(function(transaction) {
+        var executeQuery = "SELECT * FROM CART WHERE idUser=?";
+        transaction.executeSql(executeQuery, [4]
+        , function(tx, result) {
+          var len = result.rows.length;
+          if (len>=1) {
+            console.log(JSON.stringify(result.rows.item(1)));
+          }
+        },
+        function(error){
+          er = JSON.stringify(error);
+          alerta(er);
+        });
+      });    
 
       cartElement +=  '<ons-card>\
       <center><img src="'+ img +'" alt="Onsen UI" style="width: 50%">\
@@ -421,6 +452,7 @@ function addToCart(price, stack, idItem){
     ';
 
     setTimeout(function(){ $("#dCart").html(cartElement); }, 100);
+
     
   }
 }
@@ -446,7 +478,7 @@ function loadBrands(){
         }
    
 			} else {
-				alert(JSON.stringify(data.error));
+				alerta(JSON.stringify(data.error));
 			}
 		}
 	});
@@ -494,7 +526,7 @@ function searchByIdBrand(){
           //document.querySelector('#myNavigator').pushPage('detailService.html');
             setItemsBrand(data);
         } else {
-          alert("No se encontraron productos disponibles para esta marca..");
+          alerta("No se encontraron productos disponibles para esta marca..");
           loadItems();
         }
       }
@@ -524,7 +556,7 @@ function loadItems(){
         }
    
 			} else {
-				alert(JSON.stringify(data.error));
+				alerta(JSON.stringify(data.error));
 			}
 		}
 	});

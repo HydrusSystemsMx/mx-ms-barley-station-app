@@ -11,17 +11,8 @@ var app = {
 
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
-        trigger_autologin();
-        gps_back();
+        createInternalBd();
         creaBDSQLite();
-
-        function setItemss(tdsp){
-          alert(tdsp)
-          var $div = $('dinamicItems');
-          alert($div.html());
-          $("#dinamicItems").innerHTML(tdsp); 
-        }
-
 
         cordova.plugins.backgroundMode.onactivate = function () {
 
@@ -55,14 +46,12 @@ function networkInfo() {
    alert('Connection type: ' + states[networkState]);
 }
 
-function creaBDSQLite(){
-  myDB = window.sqlitePlugin.openDatabase({name: "FillAppRep.db", location: 'default'});
-  cordova.plugins.backgroundMode.enable();
-  cordova.plugins.backgroundMode.setDefaults({ silent: true });
+function createInternalBd(){
+  myDB = window.sqlitePlugin.openDatabase({name: "BarleyStation.db", location: 'default'});
   myDB.transaction(function(transaction) {
-    transaction.executeSql('CREATE TABLE IF NOT EXISTS GPS_REP (id integer primary key, repartidor INT(5), latitud VARCHAR(80), longitud VARCHAR(80) )', [],
+    transaction.executeSql('CREATE TABLE IF NOT EXISTS CART (idCart integer primary key, idItem INT(5), iduser integer(5), amount integer(5), image varchar(200), price double(10) )', [],
     function(tx, result) {
-   // console.log("Table created successfully");
+     console.log("Table created successfully");
     },
     function(error) {
     //console.log("Error occurred while creating the table.");

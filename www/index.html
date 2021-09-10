@@ -197,12 +197,12 @@
 
     <ons-dialog id="alert-pop">
       <div style="text-align: center; padding: 10px;background: white;">
-        <center><img src="img/farmazon3.png" width="100px"></center>
+        <center><img src="img/beer.png" width="50px"></center>
         <label></label>
-        <p id="text-msg">
+        <p id="text-msg" style="color: black;">
         </p>
         <p>
-          <ons-button class="button--cta" style="background: #3498db" onclick="hideDialog('alert-pop')">Aceptar</ons-button>
+          <ons-button class="button--cta" style="background: orange" onclick="hideDialog('alert-pop')">Aceptar</ons-button>
         </p>
       </div>
     </ons-dialog>
@@ -248,6 +248,11 @@
         .getElementById('dialog-1')
         .hide();
       }
+
+      var hideDialog = function () {
+  document.getElementById('alert-pop').hide();
+};
+
 
   function setItemsBrand(data){
 
