@@ -178,10 +178,9 @@ var time_delivery;
 
 /* PROCESOS LOGIN */
 function login(){
-        cambiar_menu("page_menu");
-        loadItems();
-        loadBrands();
-
+  cambiar_menu("page_menu");
+  loadItems();
+  loadBrands();
   /*
   email = $("#rep_correo").val();
   pass = $("#rep_pass").val();
@@ -389,6 +388,7 @@ function addToCart(price, stack, idItem){
 
   var cartElement = "";
   var units = $("#units_" + idItem).val();
+  setTimeout(function(){ $("#dCart").html(cartElement); }, 90);
 
   if(units > stack ){
     alerta("cantidad no disponible para agregar. Max: " + stack);
@@ -400,6 +400,7 @@ function addToCart(price, stack, idItem){
     cambiar_menu('carrito')
       var img = $('#img_'+ idItem).val();
       var dtl = $('#dtl_'+ idItem).val();
+      var itensInCart = "";
 
       myDB.transaction(function (transaction) {
         var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price) VALUES (?,?,?,?,?)";
@@ -413,44 +414,7 @@ function addToCart(price, stack, idItem){
         });
       });
 
-
-      myDB.transaction(function(transaction) {
-        var executeQuery = "SELECT * FROM CART WHERE idUser=?";
-        transaction.executeSql(executeQuery, [4]
-        , function(tx, result) {
-          var len = result.rows.length;
-          if (len>=1) {
-            console.log(JSON.stringify(result.rows.item(1)));
-          }
-        },
-        function(error){
-          er = JSON.stringify(error);
-          alerta(er);
-        });
-      });    
-
-      cartElement +=  '<ons-card>\
-      <center><img src="'+ img +'" alt="Onsen UI" style="width: 50%">\
-      <div class="title">\
-       <strong>' + dtl + ' </strong>\
-      </div></center>\
-      <div class="content">\
-        <ons-list>\
-          <ons-list-item>Precio unidad: $ ' + price + '</ons-list-item>\
-          <ons-list-item>Cantidad: ' + units + '</ons-list-item>\
-        </ons-list>\
-        <center><div>\
-          <ons-button><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-button>\
-        </div></center>\
-        <ons-list-header><strong style="font-family: Arial;"> $ '+ units * (price) +'</strong></ons-list-header>\
-      </div>\
-    </ons-card>\
-    <ons-list-header><center><strong style="font-family: Arial;"> TOTAL: $ '+ units * (price) +'</strong></center></ons-list-header>\
-    ';
-
-    setTimeout(function(){ $("#dCart").html(cartElement); }, 100);
-
-    
+      loadItemsFromMemory();
   }
 }
 
@@ -563,33 +527,31 @@ function loadItems(){
 
     var tdsp="";
 
-
     for(var i=0;i<data.length;i++){
-
       tdsp +='\
-        <ons-list-item id="item_'+ data[i].response.idItem +'">\
-        <center>\
-          <table>\
-            <tr>\
-              <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
-              <td><center><img style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
-              <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
-            </tr>\
-          </table>\
-          <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
-          <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-          <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
-          <div style="height: 25px; width: auto;">\
-            <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>\
-            <input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">\
-            <ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> \
-          </div>\
-          <br>\
-          <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
-          <br>\
-          </center>\
-          </ons-list-item>';
-
+      <ons-list-item id="item_'+ data[i].response.idItem +'">\
+      <center>\
+      <table>\
+        <tr>\
+          <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
+          <td><img id="item_in_cart" style="width:10%;" src="img/item_in_cart.png"></td>\
+          <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
+          <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
+        </tr>\
+      </table>\
+      <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
+      <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
+      <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+      <div style="height: 25px; width: auto;">\
+        <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>\
+        <input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">\
+        <ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> \
+      </div>\
+      <br>\
+      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+      <br>\
+      </center>\
+      </ons-list-item>';
     }
 
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
@@ -623,22 +585,76 @@ function loadLogic(){
   loadItems();
 }
 
-function TruncatePrueba(){
-
-  myDB.transaction(function(transaction) {
-  var executeQuery = "DELETE FROM CART";
-  transaction.executeSql(executeQuery, [],
-  function(tx, result) {console.log('Table deleted successfully.');},
-   function(error){
-     er = JSON.stringify(error);
-     console.error('Error occurred while droping the table.'+er);
-   }
-  );
-  });  
-
+function goToCart(){
+  cambiar_menu('carrito');
+  loadItemsFromMemory();
 }
 
+function loadItemsFromMemory(){
+    var itensInCart = "";
+    setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
 
+    myDB.transaction(function(transaction) {
+    var executeQuery = "SELECT * FROM CART WHERE idUser=?";
+    transaction.executeSql(executeQuery, [4]
+    , function(tx, result) {
+      var len = result.rows.length;
+      if(len < 1){
+        itensInCart += '<ons-card>\
+          <center><strong>No cuentas con productos tu carrito!</strong>\
+          <br>\
+          <br>\
+          <img src="img/empty_cart.png" width="100px"><br>\
+          </center>\
+          </ons-card>';
+      } else{
+        for (let index = 0; index < result.rows.length; index++) {
+          var priceItem = result.rows.item(index).price;
+          itensInCart +=  '<ons-card>\
+            <center><img src="'+ result.rows.item(index).image +'" alt="Onsen UI" style="width: 50%">\
+            <div class="title">\
+            <strong> Detail pending </strong>\
+            </div></center>\
+            <div class="content">\
+            <ons-list>\
+            <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price + '</ons-list-item>\
+            <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
+            </ons-list>\
+            <center><div>\
+            <ons-button onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-button>\
+            </div></center>\
+            <ons-list-header><strong style="font-family: Arial;"> $ '+ (result.rows.item(index).amount * priceItem).toFixed(2) +'</strong></ons-list-header>\
+            </div>\
+            </ons-card>\
+          ';
+        }
+        itensInCart += '<ons-list-header><center><strong style="font-family: Arial;"> TOTAL: $ PENDIENTE CALCULAR TOTAL</strong></center></ons-list-header>';
+      }
+    },
+    function(error){
+      er = JSON.stringify(error);
+      alerta(er);
+    });
+  });    
+
+  setTimeout(function(){ $("#dCart").html(itensInCart); }, 350);
+}
+
+function deleteItemFromMemory(idItem){
+  myDB.transaction(function(transaction) {
+  var executeQuery = "DELETE FROM CART WHERE idItem=?";
+    transaction.executeSql(executeQuery, [idItem],
+      function(tx, result) {
+        loadItemsFromMemory();
+        console.log('Table deleted successfully.');
+      },
+      function(error){
+        er = JSON.stringify(error);
+        console.error('Error occurred while droping the table.'+er);
+      }
+    );
+  });  
+}
 
 
 

@@ -103,7 +103,7 @@
             <i class="fas fa-user" onclick="perfilInfo();"></i>
         </ons-speed-dial-item>
         <ons-speed-dial-item>
-          <i class="fas fa-shopping-cart" onclick="cambiar_menu('carrito')"></i>
+          <i class="fas fa-shopping-cart" onclick="goToCart()"></i>
         </ons-speed-dial-item>        
         <ons-speed-dial-item>
             <i class="fas fa-share-alt"></i>
@@ -259,20 +259,29 @@
 
     for(var i=0;i<data.length;i++){
       tdsp +='\
-        <ons-list-item id="item_'+ data[i].response.idItem +'">\
+      <ons-list-item id="item_'+ data[i].response.idItem +'">\
         <center>\
           <table>\
             <tr>\
               <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
+              <td><img id="item_in_cart" style="width:10%;" src="img/item_in_cart.png"></td>\
               <td><center><img style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
               <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
             </tr>\
           </table>\
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
           <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-          <span><strong><strong> $ '+ data[i].response.price +'</strong><br><br>\
-          <ons-button style="width:50%;" onclick="showDialog('+ data[i].response.idItem + ' , '+ data[i].response.price + ' , '+ data[i].stack + ' )"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
-        </ons-list-item>';
+          <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+          <div style="height: 25px; width: auto;">\
+            <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>\
+            <input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">\
+            <ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> \
+          </div>\
+          <br>\
+          <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+          <br>\
+          </center>\
+          </ons-list-item>';
 
     }
 

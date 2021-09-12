@@ -59,3 +59,20 @@ function createInternalBd(){
   });
 }
 
+
+function TruncatePrueba(){
+  myDB.transaction(function(transaction) {
+  var executeQuery = "DELETE FROM CART";
+    transaction.executeSql(executeQuery, [],
+      function(tx, result) {
+        alert("truncate success");
+        console.log('Table deleted successfully.');
+      },
+      function(error){
+        er = JSON.stringify(error);
+        console.error('Error occurred while droping the table.'+er);
+      }
+    );
+  });  
+}
+
