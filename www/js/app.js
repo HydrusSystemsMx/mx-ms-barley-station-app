@@ -311,12 +311,12 @@ function CancelMakeInv(){
   $("#BtnCancelCreate").hide();
 }
 
-function plusUnit(maxUnit){
-  var units = $("#units").val();
+function plusUnit(maxUnit, idItem){
+  var units = $("#units_" + idItem).val();
 
   if (units == null  || units == '0' || units == undefined || units == '' ) { units = 0 };
   var newUnit = parseInt(units) + 1;
-  if(newUnit <= maxUnit){ $("#units").val(newUnit) };
+  if(newUnit <= maxUnit){ $("#units_" + idItem).val(newUnit) };
 }
 
 
@@ -377,29 +377,26 @@ function hideDialog(){
   .hide();
 }
 
-function lessUnit(){
-  var units = $("#units").val();
+function lessUnit(idItem){
+  var units = $("#units_" + idItem).val();
   if (units > 1 ){
     var newUnit = parseInt(units) - 1;
-    $("#units").val(newUnit);
+    $("#units_" + idItem).val(newUnit);
   }
 }
 
 function addToCart(price, stack, idItem){
 
   var cartElement = "";
-  var units = $("#units").val();
+  var units = $("#units_" + idItem).val();
 
   if(units > stack ){
     alerta("cantidad no disponible para agregar. Max: " + stack);
-    $("#units").val(stack);
-    close();
+    $("#units_" + idItem).val(stack);
   } else if(units == 0){
     alerta("La cantidad no puede ser 0")
-    $("#units").val(1);
-    close();
+    $("#units_" + idItem).val(1);
   } else {
-    close();
     cambiar_menu('carrito')
       var img = $('#img_'+ idItem).val();
       var dtl = $('#dtl_'+ idItem).val();
@@ -582,8 +579,16 @@ function loadItems(){
           <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
           <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
           <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
-          <ons-button style="width:50%;" onclick="showDialog( '+ data[i].response.idItem + ' , '+ data[i].response.price + ' , '+ data[i].stack + ' )"><div> <i class="fas fa-beer"></i></div></ons-button></center>\
-        </ons-list-item>';
+          <div style="height: 25px; width: auto;">\
+            <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>\
+            <input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">\
+            <ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> \
+          </div>\
+          <br>\
+          <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+          <br>\
+          </center>\
+          </ons-list-item>';
 
     }
 
