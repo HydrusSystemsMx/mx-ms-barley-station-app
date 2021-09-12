@@ -16,6 +16,14 @@
   size: 30%;
 }
 
+#close-btn-dialog {
+  position: absolute;
+  background: red;
+  color: white;
+  top: -10px;
+  right: -10px;
+}
+
 body {
   background: white !important;
   text-align: center;

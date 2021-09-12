@@ -351,13 +351,9 @@ function showDialog(idItem, price, stack){
                 <td></td>\
             </tr>\
         </table>\
-        <table class="bs-table">\
-          <tr>\
-            <td><center><ons-button onclick="addToCart(' + price.toFixed(2) + ', '+ stack + ', ' + idItem +')" style="background-color:teal;"><div> <i class="fas fa-check-circle"></i></div></ons-button></center></td>\
-            <td><button style="visibility: hidden;">space</button></td>\
-            <td><center><ons-button onclick="hideDialog()" style="background-color: red;" ><div ><i class="fas fa-window-close"></i></div></ons-button></center></td>\
-        </tr>\
-        </table>\
+        <br>\
+        <ons-button onclick="addToCart(' + price.toFixed(2) + ', '+ stack + ', ' + idItem +')" style="background-color:teal; width: 100%;">AGREGAR</ons-button>\
+        <ons-button id="close-btn-dialog"  onclick="closeDialog()" style="background-color:red; "><div style="width: 100%;"> <i class="fas fa-window-close" ></i></div></ons-button>\
       </center>\
   </ons-card>\
 </ons-dialog>';
@@ -368,6 +364,10 @@ document
 .getElementById('dialog-1')
 .show();
 
+}
+
+function closeDialog(){
+  close();
 }
 
 function hideDialog(){
@@ -617,6 +617,23 @@ function loadLogic(){
   loadBrands();
   loadItems();
 }
+
+function TruncatePrueba(){
+
+  myDB.transaction(function(transaction) {
+  var executeQuery = "DELETE FROM CART";
+  transaction.executeSql(executeQuery, [],
+  function(tx, result) {console.log('Table deleted successfully.');},
+   function(error){
+     er = JSON.stringify(error);
+     console.error('Error occurred while droping the table.'+er);
+   }
+  );
+  });  
+
+}
+
+
 
 
 
