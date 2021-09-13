@@ -740,17 +740,18 @@ function loadItemsFromMemory(){
 }
 
 function startOrder(total){
+  var payMethod = "";
   var debit_radio = $("#debit_radio").is(':checked');
   var cash_radio = $("#cash_radio").is(':checked');
-  var transfer_radio = $("#transfer_radio").is(':checked');
+
   if(debit_radio == true){
-    alerta("Es: debit_radio " + debit_radio);
+    payMethod = 1;
   } else if(cash_radio === true){
-    alerta("Es: cash_radio " + cash_radio);
+    payMethod = 2;
   } else{
-    alerta("Es: transfer_radio " + transfer_radio);
+    payMethod = 3;
   }
-  alert(total.toFixed(2));
+  alert(total.toFixed(2) + ", " + payMethod);
 }
 
 function deleteItemFromMemory(idItem){
