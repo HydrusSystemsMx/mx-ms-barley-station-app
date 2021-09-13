@@ -407,6 +407,7 @@ function addToCart(price, stack, idItem){
         transaction.executeSql(executeQuery, [idItem, 4, units, img, price]
         , function(tx, result) {
           console.log("Added element to sql lite card succesfully");
+          saveData("item_in_cart_" + idItem , "item_in_cart_");
         },
         function(error){
           er = JSON.stringify(error);
@@ -528,13 +529,13 @@ function loadItems(){
     var tdsp="";
 
     for(var i=0;i<data.length;i++){
+      var itemId =data[i].response.idItem;
       tdsp +='\
       <ons-list-item id="item_'+ data[i].response.idItem +'">\
       <center>\
       <table>\
         <tr>\
           <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
-          <td><img id="item_in_cart" style="width:10%;" src="img/item_in_cart.png"></td>\
           <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
           <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
         </tr>\
@@ -551,9 +552,14 @@ function loadItems(){
       <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
       <br>\
       </center>\
-      </ons-list-item>';
-    }
+      <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>';
 
+      if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
+        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png">';
+      }
+
+      tdsp = tdsp + '</ons-list-item>';
+    }
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
     
   }
@@ -645,6 +651,7 @@ function deleteItemFromMemory(idItem){
   var executeQuery = "DELETE FROM CART WHERE idItem=?";
     transaction.executeSql(executeQuery, [idItem],
       function(tx, result) {
+        saveData("item_in_cart_" + idItem, null)
         loadItemsFromMemory();
         console.log('Table deleted successfully.');
       },
@@ -656,6 +663,29 @@ function deleteItemFromMemory(idItem){
   });  
 }
 
+function itemInMemory(idItem){
+  var inMemory = false;
+  myDB.transaction(function(transaction) {
+    var executeQuery = "SELECT * FROM CART WHERE idItem=?";
+    transaction.executeSql(executeQuery, [idItem]
+    , function(tx, result) {
+      var len = result.rows.length;
+      if(len > 0){
+        alert("mayooor")
+        inMemory = true;
+      }
+    },
+    function(error){
+      er = JSON.stringify(error);
+      alerta(er);
+    });
+  });    
 
+  return inMemory;
+}
 
+function refreshMenu(){
+  loadItems();
+  loadBrands();
+}
   
