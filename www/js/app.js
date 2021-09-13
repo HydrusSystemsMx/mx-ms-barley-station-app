@@ -397,26 +397,70 @@ function addToCart(price, stack, idItem){
     alerta("La cantidad no puede ser 0")
     $("#units_" + idItem).val(1);
   } else {
-    cambiar_menu('carrito')
       var img = $('#img_'+ idItem).val();
       var dtl = $('#dtl_'+ idItem).val();
-      var itensInCart = "";
 
-      myDB.transaction(function (transaction) {
-        var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price) VALUES (?,?,?,?,?)";
-        transaction.executeSql(executeQuery, [idItem, 4, units, img, price]
+      myDB.transaction(function(transaction) {
+        var executeQuery = "SELECT * FROM CART WHERE idItem=?";
+        transaction.executeSql(executeQuery, [idItem]
         , function(tx, result) {
-          console.log("Added element to sql lite card succesfully");
-          saveData("item_in_cart_" + idItem , "item_in_cart_");
-        },
+          var len = result.rows.length;
+          if(len > 0){  
+            var newAmount = parseInt(units) + parseInt(result.rows.item(0).amount);
+            if(parseInt(units) <  parseInt(result.rows.item(0).amount)){
+              newAmount = parseInt(result.rows.item(0).amount) - parseInt(units) ;
+            } else{
+              newAmount = parseInt(units);
+            }
+            
+            var r = confirm("Deseas actualizar tu producto de: " + result.rows.item(0).amount + " a: " + newAmount);
+            if (r == true) {
+              updateAmountItem(idItem, newAmount);
+            }
+          } else{
+            instertIntoMemory(idItem, 4, units, img, price);
+          }
+        },  
         function(error){
           er = JSON.stringify(error);
-          alerta('Error occurred');
+          alerta(er);
         });
-      });
-
-      loadItemsFromMemory();
+      });    
   }
+}
+
+function updateAmountItem(idItem, amount){
+  myDB.transaction(function (transaction) {
+    var executeQuery = "UPDATE CART SET amount=? WHERE idItem=?";
+    transaction.executeSql(executeQuery, [amount,idItem]
+    , function(tx, result) {
+      saveData("amount_"+ idItem, amount);
+      cambiar_menu('carrito');
+      loadItemsFromMemory();
+    },
+    function(error){
+      console.log('Error occurred');
+    });
+  });
+
+}
+
+function instertIntoMemory(idItem, idUser, units, img, price){
+  myDB.transaction(function (transaction) {
+    var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price) VALUES (?,?,?,?,?)";
+    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price]
+    , function(tx, result) {
+      cambiar_menu('carrito')
+      console.log("Added element to sql lite card succesfully");
+      saveData("amount_" + idItem, units);
+      saveData("item_in_cart_" + idItem , "item_in_cart_");
+      loadItemsFromMemory();
+    },
+    function(error){
+      er = JSON.stringify(error);
+      alerta('Error occurred');
+    });
+  });
 }
 
 function loadBrands(){
@@ -527,6 +571,7 @@ function loadItems(){
   function setItems(data){
 
     var tdsp="";
+    var inptItems = "";
 
     for(var i=0;i<data.length;i++){
       var itemId =data[i].response.idItem;
@@ -544,9 +589,16 @@ function loadItems(){
       <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
       <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
       <div style="height: 25px; width: auto;">\
-        <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>\
-        <input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">\
-        <ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> \
+        <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+      
+      if(getData("amount_"+ data[i].response.idItem.toString())   != null){
+        $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
+        inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+      } else{
+        inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+      }
+      
+      tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
       </div>\
       <br>\
       <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
@@ -643,7 +695,7 @@ function loadItemsFromMemory(){
     });
   });    
 
-  setTimeout(function(){ $("#dCart").html(itensInCart); }, 350);
+  setTimeout(function(){ $("#dCart").html(itensInCart); }, 500);
 }
 
 function deleteItemFromMemory(idItem){
@@ -652,6 +704,7 @@ function deleteItemFromMemory(idItem){
     transaction.executeSql(executeQuery, [idItem],
       function(tx, result) {
         saveData("item_in_cart_" + idItem, null)
+        saveData("amount_" + idItem, null);
         loadItemsFromMemory();
         console.log('Table deleted successfully.');
       },
@@ -671,7 +724,6 @@ function itemInMemory(idItem){
     , function(tx, result) {
       var len = result.rows.length;
       if(len > 0){
-        alert("mayooor")
         inMemory = true;
       }
     },
