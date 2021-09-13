@@ -721,8 +721,8 @@ function loadItemsFromMemory(){
     });
   });    
 
-  setTimeout(function(){ $("#dCart").html(itensInCart); }, 1000);
-  setTimeout(function(){ getPosition() }, 1500);
+  setTimeout(function(){ $("#dCart").html(itensInCart); }, 700);
+  setTimeout(function(){ getPosition() }, 800);
 }
 
 function startOrder(total){

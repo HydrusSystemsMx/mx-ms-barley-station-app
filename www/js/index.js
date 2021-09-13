@@ -139,6 +139,8 @@ function getPosition() {
       map.setZoom(17);
     }
 
+    //alert(marker.getPosition());
+
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);
     infowindowContent.children["place-name"].textContent = place.name;
