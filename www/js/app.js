@@ -667,15 +667,17 @@ function loadItemsFromMemory(){
           ';
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
-        addressDelivery += '<div class="pac-card" id="pac-card">\
-        <div style="visibility: hidden;">\
+        addressDelivery += '<ons-card>\
+        <h1>Entregar en: </h1>\
+        <br><span>UserAddres</span>\
+        <div style="display:none;">\
           <div id="title">Autocomplete search</div>\
           <div id="type-selector" class="pac-controls">\
             <input\
-              type="radio"\
-              name="type"\
-              id="changetype-all"\
-              checked="checked"\
+            type="radio"\
+            name="type"\
+            id="changetype-all"\
+            checked="checked"\
             />\
             <label for="changetype-all">All</label>\
             \
@@ -697,15 +699,15 @@ function loadItemsFromMemory(){
             <label for="use-strict-bounds">Strict bounds</label>\
           </div>\
         </div>\
+        <div id="map"></div>\
         <div id="pac-container">\
-          <input id="pac-input" type="text" placeholder="Enter a location" />\
+        <input id="pac-input" type="text" placeholder="O ingresa una nueva dirección de entrega.." style="width:100%;"/>\
         </div>\
-      </div>\
-      <div id="map"></div>\
-      <div id="infowindow-content">\
-        <span id="place-name" class="title"></span><br />\
-        <span id="place-address"></span>\
-      </div>';
+        <div id="infowindow-content">\
+          <span id="place-name" class="title"></span><br />\
+          <span id="place-address"></span>\
+        </div>\
+        </ons-card>';
 
         payMethod += '<ons-card><center><h1>Método de pago </h1><span>Metodo de pago/span></center><br>\
         <br><span>Seleccionar metodo de pago..</span></ons-card>';

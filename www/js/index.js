@@ -80,7 +80,7 @@ function getPosition() {
   const myLatLng = { lat: 20.11697, lng: -98.73329 };
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 20.11697, lng: -98.73329 },
-    zoom: 13,
+    zoom: 16,
   });
   const card = document.getElementById("pac-card");
   const input = document.getElementById("pac-input");
