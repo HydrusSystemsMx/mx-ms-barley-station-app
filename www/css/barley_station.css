@@ -16,6 +16,13 @@
   size: 30%;
 }
 
+#map {
+  height: 400px;
+  /* The height is 400 pixels */
+  width: 100%;
+  /* The width is the width of the web page */
+}
+
 #item_in_cart {
   position: absolute;
   background: transparent;
@@ -24,7 +31,6 @@
   right: -5px;
 }
 
-
 #trash_item {
   position: absolute;
   background: transparent;
@@ -32,7 +38,6 @@
   top: -5px;
   right: -5px;
 }
-
 
 #close-btn-dialog {
   position: absolute;

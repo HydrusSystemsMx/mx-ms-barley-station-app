@@ -140,22 +140,6 @@ var time_delivery;
   }
 
 
-  function cincometros_back(latitud2,longitud2,tx){
-    latitud = latitud2;
-    longitud = longitud2;
-    
-    var rep = "1"; // id-rep
-
-    myDB.transaction(function (transaction) {
-    var executeQuery = "INSERT INTO GPS_REP (repartidor,latitud,longitud) VALUES (?,?,?))";
-      transaction.executeSql(executeQuery, [rep,lat,lon]
-      , function(tx, result) {
-        $("#PedidosAtendidos").append('<ons-list-item>'+latitud+","+longitud+'</ons-list-item>');
-      },
-      function(error){
-        console.log('Error occurred');
-      });
-    });
 
      /* webservice =  web+"ubicacion.php?jsoncallback=?";
       $.getJSON(webservice,{id_repartidor:id_repartidor,latitud:latitud ,longitud:longitud, id_pedido:id_pedido, token_ruta:token_ruta})
@@ -169,7 +153,7 @@ var time_delivery;
         }
       }) */
 
-  }   
+  
 
 
   function updatePositionBack(latitud,longitud) {
@@ -181,6 +165,7 @@ function login(){
   cambiar_menu("page_menu");
   loadItems();
   loadBrands();
+
   /*
   email = $("#rep_correo").val();
   pass = $("#rep_pass").val();
@@ -445,7 +430,6 @@ function instertIntoMemory(idItem, idUser, units, img, price, details){
     transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details]
     , function(tx, result) {
       cambiar_menu('carrito')
-      console.log("Added element to sql lite card succesfully");
       saveData("amount_" + idItem, units);
       saveData("item_in_cart_" + idItem , "item_in_cart_");
       loadItemsFromMemory();
@@ -684,10 +668,11 @@ function loadItemsFromMemory(){
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
         addressDelivery += '<ons-card><center><h1>Entregar en: </h1><span>User Adress</span></center><br>\
-        <div id="staticMap">\
-          <img src="https://maps.googleapis.com/maps/api/staticmap?center=20.090171,-98.739566&zoom=18&size=400x300&maptype=roadmap%20&markers=color:red|20.090171,-98.739566&style=feature:all|element:labels|visibility:off&key=AIzaSyDBi155hirsTgLdO5ZvOTmcePpnFOcpIKQ">\
-        </div>\
-        <br><span>cambiar...</span></ons-card>';
+        <section>\
+        <div id="map_canvas" style="width: auto; height: 200px;"></div>\
+        </section><br><br>\
+        <input type="text" id="address">\
+        <br><span>cambiara...</span></ons-card>';
 
         payMethod += '<ons-card><center><h1>Método de pago </h1><span>Metodo de pago/span></center><br>\
         <br><span>Seleccionar metodo de pago..</span></ons-card>';
@@ -702,6 +687,7 @@ function loadItemsFromMemory(){
   });    
 
   setTimeout(function(){ $("#dCart").html(itensInCart); }, 1000);
+  setTimeout(function(){ getPosition() }, 1500);
 }
 
 function startOrder(total){
@@ -750,4 +736,4 @@ function refreshMenu(){
   loadItems();
   loadBrands();
 }
-  
+
