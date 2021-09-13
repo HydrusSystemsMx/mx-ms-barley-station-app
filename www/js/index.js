@@ -49,7 +49,7 @@ function networkInfo() {
 function createInternalBd(){
   myDB = window.sqlitePlugin.openDatabase({name: "BarleyStation.db", location: 'default'});
   myDB.transaction(function(transaction) {
-    transaction.executeSql('CREATE TABLE IF NOT EXISTS CART (idCart integer primary key, idItem INT(5), iduser integer(5), amount integer(5), image varchar(200), price double(10) )', [],
+    transaction.executeSql('CREATE TABLE IF NOT EXISTS CART (idCart integer primary key, idItem INT(5), iduser integer(5), amount integer(5), image varchar(200), price double(10), detail varchar(350) )', [],
     function(tx, result) {
      console.log("Table created successfully");
     },

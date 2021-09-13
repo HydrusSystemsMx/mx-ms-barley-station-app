@@ -406,19 +406,13 @@ function addToCart(price, stack, idItem){
         , function(tx, result) {
           var len = result.rows.length;
           if(len > 0){  
-            var newAmount = parseInt(units) + parseInt(result.rows.item(0).amount);
-            if(parseInt(units) <  parseInt(result.rows.item(0).amount)){
-              newAmount = parseInt(result.rows.item(0).amount) - parseInt(units) ;
-            } else{
-              newAmount = parseInt(units);
-            }
-            
+            var newAmount = parseInt(units);
             var r = confirm("Deseas actualizar tu producto de: " + result.rows.item(0).amount + " a: " + newAmount);
             if (r == true) {
               updateAmountItem(idItem, newAmount);
             }
           } else{
-            instertIntoMemory(idItem, 4, units, img, price);
+            instertIntoMemory(idItem, 4, units, img, price, dtl);
           }
         },  
         function(error){
@@ -445,10 +439,10 @@ function updateAmountItem(idItem, amount){
 
 }
 
-function instertIntoMemory(idItem, idUser, units, img, price){
+function instertIntoMemory(idItem, idUser, units, img, price, details){
   myDB.transaction(function (transaction) {
-    var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price) VALUES (?,?,?,?,?)";
-    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price]
+    var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price, detail) VALUES (?,?,?,?,?,?)";
+    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details]
     , function(tx, result) {
       cambiar_menu('carrito')
       console.log("Added element to sql lite card succesfully");
@@ -601,7 +595,7 @@ function loadItems(){
       tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
       </div>\
       <br>\
-      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
       <br>\
       </center>\
       <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>';
@@ -650,6 +644,7 @@ function goToCart(){
 
 function loadItemsFromMemory(){
     var itensInCart = "";
+    var total = 0;
     setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
 
     myDB.transaction(function(transaction) {
@@ -667,26 +662,26 @@ function loadItemsFromMemory(){
           </ons-card>';
       } else{
         for (let index = 0; index < result.rows.length; index++) {
+          console.log(result.rows.item(index));
           var priceItem = result.rows.item(index).price;
+          var itemTotal = (result.rows.item(index).amount * priceItem).toFixed(2);
           itensInCart +=  '<ons-card>\
             <center><img src="'+ result.rows.item(index).image +'" alt="Onsen UI" style="width: 50%">\
             <div class="title">\
-            <strong> Detail pending </strong>\
+            <strong> ' + result.rows.item(index).detail +' </strong>\
             </div></center>\
             <div class="content">\
             <ons-list>\
             <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price + '</ons-list-item>\
             <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
             </ons-list>\
-            <center><div>\
-            <ons-button onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-button>\
-            </div></center>\
-            <ons-list-header><strong style="font-family: Arial;"> $ '+ (result.rows.item(index).amount * priceItem).toFixed(2) +'</strong></ons-list-header>\
+            <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
             </div>\
             </ons-card>\
           ';
+          total = parseFloat(total) + (parseFloat(itemTotal));
         }
-        itensInCart += '<ons-list-header><center><strong style="font-family: Arial;"> TOTAL: $ PENDIENTE CALCULAR TOTAL</strong></center></ons-list-header>';
+        itensInCart += '<ons-list-heade style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
       }
     },
     function(error){
@@ -695,7 +690,11 @@ function loadItemsFromMemory(){
     });
   });    
 
-  setTimeout(function(){ $("#dCart").html(itensInCart); }, 500);
+  setTimeout(function(){ $("#dCart").html(itensInCart); }, 1000);
+}
+
+function startOrder(total){
+  alert(total.toFixed(2));
 }
 
 function deleteItemFromMemory(idItem){

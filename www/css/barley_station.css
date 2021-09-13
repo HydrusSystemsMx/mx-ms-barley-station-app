@@ -24,6 +24,16 @@
   right: -5px;
 }
 
+
+#trash_item {
+  position: absolute;
+  background: transparent;
+  color: white;
+  top: -5px;
+  right: -5px;
+}
+
+
 #close-btn-dialog {
   position: absolute;
   background: red;
