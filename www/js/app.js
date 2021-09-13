@@ -709,8 +709,22 @@ function loadItemsFromMemory(){
         </div>\
         </ons-card>';
 
-        payMethod += '<ons-card><center><h1>Método de pago </h1><span>Metodo de pago/span></center><br>\
-        <br><span>Seleccionar metodo de pago..</span></ons-card>';
+      payMethod += '<ons-card><center><h1>Método de pago </h1></center><br>\
+        <label class="radio-button radio-button--material">\
+        <input type="radio" class="radio-button__input radio-button--material__input" id="debit_radio" name="r" checked="checked">\
+        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+        Tarjeta de Credito/Debito\
+        </label>\
+        <label class="radio-button radio-button--material">\
+        <input type="radio" class="radio-button__input radio-button--material__input" id="cash_radio" name="r" >\
+        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+        Pago en Efectivo\
+        </label>\
+        <label class="radio-button radio-button--material">\
+        <input type="radio" class="radio-button__input radio-button--material__input" id="transfer_radio" name="r">\
+        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+        Transferencia Bancaria\
+        </label></ons-card>';
 
         itensInCart += addressDelivery + payMethod + '<ons-list-header style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
       }
@@ -726,6 +740,16 @@ function loadItemsFromMemory(){
 }
 
 function startOrder(total){
+  var debit_radio = $("#debit_radio").is(':checked');
+  var cash_radio = $("#cash_radio").is(':checked');
+  var transfer_radio = $("#transfer_radio").is(':checked');
+  if(debit_radio == true){
+    alerta("Es: debit_radio " + debit_radio);
+  } else if(cash_radio === true){
+    alerta("Es: cash_radio " + cash_radio);
+  } else{
+    alerta("Es: transfer_radio " + transfer_radio);
+  }
   alert(total.toFixed(2));
 }
 
