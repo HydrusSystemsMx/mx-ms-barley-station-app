@@ -667,12 +667,45 @@ function loadItemsFromMemory(){
           ';
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
-        addressDelivery += '<ons-card><center><h1>Entregar en: </h1><span>User Adress</span></center><br>\
-        <section>\
-        <div id="map_canvas" style="width: auto; height: 200px;"></div>\
-        </section><br><br>\
-        <input type="text" id="address">\
-        <br><span>cambiara...</span></ons-card>';
+        addressDelivery += '<div class="pac-card" id="pac-card">\
+        <div style="visibility: hidden;">\
+          <div id="title">Autocomplete search</div>\
+          <div id="type-selector" class="pac-controls">\
+            <input\
+              type="radio"\
+              name="type"\
+              id="changetype-all"\
+              checked="checked"\
+            />\
+            <label for="changetype-all">All</label>\
+            \
+            <input type="radio" name="type" id="changetype-establishment" />\
+            <label for="changetype-establishment">Establishments</label>\
+            \
+            <input type="radio" name="type" id="changetype-address" />\
+            <label for="changetype-address">Addresses</label>\
+            \
+            <input type="radio" name="type" id="changetype-geocode" />\
+            <label for="changetype-geocode">Geocodes</label>\
+          </div>\
+          <br />\
+          <div id="strict-bounds-selector" class="pac-controls">\
+            <input type="checkbox" id="use-location-bias" value="" checked />\
+            <label for="use-location-bias">Bias to map viewport</label>\
+            \
+            <input type="checkbox" id="use-strict-bounds" value="" />\
+            <label for="use-strict-bounds">Strict bounds</label>\
+          </div>\
+        </div>\
+        <div id="pac-container">\
+          <input id="pac-input" type="text" placeholder="Enter a location" />\
+        </div>\
+      </div>\
+      <div id="map"></div>\
+      <div id="infowindow-content">\
+        <span id="place-name" class="title"></span><br />\
+        <span id="place-address"></span>\
+      </div>';
 
         payMethod += '<ons-card><center><h1>Método de pago </h1><span>Metodo de pago/span></center><br>\
         <br><span>Seleccionar metodo de pago..</span></ons-card>';
