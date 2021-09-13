@@ -644,6 +644,8 @@ function goToCart(){
 
 function loadItemsFromMemory(){
     var itensInCart = "";
+    var addressDelivery = "";
+    var payMethod = "";
     var total = 0;
     setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
 
@@ -681,7 +683,16 @@ function loadItemsFromMemory(){
           ';
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
-        itensInCart += '<ons-list-heade style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
+        addressDelivery += '<ons-card><center><h1>Entregar en: </h1><span>User Adress</span></center><br>\
+        <div id="staticMap">\
+          <img src="https://maps.googleapis.com/maps/api/staticmap?center=20.090171,-98.739566&zoom=18&size=400x300&maptype=roadmap%20&markers=color:red|20.090171,-98.739566&style=feature:all|element:labels|visibility:off&key=AIzaSyDBi155hirsTgLdO5ZvOTmcePpnFOcpIKQ">\
+        </div>\
+        <br><span>cambiar...</span></ons-card>';
+
+        payMethod += '<ons-card><center><h1>Método de pago </h1><span>Metodo de pago/span></center><br>\
+        <br><span>Seleccionar metodo de pago..</span></ons-card>';
+
+        itensInCart += addressDelivery + payMethod + '<ons-list-header style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
       }
     },
     function(error){
