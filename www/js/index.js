@@ -13,6 +13,7 @@ var app = {
         this.receivedEvent('deviceready');
         createInternalBd();
         getPosition();
+        login();
         cordova.plugins.backgroundMode.onactivate = function () {
 
         };
@@ -76,8 +77,9 @@ function TruncatePrueba(){
 }
 
 function getPosition() {
+  const myLatLng = { lat: 20.11697, lng: -98.73329 };
   const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 40.749933, lng: -73.98633 },
+    center: { lat: 20.11697, lng: -98.73329 },
     zoom: 13,
   });
   const card = document.getElementById("pac-card");
@@ -105,11 +107,18 @@ function getPosition() {
   infowindow.setContent(infowindowContent);
 
   const marker = new google.maps.Marker({
+    position:  { lat: 20.11697, lng: -98.73329 },
     map,
     anchorPoint: new google.maps.Point(0, -29),
+    draggable: true
   });
 
+  google.maps.event.addListener(marker, 'dragend', function(ev){
+    alert(marker.getPosition()); // new LatLng-Object after dragend-event...
+  });
+  
   autocomplete.addListener("place_changed", () => {
+ 
     infowindow.close();
     marker.setVisible(false);
 
