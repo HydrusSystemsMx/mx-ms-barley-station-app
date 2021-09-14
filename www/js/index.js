@@ -114,7 +114,7 @@ function getPosition() {
   });
 
   google.maps.event.addListener(marker, 'dragend', function(ev){
-    alert(marker.getPosition()); // new LatLng-Object after dragend-event...
+    saveData("newLocation", marker.getPosition());
   });
   
   autocomplete.addListener("place_changed", () => {
@@ -139,7 +139,7 @@ function getPosition() {
       map.setZoom(17);
     }
 
-    //alert(marker.getPosition());
+    saveData("newLocation", marker.getPosition());
 
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);

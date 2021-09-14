@@ -623,6 +623,7 @@ function loadLogic(){
 
 function goToCart(){
   cambiar_menu('carrito');
+  saveData("newLocation", null);
   loadItemsFromMemory();
 }
 
@@ -668,44 +669,47 @@ function loadItemsFromMemory(){
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
         addressDelivery += '<ons-card>\
-        <h1>Entregar en: </h1>\
-        <br><span>UserAddres</span>\
-        <div style="display:none;">\
-          <div id="title">Autocomplete search</div>\
-          <div id="type-selector" class="pac-controls">\
-            <input\
-            type="radio"\
-            name="type"\
-            id="changetype-all"\
-            checked="checked"\
-            />\
-            <label for="changetype-all">All</label>\
-            \
-            <input type="radio" name="type" id="changetype-establishment" />\
-            <label for="changetype-establishment">Establishments</label>\
-            \
-            <input type="radio" name="type" id="changetype-address" />\
-            <label for="changetype-address">Addresses</label>\
-            \
-            <input type="radio" name="type" id="changetype-geocode" />\
-            <label for="changetype-geocode">Geocodes</label>\
+        <h1>Entregar en: <ons-button onclick="showMapDelivery()" style="position: absolute; right: 0;"><i class="fas fa-pencil-alt"></i></ons-button></h1>\
+        <br><strong><span id="address" style="font-style: italic; color: black;">Circuito Doña mina #1038, Fracc. Bosques del Peñar, Pachuca de Soto, Hgo.</span> </strong><br>\
+        <div id="mapDelivery" style="display: none;">\
+          <div style="display:none;">\
+            <div id="title">Autocomplete search</div>\
+            <div id="type-selector" class="pac-controls">\
+              <input\
+              type="radio"\
+              name="type"\
+              id="changetype-all"\
+              checked="checked"\
+              />\
+              <label for="changetype-all">All</label>\
+              \
+              <input type="radio" name="type" id="changetype-establishment" />\
+              <label for="changetype-establishment">Establishments</label>\
+              \
+              <input type="radio" name="type" id="changetype-address" />\
+              <label for="changetype-address">Addresses</label>\
+              \
+              <input type="radio" name="type" id="changetype-geocode" />\
+              <label for="changetype-geocode">Geocodes</label>\
+            </div>\
+            <br />\
+            <div id="strict-bounds-selector" class="pac-controls">\
+              <input type="checkbox" id="use-location-bias" value="" checked />\
+              <label for="use-location-bias">Bias to map viewport</label>\
+              \
+              <input type="checkbox" id="use-strict-bounds" value="" />\
+              <label for="use-strict-bounds">Strict bounds</label>\
+            </div>\
           </div>\
-          <br />\
-          <div id="strict-bounds-selector" class="pac-controls">\
-            <input type="checkbox" id="use-location-bias" value="" checked />\
-            <label for="use-location-bias">Bias to map viewport</label>\
-            \
-            <input type="checkbox" id="use-strict-bounds" value="" />\
-            <label for="use-strict-bounds">Strict bounds</label>\
+          <div id="map"></div>\
+          <div id="pac-container">\
+          <input id="pac-input" type="text" placeholder="O ingresa una nueva dirección de entrega.." style="width:100%;"/>\
           </div>\
-        </div>\
-        <div id="map"></div>\
-        <div id="pac-container">\
-        <input id="pac-input" type="text" placeholder="O ingresa una nueva dirección de entrega.." style="width:100%;"/>\
-        </div>\
-        <div id="infowindow-content">\
-          <span id="place-name" class="title"></span><br />\
-          <span id="place-address"></span>\
+          <div id="infowindow-content">\
+            <span id="place-name" class="title"></span><br />\
+            <span id="place-address"></span>\
+          </div>\
+          <div><center><ons-button onclick="confirmNewAddress()">Confirmar</ons-button></center></div>\
         </div>\
         </ons-card>';
 
@@ -737,6 +741,53 @@ function loadItemsFromMemory(){
 
   setTimeout(function(){ $("#dCart").html(itensInCart); }, 700);
   setTimeout(function(){ getPosition() }, 800);
+}
+
+function confirmNewAddress(){
+  if(getData("newLocation") != null){
+
+    var coords = JSON.stringify(getData("newLocation"));
+
+    const removeKeys = coords.toString().replace('{}','');
+    const latlngStr = removeKeys.split(",", 2);
+    alert(JSON.stringify(latlngStr[0].replace('lat:"{','')));
+    const latlng = {
+      lat: parseFloat(latlngStr[0].replace('lat:"{','')),
+      lng: parseFloat(latlngStr[1].replace('lat:"{','')),
+    };
+    const geocoder = new google.maps.Geocoder();
+    
+    geocoder.geocode({ location: latlng  })
+    .then((response) => {
+      if (response.results[0]) {
+        alert(esponse.results[0].formatted_address.toString())
+        $("#address").val(response.results[0].formatted_address.toString());
+        document.getElementById("mapDelivery").style.display = "none";
+        document.getElementById("address").style.color = "Black";
+        saveData("hiddenMap", "hide");
+        alerta("Actualizada correctamente")
+      } else {
+        alerta("Error al confirmar nueva ubicación");
+      }
+    })
+    .catch((e) => window.alert("Geocoder failed due to: " + e));
+  } else{
+    alerta("Selecciona una nueva ubicación!");
+  }
+ 
+}
+
+function showMapDelivery(){
+
+  if (getData("hiddenMap") === "hide"){
+    document.getElementById("mapDelivery").style.display = "none";
+    document.getElementById("address").style.color = "Black";
+    saveData("hiddenMap", "show");
+  } else{
+    document.getElementById("address").style.color = "Red";
+    document.getElementById("mapDelivery").style.display = "block";
+    saveData("hiddenMap", "hide");
+  }
 }
 
 function startOrder(total){
