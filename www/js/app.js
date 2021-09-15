@@ -624,6 +624,7 @@ function loadLogic(){
 function goToCart(){
   cambiar_menu('carrito');
   saveData("newLocation", null);
+  saveData("mainDummmyAddress", "Circuito Doña mina #1038, Fracc. Bosques del Peñar, Pachuca de Soto, Hgo.");
   loadItemsFromMemory();
 }
 
@@ -669,8 +670,8 @@ function loadItemsFromMemory(){
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
         addressDelivery += '<ons-card>\
-        <h1>Entregar en: <ons-button onclick="showMapDelivery()" style="position: absolute; right: 0;"><i class="fas fa-pencil-alt"></i></ons-button></h1>\
-        <br><strong><span id="address" style="font-style: italic; color: black;">Circuito Doña mina #1038, Fracc. Bosques del Peñar, Pachuca de Soto, Hgo.</span> </strong><br>\
+        <h1>Entregar en: <i style="position: absolute; right: 0;" class="fas fa-pencil-alt" onclick="showMapDelivery()"></i></h1>\
+        <hr><strong><span id="address" style="font-style: italic; color: black;">' + getData("mainDummmyAddress")+'</span> </strong><br>\
         <div id="mapDelivery" style="display: none;">\
           <div style="display:none;">\
             <div id="title">Autocomplete search</div>\
@@ -791,6 +792,8 @@ function confirmNewAddress(){
         document.getElementById("mapDelivery").style.display = "none";
         document.getElementById("address").style.color = "Black";
         saveData("hiddenMap", "hide");
+        saveData("mainDummmyAddress", null);
+        saveData("mainDummmyAddress", response.results[0].formatted_address.toString());
       } else {
         alerta("Error al confirmar nueva ubicación");
       }
@@ -805,6 +808,9 @@ function confirmNewAddress(){
 function showMapDelivery(){
 
   if (getData("hiddenMap") === "hide"){
+
+    $("#address").text(getData("mainDummmyAddress"));
+
     document.getElementById("mapDelivery").style.display = "none";
     document.getElementById("address").style.color = "Black";
     saveData("hiddenMap", "show");
