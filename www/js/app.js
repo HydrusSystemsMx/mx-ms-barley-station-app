@@ -745,27 +745,52 @@ function loadItemsFromMemory(){
 
 function confirmNewAddress(){
   if(getData("newLocation") != null){
+  
+    var finalLat = "";
+    var finalLng = "";
 
-    var coords = JSON.stringify(getData("newLocation"));
+    if(getData("isFromMarker") == 1){
+      var coordsString = JSON.stringify(getData("newLocation")).split(",", 3);
 
-    const removeKeys = coords.toString().replace('{}','');
-    const latlngStr = removeKeys.split(",", 2);
-    alert(JSON.stringify(latlngStr[0].replace('lat:"{','')));
+      var latString = coordsString[0].toString();
+      var lat = latString.split(":",2);
+  
+      var lngString = coordsString[1].toString();
+      var lng = lngString.split(":",2);
+  
+      var lat1 = lat[1].toString();
+      var lng1 = lng[1].toString();
+      
+      finalLat = lat1.split(",",2);
+      finalLng = lng1.split(",",2);
+  
+    } else {
+      var coordsString = JSON.stringify(getData("newLocation")).split(",", 2);
+
+      var latString = coordsString[0].toString();
+      var lat = latString.split(":",2);
+
+      var lngString = coordsString[1].toString();
+      var lng = lngString.split(":",2);
+      
+      finalLat = lat[1].toString();
+      finalLng = lng[1].toString();
+
+    }
+    
     const latlng = {
-      lat: parseFloat(latlngStr[0].replace('lat:"{','')),
-      lng: parseFloat(latlngStr[1].replace('lat:"{','')),
+      lat: parseFloat(finalLat),
+      lng: parseFloat(finalLng),
     };
     const geocoder = new google.maps.Geocoder();
     
     geocoder.geocode({ location: latlng  })
     .then((response) => {
       if (response.results[0]) {
-        alert(esponse.results[0].formatted_address.toString())
-        $("#address").val(response.results[0].formatted_address.toString());
+        $("#address").text(response.results[0].formatted_address.toString());
         document.getElementById("mapDelivery").style.display = "none";
         document.getElementById("address").style.color = "Black";
         saveData("hiddenMap", "hide");
-        alerta("Actualizada correctamente")
       } else {
         alerta("Error al confirmar nueva ubicación");
       }
@@ -846,5 +871,16 @@ function itemInMemory(idItem){
 function refreshMenu(){
   loadItems();
   loadBrands();
+}
+
+function processString(myString){
+  alert(myString)
+  var s1 = myString.replace("{");
+  var s2 = s1.replace(":");
+  var s3 = s2.replace("}");
+  var s4 = s3.replace(/\+"/g);
+  //var s5 = s4.replace("undefined"lat"undefined");
+  alert(s5);
+  return s5;
 }
 

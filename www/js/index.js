@@ -13,6 +13,7 @@ var app = {
         this.receivedEvent('deviceready');
         createInternalBd();
         getPosition();
+        alert("okas");
         login();
         cordova.plugins.backgroundMode.onactivate = function () {
 
@@ -115,6 +116,10 @@ function getPosition() {
 
   google.maps.event.addListener(marker, 'dragend', function(ev){
     saveData("newLocation", marker.getPosition());
+    saveData("isFromMarker", 1);
+
+    persistChange();
+
   });
   
   autocomplete.addListener("place_changed", () => {
@@ -139,10 +144,14 @@ function getPosition() {
       map.setZoom(17);
     }
 
-    saveData("newLocation", marker.getPosition());
-
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);
+
+    saveData("newLocation", marker.getPosition());
+    saveData("isFromMarker", 0);
+
+    persistChange();
+    
     infowindowContent.children["place-name"].textContent = place.name;
     infowindowContent.children["place-address"].textContent =
       place.formatted_address;
@@ -210,3 +219,35 @@ function getAddress(location) {
   });
 }
 
+
+function persistChange(){
+  var coordsString = JSON.stringify(getData("newLocation")).split(",", 3);
+
+  var latString = coordsString[0].toString();
+  var lat = latString.split(":",2);
+
+  var lngString = coordsString[1].toString();
+  var lng = lngString.split(":",2);
+
+  var lat1 = lat[1].toString();
+  var lng1 = lng[1].toString();
+  
+  finalLat = lat1.split(",",2);
+  finalLng = lng1.split(",",2);
+  const latlng = {
+    lat: parseFloat(finalLat),
+    lng: parseFloat(finalLng),
+  };
+  const geocoder = new google.maps.Geocoder();
+  
+  geocoder.geocode({ location: latlng  })
+  .then((response) => {
+    if (response.results[0]) {
+      $("#address").text(response.results[0].formatted_address.toString());
+      document.getElementById("address").style.color = "Green";
+    } else {
+      alerta("Error al confirmar nueva ubicación");
+    }
+  })
+  .catch((e) => window.alert("Geocoder failed due to: " + e));
+}
