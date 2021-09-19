@@ -3,6 +3,7 @@ var baseUrl = "http://10.0.2.2:8080";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
+var pathOrder = "/api/v1/barley/order";
 
 /*
 var idPedidoOnline=0;
@@ -740,8 +741,8 @@ function loadItemsFromMemory(){
     });
   });    
 
-  setTimeout(function(){ $("#dCart").html(itensInCart); }, 700);
-  setTimeout(function(){ getPosition() }, 800);
+  setTimeout(function(){ $("#dCart").html(itensInCart); }, 800);
+  setTimeout(function(){ getPosition() }, 900);
 }
 
 function confirmNewAddress(){
@@ -825,6 +826,11 @@ function startOrder(total){
   var payMethod = "";
   var debit_radio = $("#debit_radio").is(':checked');
   var cash_radio = $("#cash_radio").is(':checked');
+  var itensInCart = "";
+  var addressDelivery = "";
+  var payMethod = "";
+  var orderRequest = "";
+  var orderList = new Array();
 
   if(debit_radio == true){
     payMethod = 1;
@@ -833,7 +839,62 @@ function startOrder(total){
   } else{
     payMethod = 3;
   }
-  alert(total.toFixed(2) + ", " + payMethod);
+
+  myDB.transaction(function(transaction) {
+    var executeQuery = "SELECT * FROM CART WHERE idUser=?";
+    transaction.executeSql(executeQuery, [4]
+    , function(tx, result) {
+      var len = result.rows.length;
+      if(len > 0){
+        for (let index = 0; index < result.rows.length; index++) {
+          orderList.push(result.rows.item(index));
+          //alert(JSON.stringify(result.rows.item(index)));
+        }
+        orderRequest = {
+          idRequest: 7,
+          idUser: 4,
+          payMethod: payMethod,
+          total: parseFloat(total.toFixed(2)),
+          deliveryLocation: "dummy",
+          orderList: orderList
+        };
+        sendOrder(orderRequest);
+      }
+    },
+    function(error){
+      er = JSON.stringify(error);
+      alerta(er);
+    });
+  });
+
+  
+}
+
+function sendOrder(orderRequest){
+  
+  webservice = baseUrl + pathOrder + "/create";
+
+	$.ajax({
+		url: webservice,
+		type: 'post',
+		data: JSON.stringify(orderRequest),
+		headers: {
+			"Content-Type": 'application/json',
+			"Content-Length": '1',
+			"Host": '1'
+		},
+		dataType: 'json',
+		success: function (data) {
+			if (data.error == null) {
+				//document.querySelector('#myNavigator').pushPage('detailService.html');
+        document.querySelector('#myNavigator').popPage();
+        setTimeout(function(){ $('#wrapper').trigger('click'); }, 300);
+        
+			} else {
+				alerta(JSON.stringify(data.error));
+			}
+		}
+	});
 }
 
 function deleteItemFromMemory(idItem){
@@ -890,3 +951,7 @@ function processString(myString){
   return s5;
 }
 
+
+function retrievePed(){
+    // lanza toast and prepare status...
+}

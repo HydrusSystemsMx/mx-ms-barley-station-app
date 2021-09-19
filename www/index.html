@@ -82,9 +82,9 @@
         </ons-toolbar>
 
       <ons-tabbar swipeable position="auto">
-        <ons-tab page="tab1.html" label="Bebidas" onclick="refreshMenu()" active>
+        <ons-tab page="tab1.html"  label="Bebidas" onclick="refreshMenu()" active>
         </ons-tab>
-        <ons-tab page="tab2.html" label="party tool" >  
+        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed()">  
         </ons-tab>
       </ons-tabbar>
 
@@ -240,6 +240,7 @@
       window.fn.load = function(page) {
       var content = document.getElementById('content');
       var menu = document.getElementById('menus');
+      alert(page)
       content.load(page)
       .then(menu.close.bind(menu));
       };
@@ -253,7 +254,6 @@
       var hideDialog = function () {
         document.getElementById('alert-pop').hide();
       };
-
 
   function setItemsBrand(data){
 
