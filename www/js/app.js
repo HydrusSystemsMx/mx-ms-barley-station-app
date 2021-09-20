@@ -979,7 +979,7 @@ function retrievePed(){
                 <label>Status: <b> Buscando repartidor...  </b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
                 <label>Fecha: <b>' + data.response[0].createdDate + '</b></center></label>\
                 <label>Descripcion: <b>' + data.response[0].total + '</b></center></label>\
-                <label>Ver traking: <b>...</b></center></label>\
+                <label>Ubicacion: <b>' + data.response[0].deliveryLocation +'</b></center></label>\
                 <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + data.response[0].idRequest + ');"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
                 </div>\
               </ons-card>';
