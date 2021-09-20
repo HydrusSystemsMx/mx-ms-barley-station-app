@@ -4,6 +4,8 @@ var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
 var pathOrder = "/api/v1/barley/order";
+var BARLEYRQUEST = "BSV1";
+var currentYear = 2021;
 
 /*
 var idPedidoOnline=0;
@@ -427,8 +429,8 @@ function updateAmountItem(idItem, amount){
 
 function instertIntoMemory(idItem, idUser, units, img, price, details){
   myDB.transaction(function (transaction) {
-    var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price, detail) VALUES (?,?,?,?,?,?)";
-    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details]
+    var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price, detail, status) VALUES (?,?,?,?,?,?,?)";
+    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details, 0]
     , function(tx, result) {
       cambiar_menu('carrito')
       saveData("amount_" + idItem, units);
@@ -637,8 +639,8 @@ function loadItemsFromMemory(){
     setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
 
     myDB.transaction(function(transaction) {
-    var executeQuery = "SELECT * FROM CART WHERE idUser=?";
-    transaction.executeSql(executeQuery, [4]
+    var executeQuery = "SELECT * FROM CART WHERE idUser=? and status=?";
+    transaction.executeSql(executeQuery, [4, 0]
     , function(tx, result) {
       var len = result.rows.length;
       if(len < 1){
@@ -662,6 +664,7 @@ function loadItemsFromMemory(){
             <div class="content">\
             <ons-list>\
             <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price + '</ons-list-item>\
+            <ons-list-item>IdCarro: $ ' + result.rows.item(index).idCart + '</ons-list-item>\
             <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
             </ons-list>\
             <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
@@ -822,6 +825,39 @@ function showMapDelivery(){
   }
 }
 
+function retrieveRandomId(){
+  var random = Math.floor((Math.random() * 100000000));
+  while(random.toString < 8){
+    random = Math.floor((Math.random() * 100000000));
+  }
+  return random;
+}
+
+
+function makeid(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * 
+charactersLength));
+ }
+ alert(result);
+ return result;
+}
+
+function lastPartRequest(length){
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * 
+charactersLength));
+ }
+ return result + currentYear;
+}
+
+
 function startOrder(total){
   var payMethod = "";
   var debit_radio = $("#debit_radio").is(':checked');
@@ -831,6 +867,9 @@ function startOrder(total){
   var payMethod = "";
   var orderRequest = "";
   var orderList = new Array();
+  var randomId = retrieveRandomId();
+  var letterPx = lastPartRequest(2);
+  var idRequest = randomId + currentYear;
 
   if(debit_radio == true){
     payMethod = 1;
@@ -841,24 +880,27 @@ function startOrder(total){
   }
 
   myDB.transaction(function(transaction) {
-    var executeQuery = "SELECT * FROM CART WHERE idUser=?";
-    transaction.executeSql(executeQuery, [4]
+    var executeQuery = "SELECT * FROM CART WHERE idUser=? and status=?";
+    transaction.executeSql(executeQuery, [4, 0]
     , function(tx, result) {
       var len = result.rows.length;
+      var idCart = "";
       if(len > 0){
         for (let index = 0; index < result.rows.length; index++) {
           orderList.push(result.rows.item(index));
+          idCart = result.rows.item(index).idCart;
           //alert(JSON.stringify(result.rows.item(index)));
         }
         orderRequest = {
-          idRequest: 7,
+          idRequest: idRequest,
           idUser: 4,
           payMethod: payMethod,
           total: parseFloat(total.toFixed(2)),
           deliveryLocation: "dummy",
           orderList: orderList
         };
-        sendOrder(orderRequest);
+        updateInternalIdRequest(idRequest,idCart);
+        sendOrder(orderRequest,idCart);
       }
     },
     function(error){
@@ -870,7 +912,7 @@ function startOrder(total){
   
 }
 
-function sendOrder(orderRequest){
+function sendOrder(orderRequest, idCart){
   
   webservice = baseUrl + pathOrder + "/create";
 
@@ -889,12 +931,25 @@ function sendOrder(orderRequest){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         document.querySelector('#myNavigator').popPage();
         setTimeout(function(){ $('#wrapper').trigger('click'); }, 300);
-        
+        updateInternalStatus(idCart);
 			} else {
 				alerta(JSON.stringify(data.error));
 			}
 		}
 	});
+}
+
+function updateInternalStatus(idCart){
+  myDB.transaction(function (transaction) {
+    var executeQuery = "UPDATE CART SET status=? WHERE idCart=?";
+    transaction.executeSql(executeQuery, [1, idCart]
+    , function(tx, result) {
+      cleanData();
+    },
+    function(error){
+      console.log('Error occurred');
+    });
+  });
 }
 
 function deleteItemFromMemory(idItem){
@@ -973,14 +1028,15 @@ function retrievePed(){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data.response.length > 0){
           setTimeout(function(){
+            var idOrder = parseInt(data.response[0].idRequest);
             var tdsinfo = '<ons-card>\
                 <div class="title center"><center> Pedido en curso... </div>\
                 <div class="content"><br>\
                 <label>Status: <b> Buscando repartidor...  </b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
                 <label>Fecha: <b>' + data.response[0].createdDate + '</b></center></label>\
                 <label>Descripcion: <b>' + data.response[0].total + '</b></center></label>\
-                <label>Ubicacion: <b>' + data.response[0].deliveryLocation +'</b></center></label>\
-                <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + data.response[0].idRequest + ');"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
+                <label>Ubicacion: <b>' + idOrder +'</b></center></label>\
+                <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + idOrder + ')"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
                 </div>\
               </ons-card>';
         
@@ -1007,6 +1063,7 @@ function retrievePed(){
 }
 
 function rollbackOrder(idRequest){
+
   webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
 
 	$.ajax({
@@ -1025,6 +1082,7 @@ function rollbackOrder(idRequest){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         setTimeout(function(){
           retrievePed();
+          updateInternalRollBack(idRequest);
         },200);
         
 			} else {
@@ -1033,4 +1091,31 @@ function rollbackOrder(idRequest){
 		}
 	});
   
+}
+
+
+function updateInternalRollBack(idRequest){
+  myDB.transaction(function (transaction) {
+    var executeQuery = "UPDATE CART SET status=? WHERE idRequest=?";
+    transaction.executeSql(executeQuery, [3, idRequest]
+    , function(tx, result) {
+      console.log("status rollbacked correctly");
+    },
+    function(error){
+      console.log('Error occurred');
+    });
+  });
+}
+
+function updateInternalIdRequest(idRequest, idCart){
+  myDB.transaction(function (transaction) {
+    var executeQuery = "UPDATE CART SET idRequest=? WHERE idCart=?";
+    transaction.executeSql(executeQuery, [idRequest, idCart]
+    , function(tx, result) {
+      console.log("status chaged correctly");
+    },
+    function(error){
+      console.log('Error occurred');
+    });
+  });
 }
