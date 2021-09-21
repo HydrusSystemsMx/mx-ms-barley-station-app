@@ -400,7 +400,16 @@ function addToCart(price, stack, idItem){
               updateAmountItem(idItem, newAmount);
             }
           } else{
-            instertIntoMemory(idItem, 4, units, img, price, dtl);
+            //SEARCH ALREADY ORDERS
+            retrievePed(true);
+            setTimeout(function(){ 
+              if(getData("flagAlready") === "true"){
+                alerta("Ya cuentas con un pedido en curso..");
+                setTimeout(function(){ $('#wrapper').trigger('click'); }, 100);
+              } else{
+                instertIntoMemory(idItem, 4, units, img, price, dtl);
+              }
+            }, 400);
           }
         },  
         function(error){
@@ -588,7 +597,7 @@ function loadItems(){
       <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>';
 
       if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
-        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png">';
+        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
       }
 
       tdsp = tdsp + '</ons-list-item>';
@@ -1006,9 +1015,8 @@ function processString(myString){
   return s5;
 }
 
-
-function retrievePed(){
-    // lanza toast and prepare and load and show status... empty from cache and 
+function retrievePed(validate){
+  // lanza toast and prepare and load and show status... empty from cache and 
 
   webservice = baseUrl + pathOrder + "/" + 4;
 
@@ -1027,6 +1035,14 @@ function retrievePed(){
 
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data.response.length > 0){
+         
+          if(validate){
+            saveData("flagAlready", "true");
+            return true;
+          } else{
+            saveData("flagAlready", null);
+          }
+
           setTimeout(function(){
             var idOrder = parseInt(data.response[0].idRequest);
             var tdsinfo = '<ons-card>\
@@ -1045,7 +1061,7 @@ function retrievePed(){
         } else{
           setTimeout(function(){
             var tdsinfo = '<ons-card>\
-                <div class="title center"><center> No se encontraron pedidos!</div>\
+                <div class="title center"><center>No se encontraron pedidos en curso!</div>\
                 </div>\
               </ons-card>';
         
@@ -1057,7 +1073,23 @@ function retrievePed(){
 			} else {
 				alerta(JSON.stringify(data.error));
 			}
-		}
+		},
+    statusCode: {
+      404: function(responseObject, textStatus, jqXHR) {
+        setTimeout(function(){
+          var tdsinfo = '<ons-card>\
+              <div class="title center"><center> No se encontraron pedidos en curso!</div>\
+              </div>\
+            </ons-card>';
+      
+          $("#dinamicOrder").html(tdsinfo);
+        },200);
+      },
+      503: function(responseObject, textStatus, errorThrown) {
+          // Service Unavailable (503)
+          // This code will be executed if the server returns a 503 response
+      }           
+    }
 	});
   
 }
@@ -1066,31 +1098,31 @@ function rollbackOrder(idRequest){
   var r = confirm("¿Realmente deseas cancelar este pedido?");
   if (r == true) {
     webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
-    
-	$.ajax({
-		url: webservice,
-		type: 'post',
-		data: null,
-		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
-		},
-		dataType: 'json',
-		success: function (data) {
-			if (data.error == null) {
 
-				//document.querySelector('#myNavigator').pushPage('detailService.html');
-        setTimeout(function(){
-          retrievePed();
-          updateInternalRollBack(idRequest);
-        },200);
-        
-			} else {
-				alerta(JSON.stringify(data.error));
-			}
-		}
-	});
+    $.ajax({
+      url: webservice,
+      type: 'post',
+      data: null,
+      headers: {
+        "Content-Type": 'application/json',
+        "Content-Length": '1',
+        "Host": '1'
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.error == null) {
+
+          //document.querySelector('#myNavigator').pushPage('detailService.html');
+          setTimeout(function(){
+            retrievePed(false);
+            updateInternalRollBack(idRequest);
+          },200);
+          
+        } else {
+          alerta(JSON.stringify(data.error));
+        }
+      }
+    });
   }
 
 }
@@ -1120,4 +1152,8 @@ function updateInternalIdRequest(idRequest, idCart){
       console.log('Error occurred');
     });
   });
+}
+
+function showRecord(){
+  alert("Show Record-...");
 }
