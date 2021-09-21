@@ -152,6 +152,7 @@ function getPosition() {
 
     persistChange();
     
+
     infowindowContent.children["place-name"].textContent = place.name;
     infowindowContent.children["place-address"].textContent =
       place.formatted_address;
@@ -246,7 +247,7 @@ function persistChange(){
       $("#address").text(response.results[0].formatted_address.toString());
       document.getElementById("address").style.color = "Green";
     } else {
-      alerta("Error al confirmar nueva ubicación");
+      ons.notification.toast("Error al confirmar nueva ubicación", { timeout: 3000, animation: 'fall' })
     }
   })
   .catch((e) => window.alert("Geocoder failed due to: " + e));

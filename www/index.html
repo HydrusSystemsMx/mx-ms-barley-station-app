@@ -84,7 +84,7 @@
       <ons-tabbar swipeable position="auto">
         <ons-tab page="tab1.html"  label="Bebidas" onclick="refreshMenu()" active>
         </ons-tab>
-        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed()">  
+        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed(false, 1)">  
         </ons-tab>
       </ons-tabbar>
 
@@ -94,24 +94,6 @@
           onchange="ons.notification.alert('Searched for: ' + this.value)"
         ></ons-search-input> -->
       </p>
-
-       <ons-speed-dial position="bottom right" direction="up">
-        <ons-fab>
-            <i class="fas fa-beer" ></i>
-        </ons-fab>
-        <ons-speed-dial-item>
-            <i class="fas fa-user" onclick="perfilInfo();"></i>
-        </ons-speed-dial-item>
-        <ons-speed-dial-item>
-          <i class="fas fa-shopping-cart" onclick="goToCart()"></i>
-        </ons-speed-dial-item>        
-        <ons-speed-dial-item>
-            <i class="fas fa-share-alt"></i>
-        </ons-speed-dial-item>   
-        <ons-speed-dial-item>
-            <i class="fas fa-question"></i>
-        </ons-speed-dial-item>   
-      </ons-speed-dial>
 
       </ons-page>
     </template>
@@ -161,6 +143,24 @@
               
             </div>
           </ons-list>
+
+          <ons-speed-dial position="bottom right" direction="up">
+            <ons-fab>
+                <i class="fas fa-beer" ></i>
+            </ons-fab>
+            <ons-speed-dial-item>
+                <i class="fas fa-user" onclick="perfilInfo();"></i>
+            </ons-speed-dial-item>
+            <ons-speed-dial-item>
+              <i class="fas fa-shopping-cart" onclick="goToCart()"></i>
+            </ons-speed-dial-item>        
+            <ons-speed-dial-item>
+                <i class="fas fa-share-alt"></i>
+            </ons-speed-dial-item>   
+            <ons-speed-dial-item>
+                <i class="fas fa-question"></i>
+            </ons-speed-dial-item>   
+          </ons-speed-dial>
  
       </ons-page>
     </template>
@@ -172,6 +172,7 @@
           <div id="dinamicHistory"></div>
         </ons-card>
         <div id="dinamicOrder"></div>
+
         <!--
         <p style="text-align: center;">
         <ons-button id="BtnCreateNewInv" onclick="nuevoInventario();">Crear nuevo</ons-button>
@@ -247,7 +248,7 @@
       window.fn.load = function(page) {
       var content = document.getElementById('content');
       var menu = document.getElementById('menus');
-      alert(page)
+
       content.load(page)
       .then(menu.close.bind(menu));
       };
@@ -306,15 +307,20 @@
 
       tdsp = tdsp + '</ons-list-item>';
     }
+    saveData("isFromClickMenu", 0);
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
   }
 
 document.addEventListener('prechange', function(event) {
   if(event.tabItem.page === "tab2.html"){
-    retrievePed(false);
+    if(getData("isFromClickOrder") !== 1){
+      retrievePed(false);
+    }
   } else if(event.tabItem.page === "tab1.html"){
-    loadItems();
-    loadBrands();
+    if(getData("isFromClickMenu") !== 1){
+      loadItems();
+      loadBrands();
+    }
   }
 });
 

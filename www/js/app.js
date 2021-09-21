@@ -379,10 +379,10 @@ function addToCart(price, stack, idItem){
   setTimeout(function(){ $("#dCart").html(cartElement); }, 90);
 
   if(units > stack ){
-    alerta("cantidad no disponible para agregar. Max: " + stack);
+    ons.notification.toast("cantidad no disponible para agregar. Max: " + stack, { timeout: 1500, animation: 'ascend' })
     $("#units_" + idItem).val(stack);
   } else if(units == 0){
-    alerta("La cantidad no puede ser 0")
+    ons.notification.toast('La cantidad no puede ser 0', { timeout: 1500, animation: 'ascend' })
     $("#units_" + idItem).val(1);
   } else {
       var img = $('#img_'+ idItem).val();
@@ -404,7 +404,7 @@ function addToCart(price, stack, idItem){
             retrievePed(true);
             setTimeout(function(){ 
               if(getData("flagAlready") === "true"){
-                alerta("Ya cuentas con un pedido en curso..");
+                ons.notification.toast("Aún cuentas con un pedido en curso...", { timeout: 1500, animation: 'ascend' })
                 setTimeout(function(){ $('#wrapper').trigger('click'); }, 100);
               } else{
                 instertIntoMemory(idItem, 4, units, img, price, dtl);
@@ -522,7 +522,7 @@ function searchByIdBrand(){
           //document.querySelector('#myNavigator').pushPage('detailService.html');
             setItemsBrand(data);
         } else {
-          alerta("No se encontraron productos disponibles para esta marca..");
+          ons.notification.toast("No se encontraron productos disponibles para esta marca..", { timeout: 3000, animation: 'ascend' })
           loadItems();
         }
       }
@@ -602,6 +602,7 @@ function loadItems(){
 
       tdsp = tdsp + '</ons-list-item>';
     }
+    saveData("isFromClickMenu", 0);
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
     
   }
@@ -673,7 +674,6 @@ function loadItemsFromMemory(){
             <div class="content">\
             <ons-list>\
             <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price + '</ons-list-item>\
-            <ons-list-item>IdCarro: $ ' + result.rows.item(index).idCart + '</ons-list-item>\
             <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
             </ons-list>\
             <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
@@ -808,12 +808,12 @@ function confirmNewAddress(){
         saveData("mainDummmyAddress", null);
         saveData("mainDummmyAddress", response.results[0].formatted_address.toString());
       } else {
-        alerta("Error al confirmar nueva ubicación");
+        ons.notification.toast("Error al confirmar nueva ubicación", { timeout: 3000, animation: 'fall' })
       }
     })
     .catch((e) => window.alert("Geocoder failed due to: " + e));
   } else{
-    alerta("Selecciona una nueva ubicación!");
+    ons.notification.toast("De favor, Selecciona una nueva ubicación!", { timeout: 3000, animation: 'fall' })
   }
  
 }
@@ -940,7 +940,8 @@ function sendOrder(orderRequest, idCart){
 			if (data.error == null) {
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         document.querySelector('#myNavigator').popPage();
-        setTimeout(function(){ $('#wrapper').trigger('click'); }, 300);
+        setTimeout(function(){ $('#wrapper').trigger('click'); }, 500);
+        setTimeout(function(){ ons.notification.toast('Gracias! tu pedido se ha enviado correctamente', { timeout: 3000, animation: 'ascend' }) }, 300);
 			} else {
 				alerta(JSON.stringify(data.error));
 			}
@@ -1000,6 +1001,7 @@ function itemInMemory(idItem){
 }
 
 function refreshMenu(){
+  saveData("isFromClickMenu", 1);
   loadItems();
   loadBrands();
 }
@@ -1015,9 +1017,11 @@ function processString(myString){
   return s5;
 }
 
-function retrievePed(validate){
+function retrievePed(validate, isClickFromMenu){
   // lanza toast and prepare and load and show status... empty from cache and 
-
+  if(isClickFromMenu == 1){
+    saveData("isFromClickOrder", 1);
+  }
   webservice = baseUrl + pathOrder + "/" + 4;
 
 	$.ajax({
@@ -1032,7 +1036,7 @@ function retrievePed(validate){
 		dataType: 'json',
 		success: function (data) {
 			if (data.error == null) {
-
+        saveData("isClickFromMenu", 0);
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data.response.length > 0){
          
@@ -1084,6 +1088,7 @@ function retrievePed(validate){
       
           $("#dinamicOrder").html(tdsinfo);
         },200);
+        saveData("isClickFromMenu", null);
       },
       503: function(responseObject, textStatus, errorThrown) {
           // Service Unavailable (503)
