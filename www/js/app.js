@@ -389,8 +389,8 @@ function addToCart(price, stack, idItem){
       var dtl = $('#dtl_'+ idItem).val();
 
       myDB.transaction(function(transaction) {
-        var executeQuery = "SELECT * FROM CART WHERE idItem=?";
-        transaction.executeSql(executeQuery, [idItem]
+        var executeQuery = "SELECT * FROM CART WHERE idItem=? and status=?";
+        transaction.executeSql(executeQuery, [idItem, 0]
         , function(tx, result) {
           var len = result.rows.length;
           if(len > 0){  
@@ -889,6 +889,8 @@ function startOrder(total){
         for (let index = 0; index < result.rows.length; index++) {
           orderList.push(result.rows.item(index));
           idCart = result.rows.item(index).idCart;
+          updateInternalStatus(idCart);
+          updateInternalIdRequest(idRequest,idCart);
           //alert(JSON.stringify(result.rows.item(index)));
         }
         orderRequest = {
@@ -899,7 +901,6 @@ function startOrder(total){
           deliveryLocation: "dummy",
           orderList: orderList
         };
-        updateInternalIdRequest(idRequest,idCart);
         sendOrder(orderRequest,idCart);
       }
     },
@@ -931,7 +932,6 @@ function sendOrder(orderRequest, idCart){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         document.querySelector('#myNavigator').popPage();
         setTimeout(function(){ $('#wrapper').trigger('click'); }, 300);
-        updateInternalStatus(idCart);
 			} else {
 				alerta(JSON.stringify(data.error));
 			}
@@ -1034,8 +1034,8 @@ function retrievePed(){
                 <div class="content"><br>\
                 <label>Status: <b> Buscando repartidor...  </b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
                 <label>Fecha: <b>' + data.response[0].createdDate + '</b></center></label>\
-                <label>Descripcion: <b>' + data.response[0].total + '</b></center></label>\
-                <label>Ubicacion: <b>' + idOrder +'</b></center></label>\
+                <label>Descripcion: <b>' + data.response[0].total.toFixed(2) + '</b></center></label>\
+                <label>IDPEDIDO: <b>' + idOrder +'</b></center></label>\
                 <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + idOrder + ')"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
                 </div>\
               </ons-card>';
@@ -1063,9 +1063,10 @@ function retrievePed(){
 }
 
 function rollbackOrder(idRequest){
-
-  webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
-
+  var r = confirm("¿Realmente deseas cancelar este pedido?");
+  if (r == true) {
+    webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
+    
 	$.ajax({
 		url: webservice,
 		type: 'post',
@@ -1090,7 +1091,8 @@ function rollbackOrder(idRequest){
 			}
 		}
 	});
-  
+  }
+
 }
 
 
