@@ -1160,5 +1160,82 @@ function updateInternalIdRequest(idRequest, idCart){
 }
 
 function showRecord(){
-  alert("Show Record-...");
+
+  if(getData("eventRecord") === "show"){
+    document.getElementById("dinamicHistory").style.display = "none";
+    saveData("eventRecord", "none");
+  } else{
+    document.getElementById("dinamicHistory").style.display = "block";
+    saveData("eventRecord", "show");
+
+    webservice = baseUrl + pathOrder + "/history/" + 4 + "?record=true";
+    var tdsinfo = "";
+    var idOrder = "";
+    $("#dinamicHistory").html(tdsinfo);
+    $.ajax({
+      url: webservice,
+      type: 'get',
+      data: null,
+      headers: {
+        "Content-Type": 'application/json',
+        "Content-Length": '1',
+        "Host": '1'
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.error == null) {
+          //document.querySelector('#myNavigator').pushPage('detailService.html');
+          if(data.response.length > 0){
+          
+            setTimeout(function(){
+              for (let index = 0; index < data.response.length; index++) {
+
+                tdsinfo += '<ons-card>\
+                <div class="content"><br>\
+                <label>Total: <b>' + data.response[index].price.toFixed(2) + '</b></center></label>\
+                <label>Fecha de orden: <b>' + data.response[index].createdDate + '</b></center></label>\
+                <label>Fecha de entrega: <b>' + data.response[index].deliveryDate + '</b></center></label>\
+                <label>Descripcion: <b>' + data.response[index].total.toFixed(2) + '</b></center></label>\
+                </div>\
+                </ons-card>';
+                idOrder = "";
+              
+              }
+            
+              $("#dinamicHistory").html(tdsinfo);
+            },200);
+          } else{
+            setTimeout(function(){
+               tdsinfo = '<ons-card>\
+                  <div class="title center"><center>Aún no has realizado pedidos</div>\
+                  </div>\
+                </ons-card>';
+          
+              $("#dinamicHistory").html(tdsinfo);
+            },200);
+          }
+          
+        } else {
+          alerta(JSON.stringify(data.error));
+        }
+      },
+      statusCode: {
+        404: function(responseObject, textStatus, jqXHR) {
+          tdsinfo = '<ons-card>\
+                  <div class="title center"><center>Aún no has realizado pedidos</div>\
+                  </div>\
+                </ons-card>';
+          
+              $("#dinamicHistory").html(tdsinfo);
+        },
+        503: function(responseObject, textStatus, errorThrown) {
+            // Service Unavailable (503)
+            // This code will be executed if the server returns a 503 response
+          alert("503")
+        }           
+      }
+    });
+  }
+  
+  
 }
