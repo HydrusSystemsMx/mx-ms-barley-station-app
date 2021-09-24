@@ -302,7 +302,7 @@
       <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>';
 
       if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
-        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png">';
+        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
       }
 
       tdsp = tdsp + '</ons-list-item>';
