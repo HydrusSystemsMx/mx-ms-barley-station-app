@@ -21,12 +21,10 @@
 
     <template id="login.html">
       <ons-page id="login"> 
-        <div style="height: 50px; width: auto;">
-        </div> 
-        <div style="height: 200px; width: auto;">
+        <div style="height: auto; width: auto;">
             <img src="img/beer.png" width="100px">
         </div>
-        <div style="text-align: center; margin-top: 100; height: 100px;">
+        <div style="text-align: center; margin-top: 100; height: auto;">
             <p>
                 <ons-input type="email" id="rep_correo" style="width: 75%; text-align: center!important;" modifier="underbar" placeholder="Correo electrónico" value="" ></ons-input>
             </p>
@@ -34,7 +32,7 @@
                 <ons-input type="password" id="rep_pass" style="width: 75%; text-align: center!important;" modifier="underbar"  placeholder="Contraseña" value=""></ons-input>
             </p>
         </div>
-        <div style="height: 50px; width: auto;">
+        <div style="height: auto; width: auto;">
             <ons-button  onclick="login()" >Iniciar</ons-button>
         </div>
         <div>
@@ -72,12 +70,14 @@
     <template id="home.html">
       <ons-page>
         <ons-toolbar>
-          <div class="left">
-            <ons-toolbar-button >
-            </ons-toolbar-button>
+          <div style=" width: 80%;">
+            <span style="  min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;">BarleyStation</span>
           </div>
-          <div class="center" style="display: block;">
-            <span style="float: left;">BarleyStation</span><center><img src="img/drunk-cheers.gif" style="size: auto;"></center>
+          <div aling="rigth" style=" width: 20%;">
+            <img src="img/drunk-cheers.gif" style="size: auto;">
           </div>
         </ons-toolbar>
 
@@ -275,9 +275,7 @@
       <center>\
       <table>\
         <tr>\
-          <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
-          <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
-          <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
+          <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></center></td>\
         </tr>\
       </table>\
       <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\

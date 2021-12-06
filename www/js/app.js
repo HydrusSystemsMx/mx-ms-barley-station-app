@@ -567,34 +567,36 @@ function loadItems(){
       var itemId =data[i].response.idItem;
       tdsp +='\
       <ons-list-item id="item_'+ data[i].response.idItem +'">\
-      <center>\
       <table>\
         <tr>\
-          <td><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"></td>\
-          <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></center></td>\
-          <td><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"></td>\
+          <td>\
+            <center>\
+              <div><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></div>\
+              <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
+              <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
+              <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+              <div style="height: 25px; width: auto;">\
+                <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+              
+              if(getData("amount_"+ data[i].response.idItem.toString())   != null){
+                $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
+                inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+              } else{
+                inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+              }
+              
+              tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+              </div>\
+              <br>\
+              <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+              <br>\
+              </center>\
+              <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>\
+            </center>\
+          </td>\
         </tr>\
-      </table>\
-      <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
-      <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-      <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
-      <div style="height: 25px; width: auto;">\
-        <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
-      
-      if(getData("amount_"+ data[i].response.idItem.toString())   != null){
-        $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
-        inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
-      } else{
-        inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
-      }
-      
-      tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
-      </div>\
-      <br>\
-      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
-      <br>\
-      </center>\
-      <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>';
+      </table>';
+
 
       if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
         tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
@@ -663,7 +665,6 @@ function loadItemsFromMemory(){
           </ons-card>';
       } else{
         for (let index = 0; index < result.rows.length; index++) {
-          console.log(result.rows.item(index));
           var priceItem = result.rows.item(index).price;
           var itemTotal = (result.rows.item(index).amount * priceItem).toFixed(2);
           itensInCart +=  '<ons-card>\
@@ -673,7 +674,7 @@ function loadItemsFromMemory(){
             </div></center>\
             <div class="content">\
             <ons-list>\
-            <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price + '</ons-list-item>\
+            <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price.toFixed(2) + '</ons-list-item>\
             <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
             </ons-list>\
             <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
@@ -1038,6 +1039,7 @@ function retrievePed(validate, isClickFromMenu){
 			if (data.error == null) {
         saveData("isClickFromMenu", 0);
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
+        alert(JSON.stringify(data.response));
         if(data.response.length > 0){
          
           if(validate){
@@ -1192,10 +1194,10 @@ function showRecord(){
 
                 tdsinfo += '<ons-card>\
                 <div class="content"><br>\
-                <label>Total: <b>' + data.response[index].price.toFixed(2) + '</b></center></label>\
                 <label>Fecha de orden: <b>' + data.response[index].createdDate + '</b></center></label>\
                 <label>Fecha de entrega: <b>' + data.response[index].deliveryDate + '</b></center></label>\
                 <label>Descripcion: <b>' + data.response[index].total.toFixed(2) + '</b></center></label>\
+                <label>IDPEDIDO: <b>' + data.response[index].idRequest + '</b></center></label>\
                 </div>\
                 </ons-card>';
                 idOrder = "";

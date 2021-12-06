@@ -15,6 +15,9 @@ var app = {
         getPosition();
         alert("okas");
         login();
+
+        StatusBar.backgroundColorByHexString('#212121');
+
         cordova.plugins.backgroundMode.onactivate = function () {
 
         };
