@@ -4,6 +4,7 @@ var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
 var pathOrder = "/api/v1/barley/order";
+var pathBanner = "/api/v1/barley/banner";
 var BARLEYRQUEST = "BSV1";
 var currentYear = 2021;
 
@@ -168,6 +169,7 @@ function login(){
   cambiar_menu("page_menu");
   loadItems();
   loadBrands();
+  loadCarousel();
 
   /*
   email = $("#rep_correo").val();
@@ -531,6 +533,50 @@ function searchByIdBrand(){
   
 }
 
+function setDinamicCarousel(data){
+  var dinamicCarousel = "";
+  var tdsp="";
+  var init = '<ons-carousel swipeable auto-scroll overscrollable id="carousel" style="height: 250px;">';
+  var final = '</ons-carousel>';
+    for(var i=0;i<data.response.length;i++){
+      tdsp +='\
+        <ons-carousel-item style="background-image:url('+ data.response[i].url +');      background-repeat: no-repeat;\
+        background-size: cover;">\
+        <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff; ">\
+        </div>\
+        </ons-carousel-item>\
+       ';
+    }
+    dinamicCarousel = init + tdsp + final;
+    setTimeout(function(){ $("#dinamicCarousel").html(dinamicCarousel); }, 200);
+}
+
+function loadCarousel(){
+  webservice = baseUrl + pathBanner + "/allActive";
+	$.ajax({
+		url: webservice,
+		type: 'get',
+		data: null,
+		headers: {
+			"Content-Type": 'application/json',
+			"Content-Length": '1',
+			"Host": '1'
+		},
+		dataType: 'json',
+		success: function (data) {
+			if (data.error == null) {
+				//document.querySelector('#myNavigator').pushPage('detailService.html');
+        if(data != null || data != undefined){
+          setDinamicCarousel(data);
+        }
+   
+			} else {
+				alerta(JSON.stringify(data.error));
+			}
+		}
+	});
+}
+
 function loadItems(){
   webservice = baseUrl + pathItems + "/all";
 
@@ -634,12 +680,12 @@ function loadItems(){
 function loadLogic(){
   loadBrands();
   loadItems();
+  loadCarousel();
 }
 
 function goToCart(){
   cambiar_menu('carrito');
   saveData("newLocation", null);
-  saveData("mainDummmyAddress", "Circuito Doña mina #1038, Fracc. Bosques del Peñar, Pachuca de Soto, Hgo.");
   loadItemsFromMemory();
 }
 
@@ -648,6 +694,7 @@ function loadItemsFromMemory(){
     var addressDelivery = "";
     var payMethod = "";
     var total = 0;
+    var address = (getData("mainAddress") != null ) ? getData("mainAddress") : "Porfavor establece un punto de entrega";
     setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
 
     myDB.transaction(function(transaction) {
@@ -685,7 +732,7 @@ function loadItemsFromMemory(){
         }
         addressDelivery += '<ons-card>\
         <h1>Entregar en: <i style="position: absolute; right: 0;" class="fas fa-pencil-alt" onclick="showMapDelivery()"></i></h1>\
-        <hr><strong><span id="address" style="font-style: italic; color: black;">' + getData("mainDummmyAddress")+'</span> </strong><br>\
+        <hr><strong><span id="address" style="font-style: italic; color: black;">' + address +'</span> </strong><br>\
         <div id="mapDelivery" style="display: none;">\
           <div style="display:none;">\
             <div id="title">Autocomplete search</div>\
@@ -778,6 +825,8 @@ function confirmNewAddress(){
       
       finalLat = lat1.split(",",2);
       finalLng = lng1.split(",",2);
+
+      saveData("mainAddress", parseFloat(finalLat)+","+parseFloat(finalLng));
   
     } else {
       var coordsString = JSON.stringify(getData("newLocation")).split(",", 2);
@@ -790,6 +839,8 @@ function confirmNewAddress(){
       
       finalLat = lat[1].toString();
       finalLng = lng[1].toString();
+
+      saveData("mainAddress", parseFloat(finalLat)+","+parseFloat(finalLng));
 
     }
     
@@ -806,8 +857,6 @@ function confirmNewAddress(){
         document.getElementById("mapDelivery").style.display = "none";
         document.getElementById("address").style.color = "Black";
         saveData("hiddenMap", "hide");
-        saveData("mainDummmyAddress", null);
-        saveData("mainDummmyAddress", response.results[0].formatted_address.toString());
       } else {
         ons.notification.toast("Error al confirmar nueva ubicación", { timeout: 3000, animation: 'fall' })
       }
@@ -823,7 +872,7 @@ function showMapDelivery(){
 
   if (getData("hiddenMap") === "hide"){
 
-    $("#address").text(getData("mainDummmyAddress"));
+    $("#address").text(getData("mainAddress"));
 
     document.getElementById("mapDelivery").style.display = "none";
     document.getElementById("address").style.color = "Black";
@@ -873,7 +922,7 @@ function startOrder(total){
   var debit_radio = $("#debit_radio").is(':checked');
   var cash_radio = $("#cash_radio").is(':checked');
   var itensInCart = "";
-  var addressDelivery = "";
+  var addressDelivery = getData("mainAddress");
   var payMethod = "";
   var orderRequest = "";
   var orderList = new Array();
@@ -908,10 +957,17 @@ function startOrder(total){
           idUser: 4,
           payMethod: payMethod,
           total: parseFloat(total.toFixed(2)),
-          deliveryLocation: "dummy",
+          deliveryLocation: addressDelivery,
           orderList: orderList
         };
-        sendOrder(orderRequest,idCart);
+
+        alert(JSON.stringify(orderRequest));
+        if(orderRequest.deliveryLocation != null){
+          sendOrder(orderRequest,idCart);
+        } else{
+          alert("Ingresa una direccion de entrega");
+        }
+        
       }
     },
     function(error){
@@ -1005,6 +1061,7 @@ function refreshMenu(){
   saveData("isFromClickMenu", 1);
   loadItems();
   loadBrands();
+  loadCarousel();
 }
 
 function processString(myString){
@@ -1039,7 +1096,6 @@ function retrievePed(validate, isClickFromMenu){
 			if (data.error == null) {
         saveData("isClickFromMenu", 0);
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
-        alert(JSON.stringify(data.response));
         if(data.response.length > 0){
          
           if(validate){
@@ -1123,6 +1179,7 @@ function rollbackOrder(idRequest){
           setTimeout(function(){
             retrievePed(false);
             updateInternalRollBack(idRequest);
+            ons.notification.toast("Pedido cancelado exitosamente!", { timeout: 3000, animation: 'ascend' })
           },200);
           
         } else {
