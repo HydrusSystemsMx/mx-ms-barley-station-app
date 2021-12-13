@@ -961,7 +961,6 @@ function startOrder(total){
           orderList: orderList
         };
 
-        alert(JSON.stringify(orderRequest));
         if(orderRequest.deliveryLocation != null){
           sendOrder(orderRequest,idCart);
         } else{
@@ -1097,7 +1096,7 @@ function retrievePed(validate, isClickFromMenu){
         saveData("isClickFromMenu", 0);
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         if(data.response.length > 0){
-         
+          var tdsinfo = "";
           if(validate){
             saveData("flagAlready", "true");
             return true;
@@ -1106,11 +1105,13 @@ function retrievePed(validate, isClickFromMenu){
           }
 
           setTimeout(function(){
+            var msgDelivery = (data.response[0].status.toString() === "0") ? "Buscando repartidor..." : "Preparando entrega...";
+
             var idOrder = parseInt(data.response[0].idRequest);
-            var tdsinfo = '<ons-card>\
+            tdsinfo = '<ons-card>\
                 <div class="title center"><center> Pedido en curso... </div>\
                 <div class="content"><br>\
-                <label>Status: <b> Buscando repartidor...  </b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
+                <label>Status: <b> ' + msgDelivery + '</b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
                 <label>Fecha: <b>' + data.response[0].createdDate + '</b></center></label>\
                 <label>Descripcion: <b>' + data.response[0].total.toFixed(2) + '</b></center></label>\
                 <label>IDPEDIDO: <b>' + idOrder +'</b></center></label>\
