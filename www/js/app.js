@@ -685,7 +685,6 @@ function loadLogic(){
 
 function goToCart(){
   cambiar_menu('carrito');
-  saveData("newLocation", null);
   loadItemsFromMemory();
 }
 
@@ -695,7 +694,8 @@ function loadItemsFromMemory(){
     var payMethod = "";
     var total = 0;
     var address = (getData("mainAddress") != null ) ? getData("mainAddress") : "Porfavor establece un punto de entrega";
-    setTimeout(function(){ $("#dCart").html(itensInCart); }, 100);
+  
+    setTimeout(function(){ $("#dCart").html(itensInCart); }, 120);
 
     myDB.transaction(function(transaction) {
     var executeQuery = "SELECT * FROM CART WHERE idUser=? and status=?";
@@ -730,9 +730,15 @@ function loadItemsFromMemory(){
           ';
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
+        if(address.includes(",")){
+          loadAddres = '<hr><strong><span id="address" style="font-style: italic; color: black;"><img src="img/loading.gif" width="5%" heigth="5%"></span> </strong><br>';
+        } else{
+          loadAddres = '<hr><strong><span id="address" style="font-style: italic; color: black;">' + address +'</span> </strong><br>';
+        }
+
         addressDelivery += '<ons-card>\
         <h1>Entregar en: <i style="position: absolute; right: 0;" class="fas fa-pencil-alt" onclick="showMapDelivery()"></i></h1>\
-        <hr><strong><span id="address" style="font-style: italic; color: black;">' + address +'</span> </strong><br>\
+        '+loadAddres+'\
         <div id="mapDelivery" style="display: none;">\
           <div style="display:none;">\
             <div id="title">Autocomplete search</div>\
@@ -801,7 +807,13 @@ function loadItemsFromMemory(){
     });
   });    
 
-  setTimeout(function(){ $("#dCart").html(itensInCart); }, 800);
+  setTimeout(function(){ 
+    $("#dCart").html(itensInCart); 
+    if(address.includes(",")){
+      var coords = address.split(",",2)
+      var addresf = geocodificacion_inversa(coords[0], coords[1]);
+    }}
+  , 800);
   setTimeout(function(){ getPosition() }, 900);
 }
 
@@ -827,7 +839,6 @@ function confirmNewAddress(){
       finalLng = lng1.split(",",2);
 
       saveData("mainAddress", parseFloat(finalLat)+","+parseFloat(finalLng));
-  
     } else {
       var coordsString = JSON.stringify(getData("newLocation")).split(",", 2);
 
@@ -868,11 +879,32 @@ function confirmNewAddress(){
  
 }
 
+function geocodificacion_inversa(lat, lng) {
+
+  var resultado = "";
+  const geocoder = new google.maps.Geocoder();
+    const latlng = {
+    lat: parseFloat(lat),
+    lng: parseFloat(lng),
+  };
+
+  geocoder
+    .geocode({ location: latlng })
+    .then((response) => {
+      if (response.results[0]) {
+        resultado = response.results[0].formatted_address;
+        $("#address").html(resultado);
+      } else {
+        window.alert("No results found");
+      }
+    })
+    .catch((e) => window.alert("Geocoder failed due to: " + e));
+    return resultado;
+}
+
 function showMapDelivery(){
 
   if (getData("hiddenMap") === "hide"){
-
-    $("#address").text(getData("mainAddress"));
 
     document.getElementById("mapDelivery").style.display = "none";
     document.getElementById("address").style.color = "Black";
@@ -922,10 +954,10 @@ function startOrder(total){
   var debit_radio = $("#debit_radio").is(':checked');
   var cash_radio = $("#cash_radio").is(':checked');
   var itensInCart = "";
-  var addressDelivery = getData("mainAddress");
   var payMethod = "";
   var orderRequest = "";
   var orderList = new Array();
+  var deliveryAddress = getData("mainAddress");
   var randomId = retrieveRandomId();
   var letterPx = lastPartRequest(2);
   var idRequest = randomId + currentYear;
@@ -957,11 +989,11 @@ function startOrder(total){
           idUser: 4,
           payMethod: payMethod,
           total: parseFloat(total.toFixed(2)),
-          deliveryLocation: addressDelivery,
+          deliveryLocation: deliveryAddress,
           orderList: orderList
         };
 
-        if(orderRequest.deliveryLocation != null){
+        if(orderRequest.deliveryLocation != null && orderRequest.deliveryLocation.includes(",") === true){
           sendOrder(orderRequest,idCart);
         } else{
           alert("Ingresa una direccion de entrega");
@@ -1010,7 +1042,9 @@ function updateInternalStatus(idCart){
     var executeQuery = "UPDATE CART SET status=? WHERE idCart=?";
     transaction.executeSql(executeQuery, [1, idCart]
     , function(tx, result) {
+      var presistMainAddres = getData("mainAddress");
       cleanData();
+      saveData("mainAddress",presistMainAddres);
     },
     function(error){
       console.log('Error occurred');
