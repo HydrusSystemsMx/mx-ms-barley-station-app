@@ -1,5 +1,5 @@
 
-var baseUrl = "http://10.0.2.2:8080";
+var baseUrl = "http://10.0.2.2:8081";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
@@ -538,9 +538,9 @@ function setDinamicCarousel(data){
   var tdsp="";
   var init = '<ons-carousel swipeable auto-scroll overscrollable id="carousel" style="height: 250px;">';
   var final = '</ons-carousel>';
-    for(var i=0;i<data.response.length;i++){
+    for(var i=0;i<data.length;i++){
       tdsp +='\
-        <ons-carousel-item style="background-image:url('+ data.response[i].url +');      background-repeat: no-repeat;\
+        <ons-carousel-item style="background-image:url('+ data[i].url +');      background-repeat: no-repeat;\
         background-size: cover;">\
         <div style="text-align: center; font-size: 30px; margin-top: 20px; color: #fff; ">\
         </div>\
