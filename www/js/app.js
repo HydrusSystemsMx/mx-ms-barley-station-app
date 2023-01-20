@@ -1,5 +1,4 @@
-
-var baseUrl = "http://10.0.2.2:8081";
+ar baseUrl = "http://10.0.2.2:8081";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
@@ -485,18 +484,18 @@ function loadBrands(){
 function setBrands(data){
   var start = '<center><table><tr>';
   
-  var init = '<td><ons-select id="choose-sel" onchange="editSelects(event)">';
+  var init = '<td><ons-select id="choose-sel" onchange="searchByIdBrand()"><option value="1000">Todos los productos.. <i class="fa-thin fa-magnifying-glass"></i></option>' ;
   var tdsp="";
-  var final = "";
+  var final = "</ons-select></td>";
     for(var i=0;i<data.length;i++){
       tdsp +='\
           <option value="'+ data[i].response.idBrand +'">'+ data[i].response.brandName +'</option>\
        ';
     }
 
-    var last = '<td><ons-button onclick="searchByIdBrand()"><div><i class="fas fa-search"></i></div></ons-button></td></tr></table></center';
+    var last = '</tr></table></center';
 
-    final = start + init + tdsp + '<option value="1000">Buscar todas..</option></ons-select></td>' + final + last;
+    final = start + init + tdsp + final + last;
 
     setTimeout(function(){ $("#dinamicBrands").html(final); }, 100);
 }
