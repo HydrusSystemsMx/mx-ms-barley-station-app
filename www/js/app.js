@@ -1233,8 +1233,7 @@ function retrievePed(validate, isClickFromMenu){
         saveData("isClickFromMenu", null);
       },
       503: function(responseObject, textStatus, errorThrown) {
-          // Service Unavailable (503)
-          // This code will be executed if the server returns a 503 response
+          // Service Unavailable (503) This code will be executed if the server returns a 503 response
       }           
     }
 	});
