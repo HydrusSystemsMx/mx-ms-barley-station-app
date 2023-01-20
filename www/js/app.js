@@ -607,51 +607,100 @@ function loadItems(){
   function setItems(data){
 
     var tdsp="";
+    var tdsp2="";
     var inptItems = "";
+    var middleListLength = data.length / 2;
+
+    setTimeout(function(){ $("#dinamicItemsBrand").html(""); }, 100);
 
     for(var i=0;i<data.length;i++){
       var itemId =data[i].response.idItem;
-      tdsp +='\
-      <ons-list-item id="item_'+ data[i].response.idItem +'">\
-      <table>\
-        <tr>\
-          <td>\
-            <center>\
-              <div><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></div>\
-              <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
-              <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-              <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
-              <div style="height: 25px; width: auto;">\
-                <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
-              
-              if(getData("amount_"+ data[i].response.idItem.toString())   != null){
-                $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
-                inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
-              } else{
-                inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
-              }
-              
-              tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
-              </div>\
-              <br>\
-              <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
-              <br>\
+      if(i <= (Math.round(middleListLength) - 1)){
+        tdsp +='\
+        <div style="heigth:30%;">\
+        <ons-card id="item_'+ data[i].response.idItem +'"">\
+        <table>\
+          <tr>\
+            <td>\
+              <center>\
+                <div><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"><img id="" style="width:30%; heigth:50%;" src="'+ data[i].response.image +'"></div>\
+                <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
+                <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
+                <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+                <div style="height: 25px; width: auto;">\
+                  <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+                
+                if(getData("amount_"+ data[i].response.idItem.toString())   != null){
+                  $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
+                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+                } else{
+                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+                }
+                
+                tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+                </div>\
+                <br>\
+                <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+                <br>\
+                </center>\
+                <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>\
               </center>\
-              <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>\
-            </center>\
-          </td>\
-        </tr>\
-      </table>';
-
-
-      if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
-        tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
+            </td>\
+          </tr>\
+        </table>';
+  
+  
+        if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
+          tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
+        }
+  
+        tdsp = tdsp + '</ons-card>';
+      } else{
+        tdsp2 +='\
+        <div">\
+        <ons-card id="item_'+ data[i].response.idItem +'" style="heigth:50%;">\
+        <table>\
+          <tr>\
+            <td>\
+              <center>\
+                <div><input type="text" id="img_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.image +'"><input type="text" id="dtl_'+ data[i].response.idItem +'" style="display: none;" value="'+ data[i].response.details +'"><img id="" style="width:30%; heigth:30%" src="'+ data[i].response.image +'"></div>\
+                <span><strong></strong>'+ data[i].response.details +'</span><span class="list-item__subtitle"></span><br>\
+                <small>'+ data[i].response.nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
+                <span><strong><strong> $ '+ data[i].response.price.toFixed(2) +'</strong><br><br>\
+                <div style="height: 25px; width: auto;">\
+                  <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+                
+                if(getData("amount_"+ data[i].response.idItem.toString())   != null){
+                  $("#units_"+data[i].response.idItem).val(parseInt(getData("amount_"+ data[i].response.idItem)));
+                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].response.idItem)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+                } else{
+                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].response.idItem +'">';
+                }
+                
+                tdsp2 = tdsp2 + inptItems + '<ons-button onclick="lessUnit(' + data[i].response.idItem +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+                </div>\
+                <br>\
+                <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].response.price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].response.idItem  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+                <br>\
+                </center>\
+                <td><div id="imgCart_'+ data[i].response.idItem +'"></div></td>\
+              </center>\
+            </td>\
+          </tr>\
+        </table>';
+  
+  
+        if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
+          tdsp2 = tdsp2 + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
+        }
+  
+        tdsp2 = tdsp2 + '</ons-card></div>';       
       }
-
-      tdsp = tdsp + '</ons-list-item>';
+     
     }
     saveData("isFromClickMenu", 0);
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
+    setTimeout(function(){ $("#dinamicItems2").html(tdsp2); }, 100);
     
   }
 
@@ -669,7 +718,8 @@ function loadItems(){
           </tr>\
         </table>\
         <span><strong></strong>No se encontraron resultados</span><span class="list-item__subtitle"></span><br>\
-      </ons-list-item>';
+      </ons-list-item>\
+      </div>';
         
     
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);

@@ -17,7 +17,7 @@
   <script src="js/onsenui.js"></script>
 </head>
 <body>
-    <ons-navigator id="myNavigator" page="login.html"></ons-navigator>
+    <ons-navigator id="myNavigator" page="page_menu.html"></ons-navigator>
 
     <template id="login.html">
       <ons-page id="login"> 
@@ -124,12 +124,21 @@
           <div id="dinamicCarousel"></div>
           <h3>Buscar por Marca :</h3>
           <div id="dinamicBrands"></div>
-          <ons-list> 
-            <div id="dinamicItems"> 
-              
+          <div id="dinamicItemsBrand" > 
+                
+          </div>
+          <div>
+            <div style= "width: 49%; display: inline-block; vertical-align: top;">
+              <div id="dinamicItems" > 
+                
+              </div>
             </div>
-          </ons-list>
-
+            <div style= "width: 49%; display: inline-block;   vertical-align: top;">
+              <div id="dinamicItems2" > 
+                
+              </div>
+            </div>
+          </div>
           <ons-speed-dial position="bottom right" direction="up">
             <ons-fab>
                 <i class="fas fa-beer" ></i>
@@ -254,6 +263,9 @@
     var tdsp="";
     var inptItems = "";
 
+    setTimeout(function(){ $("#dinamicItems").html(""); }, 100);
+    setTimeout(function(){ $("#dinamicItems2").html(""); }, 100);
+
     for(var i=0;i<data.length;i++){
       var itemId =data[i].response.idItem;
       tdsp +='\
@@ -292,7 +304,7 @@
       tdsp = tdsp + '</ons-list-item>';
     }
     saveData("isFromClickMenu", 0);
-    setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
+    setTimeout(function(){ $("#dinamicItemsBrand").html(tdsp); }, 100);
   }
 
   document.addEventListener('prechange', function(event) {
