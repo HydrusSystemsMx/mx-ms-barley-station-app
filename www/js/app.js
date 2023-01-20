@@ -1,4 +1,4 @@
-ar baseUrl = "http://10.0.2.2:8081";
+var baseUrl = "http://10.0.2.2:8081";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
@@ -444,7 +444,6 @@ function instertIntoMemory(idItem, idUser, units, img, price, details){
     , function(tx, result) {
       cambiar_menu('carrito')
       saveData("amount_" + idItem, units);
-      saveData("item_in_cart_" + idItem , "item_in_cart_");
       loadItemsFromMemory();
     },
     function(error){
@@ -649,9 +648,6 @@ function loadItems(){
         </table>';
   
   
-        if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
-          tdsp = tdsp + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
-        }
   
         tdsp = tdsp + '</ons-card>';
       } else{
@@ -689,9 +685,6 @@ function loadItems(){
         </table>';
   
   
-        if(getData("item_in_cart_"+ data[i].response.idItem)   != null){
-          tdsp2 = tdsp2 + '<img id="item_in_cart" style="width:10%; " src="img/item_in_cart.png" onclick="goToCart()">';
-        }
   
         tdsp2 = tdsp2 + '</ons-card></div>';       
       }
@@ -1106,7 +1099,6 @@ function deleteItemFromMemory(idItem){
   var executeQuery = "DELETE FROM CART WHERE idItem=?";
     transaction.executeSql(executeQuery, [idItem],
       function(tx, result) {
-        saveData("item_in_cart_" + idItem, null)
         saveData("amount_" + idItem, null);
         loadItemsFromMemory();
         console.log('Table deleted successfully.');
