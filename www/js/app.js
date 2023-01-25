@@ -488,7 +488,7 @@ function setBrands(data){
   var final = "</ons-select></td>";
     for(var i=0;i<data.length;i++){
       tdsp +='\
-          <option value="'+ data[i].response.idBrand +'">'+ data[i].response.brandName +'</option>\
+          <option value="'+ data[i].id +'">'+ data[i].brandName +'</option>\
        ';
     }
 
