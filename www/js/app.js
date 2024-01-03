@@ -249,8 +249,7 @@ function perfilInfo(){
 			"Host": '1'
 		},
 		dataType: 'json',
-		success: function (data) {
-			if (data.error == null) {
+		success: function (data) {        if (data.error == null) {
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
 
         setTimeout(function(){
@@ -329,9 +328,9 @@ function showDialog(idItem, price, stack){
                 <td></td>\
             </tr>\
             <tr>\
-                <td> <center><ons-button onclick="plusUnit('+ stack +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button></center> </td>\
-                <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black;" id="units"></center></td>\
-                <td> <center><ons-button onclick="lessUnit()" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center> </td>\
+                <td> <center><img onclick="plusUnit('+ stack +')" style="width:13%; heigth:13%" src="img/pluss_1.png"></center> </td>\
+                <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black; border: none; text-align: center;" id="units"></center></td>\
+                <td> <center><img onclick="lessUnit()" style="width:13%; heigth:13%" src="img/less_1.png"></center> </td>\
             </tr>\
             <tr>\
                 <td></td>\
@@ -519,8 +518,7 @@ function searchByIdBrand(){
       success: function (data) {
         if (data.length > 0 ) {
           //document.querySelector('#myNavigator').pushPage('detailService.html');
-          alert(JSON.stringify(data))
-            setItemsBrand(data);
+          setItemsBrand(data);
         } else {
           ons.notification.toast("No se encontraron productos disponibles para esta marca..", { timeout: 3000, animation: 'ascend' })
           loadItems();
@@ -626,59 +624,57 @@ function loadItems(){
                 <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
                 <span><strong><strong> $ '+ data[i].price.toFixed(2) +'</strong><br><br>\
                 <div style="height: 25px; width: auto;">\
-                  <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+                  <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:13%; heigth:13%" src="img/pluss_1.png">';
                 
                 if(getData("amount_"+ data[i].id.toString())   != null){
                   $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
                 } else{
-                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
                 }
                 
-                tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+                tdsp = tdsp + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:13%; heigth:13%" src="img/less_1.png"></center>\
                 </div>\
                 <br>\
-                <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+                <div style="height: 50px; width: auto;"><center><img onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="width:18%; heigth:18%" src="img/confirm.png"></center></div> \
                 <br>\
                 </center>\
-                <td><div id="imgCart_'+ data[i].idItem +'"></div></td>\
               </center>\
             </td>\
           </tr>\
         </table>';
-  
+    
   
   
         tdsp = tdsp + '</ons-card>';
       } else{
         tdsp2 +='\
         <div">\
-        <ons-card id="item_'+ data[i].id +'" style="heigth:50%;">\
+        <ons-card id="item_'+ data[i].id +'" style="heigth:30%;">\
         <table>\
           <tr>\
             <td>\
               <center>\
                 <div><input type="text" id="img_'+ data[i].id +'" style="display: none;" value="'+ data[i].image +'"><input type="text" id="dtl_'+ data[i].id +'" style="display: none;" value="'+ data[i].details +'"><img id="" style="width:30%; heigth:30%" src="'+ data[i].image +'"></div>\
-                <span><strong></strong>'+ data[i].details +'</span><span class="list-item__subtitle"></span><br>\
+                <span>'+ data[i].details +'</span><span class="list-item__subtitle"></span><br>\
                 <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-                <span><strong><strong> $ '+ data[i].price.toFixed(2) +'</strong><br><br>\
+                <span><strong> $ '+ data[i].price.toFixed(2) +'</strong></span><br><br>\
                 <div style="height: 25px; width: auto;">\
-                  <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+                  <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:13%; heigth:13%" src="img/pluss_1.png">';
                 
                 if(getData("amount_"+ data[i].id.toString())   != null){
                   $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
                 } else{
-                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
                 }
                 
-                tdsp2 = tdsp2 + inptItems + '<ons-button onclick="lessUnit(' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+                tdsp2 = tdsp2 + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:13%; heigth:13%" src="img/less_1.png"></center>\
                 </div>\
                 <br>\
-                <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+                <div style="height: 50px; width: auto;"><center><img onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="width:18%; heigth:18%" src="img/confirm.png"></center></div> \
                 <br>\
                 </center>\
-                <td><div id="imgCart_'+ data[i].id +'"></div></td>\
               </center>\
             </td>\
           </tr>\

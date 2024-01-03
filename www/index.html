@@ -74,7 +74,7 @@
             <span style="  min-height: 100%;
             height: auto !important;
             height: 100%;
-            margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;">BarleyStation</span>
+            margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;"></span>
           </div>
           <div aling="rigth" style=" width: 20%;">
             <img src="img/drunk-cheers.gif" style="size: auto;">
@@ -228,7 +228,7 @@
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 
   <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBi155hirsTgLdO5ZvOTmcePpnFOcpIKQ&callback=initMap&libraries=places&v=weekly"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKAceltbkS85SoooqzuEIJflRkN0gkxz4&callback=initMap&libraries=places&v=weekly"
   async
 ></script>
     <script type="text/javascript">
@@ -280,19 +280,21 @@
       <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
       <span><strong><strong> $ '+ data[i].price.toFixed(2) +'</strong><br><br>\
       <div style="height: 25px; width: auto;">\
-        <center><ons-button onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-plus"></i></div></ons-button>';
+        <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:6%; heigth:6%" src="img/pluss_1.png">';
       
       if(getData("amount_"+ data[i].id.toString())   != null){
         $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-        inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+        inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
       } else{
-        inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black;" id="units_'+ data[i].id +'">';
+        inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
       }
       
-      tdsp = tdsp + inptItems + '<ons-button onclick="lessUnit(' + data[i].id +')" style="background-color: black;"><div> <i class="fas fa-minus"></i></div></ons-button></center>\
+      tdsp = tdsp + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:6%; heigth:6%" src="img/less_1.png"></center>\
       </div>\
       <br>\
-      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  + ' )" style="background-color:teal; width: 60%;">AGREGAR</ons-button></center></div> \
+      <br>\
+      <br>\
+      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  + ' )" style="background-color:teal; width: 60%;">Agregar</ons-button></center></div> \
       <br>\
       </center>\
       <td><div id="imgCart_'+ data[i].id +'"></div></td>';
