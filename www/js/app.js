@@ -584,7 +584,7 @@ function loadItems() {
                 tdsp += inptItems + '<img onclick="lessUnit(' + data[i].id + ')" style="width:13%; height:13%" src="img/less_1.png"></center>\
                 </div>\
                 <br>\
-                <div style="height: 50px; width: auto;"><center><img onclick="addToCart(' + data[i].price.toFixed(2) + ' , ' + data[i].stack + ' , ' + data[i].id + ')" style="width:18%; height:18%" src="img/confirm.png"></center></div> \
+                <div style="height: 50px; width: auto;"><center><ons-button onclick=" onclick="addToCart(' + data[i].price.toFixed(2) + ' , ' + data[i].stack + ' , ' + data[i].id + ')" style="background-color:teal; width: 100%;">AGREGAR</ons-button></center></div> \
                 <br>\
                 </center>\
               </center>\
