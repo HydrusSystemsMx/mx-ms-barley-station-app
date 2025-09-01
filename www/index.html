@@ -1,332 +1,295 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="css/onsenui.css">
-  <link rel="stylesheet" href="css/onsen-css-components.min.css">
-  <link rel="stylesheet" href="css/barley_station.css">
-  <link href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-  rel="stylesheet">
-  <link href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" rel="stylesheet"/>
+  <meta charset="utf-8" />
+  <title>Mi Aplicación</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/onsenui.css" />
+  <link rel="stylesheet" href="css/onsen-css-components.min.css" />
+  <link rel="stylesheet" href="css/barley_station.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" />
+
+  <!-- Dependencias jQuery -->
   <script src="js/jquery-3.2.1.js"></script>
   <script src="js/jquery.js"></script>
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-  <script type="text/javascript" src="js/globals.js"></script>
+
+  <!-- Scripts propios -->
+  <script src="js/globals.js"></script>
   <script src="js/onsenui.js"></script>
+  
+  <!-- Google Maps API -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKAceltbkS85SoooqzuEIJflRkN0gkxz4&callback=initMap&libraries=places&v=weekly"
+    async
+  ></script>
 </head>
 <body>
-    <ons-navigator id="myNavigator" page="page_menu.html"></ons-navigator>
+  <ons-navigator id="myNavigator" page="login.html"></ons-navigator>
 
-    <template id="login.html">
-      <ons-page id="login"> 
-        <div style="height: auto; width: auto;">
-            <img src="img/beer.png" width="100px">
-        </div>
-        <div style="text-align: center; margin-top: 100; height: auto;">
-            <p>
-                <ons-input type="email" id="rep_correo" style="width: 75%; text-align: center!important;" modifier="underbar" placeholder="Correo electrónico" value="" ></ons-input>
-            </p>
-            <p>
-                <ons-input type="password" id="rep_pass" style="width: 75%; text-align: center!important;" modifier="underbar"  placeholder="Contraseña" value=""></ons-input>
-            </p>
-        </div>
-        <div style="height: auto; width: auto;">
-            <ons-button  onclick="login()" >Iniciar</ons-button>
-        </div>
-        <div>
-            <footer>
-                <label >Powered by Hydrus Systems Mx &reg 2021</label><br>
-                <small>Versión 1.0.0</small>
-            </footer>
-        </div>
-      </ons-page>
-    </template>
+  <!-- Login Page -->
+  <template id="login.html">
+    <ons-page id="login">
+      <div style="position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #ff7e5f, #feb47b); display: flex; align-items: center; justify-content: center;">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; width: 90%; max-width: 350px;">
+          <img src="img/beer.png" alt="Logo" style="width: 150px; height: auto; margin-bottom: 20px;" />
 
-    <template id="page_menu.html" >
-      <ons-page id="menu" >
-        <ons-splitter>
+          <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            <ons-button style="background-color: #DB4437; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginWithGoogle()">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Google" style="height:20px; margin-right:12px;" /> Iniciar con Google
+            </ons-button>
+
+            <ons-button style="background-color: #3b5998; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginWithFacebook()">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" style="height:20px; margin-right:12px;" /> Iniciar con Facebook
+            </ons-button>
+
+            <ons-button style="background-color: #555555; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="login()">
+              <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Invitado" style="height:20px; margin-right:12px;" /> Invitado
+            </ons-button>
+          </div>
+
+          <div style="position: absolute; bottom: 10px; width: 100%; text-align: center; z-index: 1; color: white;">
+            <small>v1.0.0</small>
+          </div>
+        </div>
+      </div>
+    </ons-page>
+  </template>
+
+  <!-- Menú lateral -->
+  <template id="page_menu.html">
+    <ons-page id="menu">
+      <ons-splitter>
         <ons-splitter-side id="menus" side="left" width="0px" collapse swipeable>
           <ons-page>
             <ons-list>
               <ons-list-item onclick="" tappable>
-                <img src="img/logo.jpg" width="185px" height="100px" ><br>
-               
+                <img src="img/logo.jpg" width="185px" height="100px" /><br />
               </ons-list-item>
               <ons-list-item onclick="perfilInfo();" tappable>
-                <img src="img/Circle_Orange.png" style="width:10px;"> Mí Perfil</img>      
+                <img src="img/Circle_Orange.png" style="width:10px;" /> Mí Perfil
               </ons-list-item>
-             <!-- <ons-list-item onclick="MostrarPedsPreview()" tappable>
-               <i class="fa fa-map-pin" aria-hidden="true"> Pedidos (Crear Ruta)</i> 
-              </ons-list-item> -->
             </ons-list>
           </ons-page>
         </ons-splitter-side>
         <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
       </ons-splitter>
-    </template>
-            
-    <template id="home.html">
-      <ons-page>
-        <ons-toolbar>
-          <div style=" width: 80%;">
-            <span style="  min-height: 100%;
-            height: auto !important;
-            height: 100%;
-            margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;"></span>
-          </div>
-          <div aling="rigth" style=" width: 20%;">
-            <img src="img/drunk-cheers.gif" style="size: auto;">
-          </div>
-        </ons-toolbar>
+    </ons-page>
+  </template>
+
+  <!-- Página principal -->
+  <template id="home.html">
+    <ons-page>
+      <ons-toolbar>
+        <div style="width: 80%;">
+          <span style="min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;"></span>
+        </div>
+        <div align="right" style="width: 20%;">
+          <img src="img/drunk-cheers.gif" style="size: auto;" />
+        </div>
+      </ons-toolbar>
 
       <ons-tabbar swipeable position="auto">
-        <ons-tab page="tab1.html"  label="Bebidas" onclick="refreshMenu()" active>
-        </ons-tab>
-        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed(false, 1)">  
-        </ons-tab>
+        <ons-tab page="tab1.html" label="Bebidas" onclick="refreshMenu()" active></ons-tab>
+        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed(false, 1)"></ons-tab>
       </ons-tabbar>
+    </ons-page>
+  </template>
 
-      <p style="text-align: center; margin-top: 10px;">
-      <!--  <ons-search-input
-          placeholder="Search"
-          onchange="ons.notification.alert('Searched for: ' + this.value)"
-        ></ons-search-input> -->
+  <!-- Página perfil -->
+  <template id="perfil.html">
+    <ons-page id="page_pedidos">
+      <ons-toolbar>
+        <div class="left"><ons-back-button onclick="refreshMenu()">Inicio</ons-back-button></div>
+        <div class="center">Perfil</div>
+      </ons-toolbar>
+      <div id="lst_info"></div>
+    </ons-page>
+  </template>
+
+  <!-- Carrito -->
+  <template id="carrito.html">
+    <ons-page id="carrito_compra">
+      <ons-toolbar>
+        <div class="left"><ons-back-button onclick="refreshMenu()">Inicio</ons-back-button></div>
+        <div class="center">En mi carrito</div>
+      </ons-toolbar>
+      <div id="dCart"></div>
+    </ons-page>
+  </template>
+
+  <!-- Tabs -->
+  <template id="tab1.html">
+    <ons-page id="Tab1">
+      <div id="dinamicCarousel"></div>
+      <h3>Buscar por Marca :</h3>
+      <div id="dinamicBrands"></div>
+      <div id="dinamicItemsBrand"></div>
+      <div>
+        <div style="width: 49%; display: inline-block; vertical-align: top;">
+          <div id="dinamicItems"></div>
+        </div>
+        <div style="width: 49%; display: inline-block; vertical-align: top;">
+          <div id="dinamicItems2"></div>
+        </div>
+      </div>
+      <ons-speed-dial position="bottom right" direction="up">
+        <ons-fab><i class="fas fa-beer"></i></ons-fab>
+        <ons-speed-dial-item><i class="fas fa-user" onclick="perfilInfo();"></i></ons-speed-dial-item>
+        <ons-speed-dial-item><i class="fas fa-shopping-cart" onclick="goToCart()"></i></ons-speed-dial-item>
+        <ons-speed-dial-item><i class="fas fa-share-alt"></i></ons-speed-dial-item>
+        <ons-speed-dial-item><i class="fas fa-question"></i></ons-speed-dial-item>
+      </ons-speed-dial>
+    </ons-page>
+  </template>
+
+  <template id="tab2.html">
+    <ons-page id="Tab2">
+      <ons-card>
+        <h3>Historial de pedidos<i id="" style="position: absolute; right: 0;" class="fas fa-caret-square-left" onclick="showRecord()"></i></h3>
+        <div id="dinamicHistory" style="display:none;"></div>
+      </ons-card>
+      <div id="dinamicOrder"></div>
+    </ons-page>
+  </template>
+
+  <template id="tab3.html">
+    <ons-page id="Tab3">
+      <p style="text-align: center;">
+        <ons-list id="PedidosAtendidos">
+          <ons-list-header>latlng</ons-list-header>
+          <ons-lazy-repeat id="infinite-list"></ons-lazy-repeat>
+        </ons-list>
       </p>
+    </ons-page>
+  </template>
 
-      </ons-page>
-    </template>
+  <!-- Diálogos y modales -->
+  <ons-dialog id="alert-pop">
+    <div style="text-align: center; padding: 10px; background: white;">
+      <center><img src="img/beer.png" width="50px" /></center>
+      <label></label>
+      <p id="text-msg" style="color: black;"></p>
+      <p>
+        <ons-button class="button--cta" style="background: orange" onclick="hideDialog('alert-pop')">Aceptar</ons-button>
+      </p>
+    </div>
+  </ons-dialog>
 
-    <template id="perfil.html">
-        <ons-page id="page_pedidos">
-            <ons-toolbar>
-              <div class="left"><ons-back-button onclick="refreshMenu()">Inicio</ons-back-button></div>
-              <div class="center">Perfil</div>
-            </ons-toolbar>
-              <div id="lst_info"></div>
-              <br>
-        </ons-page>
-    </template>  
+  <ons-modal direction="up">
+    <div style="text-align: center">
+      <p>
+        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Espera un momento...
+      </p>
+    </div>
+  </ons-modal>
 
-    <template id="carrito.html">
-      <ons-page id="carrito_compra">
-          <ons-toolbar>
-            <div class="left"><ons-back-button onclick="refreshMenu()">Inicio</ons-back-button></div>
-            <div class="center">En mi carrito</div>
-          </ons-toolbar>
-          <div id="dCart"></div>
-      </ons-page>
-  </template>  
+  <div id="dinamicDialog"></div>
 
-    <template id="tab1.html">
-      <ons-page id="Tab1">
-          <div id="dinamicCarousel"></div>
-          <h3>Buscar por Marca :</h3>
-          <div id="dinamicBrands"></div>
-          <div id="dinamicItemsBrand" > 
-                
-          </div>
-          <div>
-            <div style= "width: 49%; display: inline-block; vertical-align: top;">
-              <div id="dinamicItems" > 
-                
-              </div>
-            </div>
-            <div style= "width: 49%; display: inline-block;   vertical-align: top;">
-              <div id="dinamicItems2" > 
-                
-              </div>
-            </div>
-          </div>
-          <ons-speed-dial position="bottom right" direction="up">
-            <ons-fab>
-                <i class="fas fa-beer" ></i>
-            </ons-fab>
-            <ons-speed-dial-item>
-                <i class="fas fa-user" onclick="perfilInfo();"></i>
-            </ons-speed-dial-item>
-            <ons-speed-dial-item>
-              <i class="fas fa-shopping-cart" onclick="goToCart()"></i>
-            </ons-speed-dial-item>        
-            <ons-speed-dial-item>
-                <i class="fas fa-share-alt"></i>
-            </ons-speed-dial-item>   
-            <ons-speed-dial-item>
-                <i class="fas fa-question"></i>
-            </ons-speed-dial-item>   
-          </ons-speed-dial>
- 
-      </ons-page>
-    </template>
+  <!-- Scripts finales -->
+  <script src="cordova.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
 
-    <template id="tab2.html">
-      <ons-page id="Tab2">
-        <ons-card>
-          <h3>Historial de pedidos<i id="" style="position: absolute; right: 0;" class="fas fa-caret-square-left" onclick="showRecord()"></i></h3>
-          <div id="dinamicHistory" style="display:none;"></div>
-        </ons-card>
-        <div id="dinamicOrder"></div>
+  <script type="text/javascript">
+    window.fn = {
+      open: function() {
+        document.getElementById('menus').open();
+      },
+      load: function(page) {
+        var content = document.getElementById('content');
+        var menu = document.getElementById('menus');
+        content.load(page).then(menu.close.bind(menu));
+      },
+    };
 
-        <!--
-        <p style="text-align: center;">
-        <ons-button id="BtnCreateNewInv" onclick="nuevoInventario();">Crear nuevo</ons-button>
-        <div id="ConstruirInventario" style="display:none;">
-          <label>Tipo de Gas</label><br>
-          <ons-select class="select">
-            <select class="select-input">
-              <option>Estacionario</option>
-              <option>Tipos</option>
-            </select>
-          </ons-select>
-        </div><br><br>
-        <ons-button id="BtnCancelCreate" onclick="CancelMakeInv()" style="display:none;">Cancelar</ons-button>
-        </p>
-        -->
-      </ons-page>
-    </template>
-
-    <template id="tab3.html">
-      <ons-page id="Tab3">
-        <p style="text-align: center;">
-          <ons-list id="PedidosAtendidos">
-            <ons-list-header>latlng</ons-list-header>
-            <ons-lazy-repeat id="infinite-list">
-            </ons-lazy-repeat>
-          </ons-list>
-        </p>
-      </ons-page>
-    </template>
-
-    <ons-dialog id="alert-pop">
-      <div style="text-align: center; padding: 10px;background: white;">
-        <center><img src="img/beer.png" width="50px"></center>
-        <label></label>
-        <p id="text-msg" style="color: black;">
-        </p>
-        <p>
-          <ons-button class="button--cta" style="background: orange" onclick="hideDialog('alert-pop')">Aceptar</ons-button>
-        </p>
-      </div>
-    </ons-dialog>
- 
-    <ons-modal direction="up">
-      <div style="text-align: center">
-        <p>
-          <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Espera un momento...
-        </p>
-      </div>
-    </ons-modal>
-
-    <div id="dinamicDialog"></div>
-
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/storage.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-
-  <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKAceltbkS85SoooqzuEIJflRkN0gkxz4&callback=initMap&libraries=places&v=weekly"
-  async
-></script>
-    <script type="text/javascript">
-      window.fn = {};
-
-      window.fn.open = function() {
-      var menu = document.getElementById('menus');
-      menu.open();
-      //consultarRutas();
-      };
-
-      window.fn.load = function(page) {
-      var content = document.getElementById('content');
-      var menu = document.getElementById('menus');
-
-      content.load(page)
-      .then(menu.close.bind(menu));
-      };
-
-      function close(){
-        document
-        .getElementById('dialog-1')
-        .hide();
-      }
-
-      var hideDialog = function () {
-        document.getElementById('alert-pop').hide();
-      };
-
-  function setItemsBrand(data){
-
-    var tdsp="";
-    var inptItems = "";
-
-    setTimeout(function(){ $("#dinamicItems").html(""); }, 100);
-    setTimeout(function(){ $("#dinamicItems2").html(""); }, 100);
-
-    for(var i=0;i<data.length;i++){
-      var itemId =data[i].id;
-      tdsp +='\
-      <ons-list-item id="item_'+ data[i].id +'">\
-      <center>\
-      <table>\
-        <tr>\
-          <td><center><img id="" style="width:30%; heigth:30%" src="'+ data[i].image +'"><input type="text" id="img_'+ data[i].id +'" style="display: none;" value="'+ data[i].image +'"><input type="text" id="dtl_'+ data[i].id +'" style="display: none;" value="'+ data[i].details +'"></center></td>\
-        </tr>\
-      </table>\
-      <span><strong></strong>'+ data[i].details +'</span><span class="list-item__subtitle"></span><br>\
-      <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-      <span><strong><strong> $ '+ data[i].price.toFixed(2) +'</strong><br><br>\
-      <div style="height: 25px; width: auto;">\
-        <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:6%; heigth:6%" src="img/pluss_1.png">';
-      
-      if(getData("amount_"+ data[i].id.toString())   != null){
-        $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-        inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-      } else{
-        inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-      }
-      
-      tdsp = tdsp + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:6%; heigth:6%" src="img/less_1.png"></center>\
-      </div>\
-      <br>\
-      <br>\
-      <br>\
-      <div style="height: 50px; width: auto;"><center><ons-button onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  + ' )" style="background-color:teal; width: 60%;">Agregar</ons-button></center></div> \
-      <br>\
-      </center>\
-      <td><div id="imgCart_'+ data[i].id +'"></div></td>';
-
-
-      tdsp = tdsp + '</ons-list-item>';
+    function close() {
+      document.getElementById('dialog-1').hide();
     }
-    saveData("isFromClickMenu", 0);
-    setTimeout(function(){ $("#dinamicItemsBrand").html(tdsp); }, 100);
-  }
 
-  document.addEventListener('prechange', function(event) {
-    if(event.tabItem.page === "tab2.html"){
-      if(getData("isFromClickOrder") !== 1){
-        retrievePed(false);
-      }
-    } else if(event.tabItem.page === "tab1.html"){
-      if(getData("isFromClickMenu") !== 1){
-        loadItems();
-        loadBrands();
-      }
+    var hideDialog = function () {
+      document.getElementById('alert-pop').hide();
+    };
+
+    function setItemsBrand(data) {
+      var tdsp = "";
+      var inptItems = "";
+
+      setTimeout(() => { $("#dinamicItems").html(""); }, 100);
+      setTimeout(() => { $("#dinamicItems2").html(""); }, 100);
+
+      data.forEach((item) => {
+        var id = item.id;
+        tdsp += `
+        <ons-list-item id="item_${id}">
+          <center>
+            <table>
+              <tr>
+                <td>
+                  <center>
+                    <img style="width:30%; height:30%;" src="${item.image}" />
+                    <input type="text" id="img_${id}" style="display:none;" value="${item.image}">
+                    <input type="text" id="dtl_${id}" style="display:none;" value="${item.details}">
+                  </center>
+                </td>
+              </tr>
+            </table>
+            <span><strong></strong> ${item.details}</span>
+            <span class="list-item__subtitle"></span><br />
+            <small>${item.nameItem}<span class="list-item__subtitle"></span></small><br /><br />
+            <span><strong> $ ${item.price.toFixed(2)}</strong></span><br /><br />
+            <div style="height: 25px; width: auto;">
+              <center>
+                <img onclick="plusUnit(${item.stack}, ${id})" style="width:6%; height:6%;" src="img/pluss_1.png" />
+                ${getData("amount_" + id) != null ? (() => {
+                  $("#units_" + id).val(parseInt(getData("amount_" + id)));
+                  return `<input type="number" value="${parseInt(getData("amount_" + id))}" placeholder="${parseInt(getData("amount_" + id))}" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_${id}">`;
+                })() : `<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_${id}">`}
+                <img onclick="lessUnit(${id})" style="width:6%; height:6%;" src="img/less_1.png" />
+              </center>
+            </div>
+            <br />
+            <div style="height: 50px; width: auto;">
+              <center>
+                <ons-button onclick="addToCart(${item.price.toFixed(2)}, ${item.stack}, ${id})" style="background-color:teal; width: 60%;">Agregar</ons-button>
+              </center>
+            </div>
+            <br />
+          </center>
+          <td><div id="imgCart_${id}"></div></td>
+        </ons-list-item>`;
+      });
+
+      saveData("isFromClickMenu", 0);
+      setTimeout(() => { $("#dinamicItemsBrand").html(tdsp); }, 100);
     }
-  });
 
-  setInterval(function(){ 
-  var carousel = document.getElementById('carousel');
-  if (carousel.getActiveIndex() === carousel.itemCount-1)
-     carousel.first();
-  else
-     carousel.next(); 
-  }, 3000);
+    document.addEventListener('prechange', (event) => {
+      if (event.tabItem.page === "tab2.html") {
+        if (getData("isFromClickOrder") !== 1) {
+          retrievePed(false);
+        }
+      } else if (event.tabItem.page === "tab1.html") {
+        if (getData("isFromClickMenu") !== 1) {
+          loadItems();
+          loadBrands();
+        }
+      }
+    });
 
-</script>
+    setInterval(() => {
+      const carousel = document.getElementById('carousel');
+      if (carousel && carousel.getActiveIndex() === carousel.itemCount - 1) {
+        carousel.first();
+      } else if (carousel) {
+        carousel.next();
+      }
+    }, 3000);
+  </script>
 </body>
 </html>
