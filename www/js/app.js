@@ -308,42 +308,71 @@ function plusUnit(maxUnit, idItem){
 
 
 function showDialog(idItem, price, stack){
-  var dialog = '<ons-dialog id="dialog-1">\
-  <ons-card > \
-      <center>\
-        <table class="bs-table">\
-          <tr>\
-            <td><strong> Precio: </strong></td>\
-            <td><span style="color:#F84C09;">$  ' + price.toFixed(2) +' </span></td>\
-          </tr>\
-          <tr>\
-          <td><strong> Disponibles: </strong></td>\
-          <td><span style="color:#F84C09;">  ' + stack +' </span></td>\
-          </tr>\
-        </table>\
-        <table class="bs-table">\
-            <tr>\
-                <td></td>\
-                <td><button style="visibility: hidden;">space</button></td>\
-                <td></td>\
-            </tr>\
-            <tr>\
-                <td> <center><img onclick="plusUnit('+ stack +')" style="width:13%; heigth:13%" src="img/pluss_1.png"></center> </td>\
-                <td>  <center><input type="number" placeholder="0" style="width:60%; height: 15%; color: black; border: none; text-align: center;" id="units"></center></td>\
-                <td> <center><img onclick="lessUnit()" style="width:13%; heigth:13%" src="img/less_1.png"></center> </td>\
-            </tr>\
-            <tr>\
-                <td></td>\
-                <td><button style="visibility: hidden;">space</button></td>\
-                <td></td>\
-            </tr>\
-        </table>\
-        <br>\
-        <ons-button onclick="addToCart(' + price.toFixed(2) + ', '+ stack + ', ' + idItem +')" style="background-color:teal; width: 100%;">AGREGAR</ons-button>\
-        <ons-button id="close-btn-dialog"  onclick="closeDialog()" style="background-color:red; "><div style="width: 100%;"> <i class="fas fa-window-close" ></i></div></ons-button>\
-      </center>\
-  </ons-card>\
-</ons-dialog>';
+  var dialog = `
+  <ons-dialog id="dialog-1">
+    <ons-card>
+      <center>
+        <table class="bs-table">
+          <tr>
+            <td><strong>Precio:</strong></td>
+            <td><span style="color:#F84C09;">$ ${price.toFixed(2)}</span></td>
+          </tr>
+          <tr>
+            <td><strong>Disponibles:</strong></td>
+            <td><span style="color:#F84C09;">${stack}</span></td>
+          </tr>
+        </table>
+        
+        <table class="bs-table" style="margin-top:10px;">
+          <tr>
+            <td></td>
+            <td><button style="visibility: hidden;">space</button></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <center>
+                <img onclick="plusUnit(${stack})" style="width:13%; height:13%; cursor:pointer;" src="img/pluss_1.png" alt="+"/>
+              </center>
+            </td>
+            <td>
+              <center>
+                <input 
+                  type="number" 
+                  placeholder="1" 
+                  style="width:60%; height:25px; color:black;border: none; background-color: transparent; outline: none; font-weight: bold;" 
+                  id="units"
+                  value="${getData('amount_' + idItem) != null ? parseInt(getData('amount_' + idItem)) : 1}"
+                />
+              </center>
+            </td>
+            <td>
+              <center>
+                <img onclick="lessUnit()" style="width:13%; height:13%; cursor:pointer;" src="img/less_1.png" alt="-" />
+              </center>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button style="visibility: hidden;">space</button></td>
+            <td></td>
+          </tr>
+        </table>
+        
+        <br/>
+<button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
+        
+        <ons-button 
+          id="close-btn-dialog" 
+          onclick="closeDialog()" 
+          style="background-color:red; margin-top:10px;">
+          <div style="width:100%; text-align:center;">
+            <i class="fas fa-window-close"></i>
+          </div>
+        </ons-button>
+      </center>
+    </ons-card>
+  </ons-dialog>`;
 
 $("#dinamicDialog").html(dialog);
 
@@ -395,10 +424,14 @@ function addToCart(price, stack, idItem){
           var len = result.rows.length;
           if(len > 0){  
             var newAmount = parseInt(units);
-            var r = confirm("Deseas actualizar tu producto de: " + result.rows.item(0).amount + " a: " + newAmount);
-            if (r == true) {
-              updateAmountItem(idItem, newAmount);
-            }
+            showCustomConfirm(
+              "¿Deseas actualizar tu producto de: " + result.rows.item(0).amount + " a: " + newAmount + "?",
+              function(r) {
+                if (r) {
+                  updateAmountItem(idItem, newAmount);
+                }
+              }
+            );
           } else{
             //SEARCH ALREADY ORDERS
             retrievePed(true);
@@ -609,86 +642,109 @@ function loadItems(){
 
     setTimeout(function(){ $("#dinamicItemsBrand").html(""); }, 100);
 
-    for(var i=0;i<data.length;i++){
-      var itemId =data[i].id;
-      if(i <= (Math.round(middleListLength) - 1)){
-        tdsp +='\
-        <div style="heigth:30%;">\
-        <ons-card id="item_'+ data[i].id +'"">\
-        <table>\
-          <tr>\
-            <td>\
-              <center>\
-                <div><input type="text" id="img_'+ data[i].id +'" style="display: none;" value="'+ data[i].image +'"><input type="text" id="dtl_'+ data[i].id +'" style="display: none;" value="'+ data[i].details +'"><img id="" style="width:30%; heigth:50%;" src="'+ data[i].image +'"></div>\
-                <span><strong></strong>'+ data[i].details +'</span><span class="list-item__subtitle"></span><br>\
-                <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-                <span><strong><strong> $ '+ data[i].price.toFixed(2) +'</strong><br><br>\
-                <div style="height: 25px; width: auto;">\
-                  <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:13%; heigth:13%" src="img/pluss_1.png">';
-                
-                if(getData("amount_"+ data[i].id.toString())   != null){
-                  $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-                } else{
-                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-                }
-                
-                tdsp = tdsp + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:13%; heigth:13%" src="img/less_1.png"></center>\
-                </div>\
-                <br>\
-                <div style="height: 50px; width: auto;"><center><img onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="width:18%; heigth:18%" src="img/confirm.png"></center></div> \
-                <br>\
-                </center>\
-              </center>\
-            </td>\
-          </tr>\
-        </table>';
-    
-  
-  
-        tdsp = tdsp + '</ons-card>';
-      } else{
-        tdsp2 +='\
-        <div">\
-        <ons-card id="item_'+ data[i].id +'" style="heigth:30%;">\
-        <table>\
-          <tr>\
-            <td>\
-              <center>\
-                <div><input type="text" id="img_'+ data[i].id +'" style="display: none;" value="'+ data[i].image +'"><input type="text" id="dtl_'+ data[i].id +'" style="display: none;" value="'+ data[i].details +'"><img id="" style="width:30%; heigth:30%" src="'+ data[i].image +'"></div>\
-                <span>'+ data[i].details +'</span><span class="list-item__subtitle"></span><br>\
-                <small>'+ data[i].nameItem +'<span class="list-item__subtitle"></span></small><br><br>\
-                <span><strong> $ '+ data[i].price.toFixed(2) +'</strong></span><br><br>\
-                <div style="height: 25px; width: auto;">\
-                  <center><img onclick="plusUnit('+ data[i].stack +' ,' + data[i].id +')" style="width:13%; heigth:13%" src="img/pluss_1.png">';
-                
-                if(getData("amount_"+ data[i].id.toString())   != null){
-                  $("#units_"+data[i].id).val(parseInt(getData("amount_"+ data[i].id)));
-                  inptItems = '<input type="number" value="'+ parseInt(getData("amount_"+ data[i].id)) +'" placeholder="'+ parseInt(getData("amount_"+ data[i].id)) +'" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-                } else{
-                  inptItems = '<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_'+ data[i].id +'">';
-                }
-                
-                tdsp2 = tdsp2 + inptItems + '<img onclick="lessUnit(' + data[i].id +')" style="width:13%; heigth:13%" src="img/less_1.png"></center>\
-                </div>\
-                <br>\
-                <div style="height: 50px; width: auto;"><center><img onclick="addToCart('+ data[i].price.toFixed(2) + ' , '+ data[i].stack + ' , '+ data[i].id  +' )" style="width:18%; heigth:18%" src="img/confirm.png"></center></div> \
-                <br>\
-                </center>\
-              </center>\
-            </td>\
-          </tr>\
-        </table>';
-  
-  
-  
-        tdsp2 = tdsp2 + '</ons-card></div>';       
+    for (var i=0; i<data.length; i++) {
+      var itemId = data[i].id;
+      if (i <= (Math.round(middleListLength) - 1)) {
+        tdsp += `
+        <div style="height:30%;">
+          <ons-card id="item_${data[i].id}">
+            <table>
+              <tr>
+                <td>
+                  <center>
+                    <div>
+                      <input type="text" id="img_${data[i].id}" style="display: none;" value="${data[i].image}">
+                      <input type="text" id="dtl_${data[i].id}" style="display: none;" value="${data[i].details}">
+                      <img style="width:30%; height:50%;" src="${data[i].image}">
+                    </div>
+                    <span><strong></strong> ${data[i].details}</span>
+                    <span class="list-item__subtitle"></span><br>
+                    <small>${data[i].nameItem}<span class="list-item__subtitle"></span></small><br><br>
+                    <span><strong> $ ${data[i].price.toFixed(2)}</strong></span><br><br>
+                    <!-- Diseño de botones + y - con input -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 25px;">
+                      <!-- Botón + -->
+                      <button onclick="plusUnit(${data[i].stack}, ${data[i].id})" style="background-color:#4CAF50; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
+                        +
+                      </button>
+                      
+                      <!-- Input cantidad -->
+                      ${getData("amount_" + data[i].id) != null ? (() => {
+                        $("#units_" + data[i].id).val(parseInt(getData("amount_" + data[i].id)));
+                        return `<input type="number" value="${parseInt(getData("amount_" + data[i].id))}" placeholder="${parseInt(getData("amount_" + data[i].id))}" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`;
+                      })() : `<input type="number" placeholder="1" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`}
+                      
+                      <!-- Botón - -->
+                      <button onclick="lessUnit(${data[i].id})" style="background-color:#f44336; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
+                        −
+                      </button>
+                    </div>
+                    <br>
+                    <div style="height:50px;">
+                      <center>
+                        <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
+                      </center>
+                    </div>
+                    <br>
+                  </center>
+                </td>
+              </tr>
+            </table>
+          </ons-card>
+        </div>`;
+      } else {
+        tdsp2 += `
+        <div style="height:30%;">
+          <ons-card id="item_${data[i].id}">
+            <table>
+              <tr>
+                <td>
+                  <center>
+                    <div>
+                      <input type="text" id="img_${data[i].id}" style="display: none;" value="${data[i].image}">
+                      <input type="text" id="dtl_${data[i].id}" style="display: none;" value="${data[i].details}">
+                      <img style="width:30%; height:30%;" src="${data[i].image}">
+                    </div>
+                    <span>${data[i].details}</span>
+                    <span class="list-item__subtitle"></span><br>
+                    <small>${data[i].nameItem}<span class="list-item__subtitle"></span></small><br><br>
+                    <span><strong> $ ${data[i].price.toFixed(2)}</strong></span><br><br>
+                    <!-- Diseño de botones + y - con input -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 25px;">
+                      <!-- Botón + -->
+                      <button onclick="plusUnit(${data[i].stack}, ${data[i].id})" style="background-color:#4CAF50; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
+                        +
+                      </button>
+                      
+                      <!-- Input cantidad -->
+                      ${getData("amount_" + data[i].id) != null ? (() => {
+                        $("#units_" + data[i].id).val(parseInt(getData("amount_" + data[i].id)));
+                        return `<input type="number" value="${parseInt(getData("amount_" + data[i].id))}" placeholder="${parseInt(getData("amount_" + data[i].id))}" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`;
+                      })() : `<input type="number" placeholder="1" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`}
+                      
+                      <!-- Botón - -->
+                      <button onclick="lessUnit(${data[i].id})" style="background-color:#f44336; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
+                        −
+                      </button>
+                    </div>
+                    <br>
+                    <div style="height:50px;">
+                      <center>
+                      <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
+                      </center>
+                    </div>
+                    <br>
+                  </center>
+                </td>
+              </tr>
+            </table>
+          </ons-card>
+        </div>`;
       }
-     
     }
-    saveData("isFromClickMenu", 0);
-    setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
-    setTimeout(function(){ $("#dinamicItems2").html(tdsp2); }, 100);
+    // Luego, asignas los resultados al DOM
+    setTimeout(function() { $("#dinamicItems").html(tdsp); }, 100);
+    setTimeout(function() { $("#dinamicItems2").html(tdsp2); }, 100);
     
   }
 
@@ -774,67 +830,94 @@ function loadItemsFromMemory(){
           loadAddres = '<hr><strong><span id="address" style="font-style: italic; color: black;">' + address +'</span> </strong><br>';
         }
 
-        addressDelivery += '<ons-card>\
-        <h1>Entregar en: <i style="position: absolute; right: 0;" class="fas fa-pencil-alt" onclick="showMapDelivery()"></i></h1>\
-        '+loadAddres+'\
-        <div id="mapDelivery" style="display: none;">\
-          <div style="display:none;">\
-            <div id="title">Autocomplete search</div>\
-            <div id="type-selector" class="pac-controls">\
-              <input\
-              type="radio"\
-              name="type"\
-              id="changetype-all"\
-              checked="checked"\
-              />\
-              <label for="changetype-all">All</label>\
-              \
-              <input type="radio" name="type" id="changetype-establishment" />\
-              <label for="changetype-establishment">Establishments</label>\
-              \
-              <input type="radio" name="type" id="changetype-address" />\
-              <label for="changetype-address">Addresses</label>\
-              \
-              <input type="radio" name="type" id="changetype-geocode" />\
-              <label for="changetype-geocode">Geocodes</label>\
-            </div>\
-            <br />\
-            <div id="strict-bounds-selector" class="pac-controls">\
-              <input type="checkbox" id="use-location-bias" value="" checked />\
-              <label for="use-location-bias">Bias to map viewport</label>\
-              \
-              <input type="checkbox" id="use-strict-bounds" value="" />\
-              <label for="use-strict-bounds">Strict bounds</label>\
-            </div>\
-          </div>\
-          <div id="map"></div>\
-          <div id="pac-container">\
-          <input id="pac-input" type="text" placeholder="O ingresa una nueva dirección de entrega.." style="width:100%;"/>\
-          </div>\
-          <div id="infowindow-content">\
-            <span id="place-name" class="title"></span><br />\
-            <span id="place-address"></span>\
-          </div>\
-          <div><center><ons-button onclick="confirmNewAddress()">Confirmar</ons-button></center></div>\
-        </div>\
-        </ons-card>';
+        addressDelivery += `
+        <ons-card>
+          <h1 style="display: flex; align-items: center; justify-content: space-between; position: relative; margin-bottom: 10px;">
+            Entregar en:
+            <i 
+              class="fas fa-pencil-alt" 
+              style="font-size: 16px; cursor: pointer; color: #333; vertical-align: middle;"
+              onclick="showMapDelivery()" 
+              title="Editar dirección"
+            ></i>
+          </h1>
+          ${loadAddres}
+          <div id="mapDelivery" style="display: none; margin-top: 10px; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
+            <div style="display: none;">
+              <div id="title" style="font-weight: bold; margin-bottom: 10px;">Autocomplete search</div>
+              <div id="type-selector" class="pac-controls" style="margin-bottom: 10px;">
+                <label style="margin-right: 10px;">
+                  <input type="radio" name="type" id="changetype-all" checked />
+                  All
+                </label>
+                <label style="margin-right: 10px;">
+                  <input type="radio" name="type" id="changetype-establishment" />
+                  Establecimientos
+                </label>
+                <label style="margin-right: 10px;">
+                  <input type="radio" name="type" id="changetype-address" />
+                  Direcciones
+                </label>
+                <label>
+                  <input type="radio" name="type" id="changetype-geocode" />
+                  Geocodes
+                </label>
+              </div>
+              <div id="strict-bounds-selector" class="pac-controls" style="margin-bottom: 10px;">
+                <label style="margin-right: 15px;">
+                  <input type="checkbox" id="use-location-bias" checked />
+                  Bias a la vista del mapa
+                </label>
+                <label>
+                  <input type="checkbox" id="use-strict-bounds" />
+                  Limitar límites
+                </label>
+              </div>
+            </div>
+            <div id="map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px;"></div>
+            <div id="pac-container" style="margin-bottom: 10px;">
+              <input 
+                id="pac-input" 
+                type="text" 
+                placeholder="O ingresa una nueva dirección de entrega..." 
+                style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box;"
+              />
+            </div>
+            <div id="infowindow-content" style="margin-top: 10px;">
+              <span id="place-name" class="title" style="font-weight: bold;"></span><br />
+              <span id="place-address"></span>
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+              <ons-button onclick="confirmNewAddress()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+                Confirmar
+              </ons-button>
+            </div>
+          </div>
+        </ons-card>
+        `;
 
-      payMethod += '<ons-card><center><h1>Método de pago </h1></center><br>\
-        <label class="radio-button radio-button--material">\
-        <input type="radio" class="radio-button__input radio-button--material__input" id="debit_radio" name="r" checked="checked">\
-        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-        Tarjeta de Credito/Debito\
-        </label>\
-        <label class="radio-button radio-button--material">\
-        <input type="radio" class="radio-button__input radio-button--material__input" id="cash_radio" name="r" >\
-        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-        Pago en Efectivo\
-        </label>\
-        <label class="radio-button radio-button--material">\
-        <input type="radio" class="radio-button__input radio-button--material__input" id="transfer_radio" name="r">\
-        <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-        Transferencia Bancaria\
-        </label></ons-card>';
+        payMethod += '<ons-card><center><h1>Método de pago </h1></center><br>\
+        <div style="margin-bottom:10px;">\
+          <label class="radio-button radio-button--material">\
+            <input type="radio" class="radio-button__input radio-button--material__input" id="debit_radio" name="r" checked="checked">\
+            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+            Tarjeta de Credito/Debito\
+          </label>\
+        </div>\
+        <div style="margin-bottom:10px;">\
+          <label class="radio-button radio-button--material">\
+            <input type="radio" class="radio-button__input radio-button--material__input" id="cash_radio" name="r" >\
+            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+            Pago en Efectivo\
+          </label>\
+        </div>\
+        <div style="margin-bottom:10px;">\
+          <label class="radio-button radio-button--material">\
+            <input type="radio" class="radio-button__input radio-button--material__input" id="transfer_radio" name="r">\
+            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
+            Transferencia Bancaria\
+          </label>\
+        </div></ons-card>';
 
         itensInCart += addressDelivery + payMethod + '<ons-list-header style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
       }
@@ -1211,10 +1294,7 @@ function retrievePed(validate, isClickFromMenu){
     statusCode: {
       404: function(responseObject, textStatus, jqXHR) {
         setTimeout(function(){
-          var tdsinfo = '<ons-card>\
-              <div class="title center"><center> No se encontraron pedidos en curso!</div>\
-              </div>\
-            </ons-card>';
+          var tdsinfo = '';
       
           $("#dinamicOrder").html(tdsinfo);
         },200);
@@ -1337,7 +1417,7 @@ function showRecord(){
           } else{
             setTimeout(function(){
                tdsinfo = '<ons-card>\
-                  <div class="title center"><center>Aún no cuentas con pedidos completados</div>\
+                  <div class="title center"><center>No se encontraron pedidos</div>\
                   </div>\
                 </ons-card>';
           
@@ -1368,4 +1448,21 @@ function showRecord(){
   }
   
   
+}
+
+function loginWithGoogle(){
+  
+  window.plugins.googleplus.login(
+    {
+      'scopes': 'profile email', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
+      'webClientId': '278432192171-g54vtv17uiuujuamh9m8fskkaf2j540q.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+      'offline': true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+    },
+    function (obj) {
+      alert(JSON.stringify(obj)); // do something useful instead of alerting
+    },
+    function (msg) {
+      alerta('error: ' + msg);
+    }
+  );
 }

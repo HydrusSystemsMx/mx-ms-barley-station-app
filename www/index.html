@@ -148,7 +148,10 @@
   <template id="tab2.html">
     <ons-page id="Tab2">
       <ons-card>
-        <h3>Historial de pedidos<i id="" style="position: absolute; right: 0;" class="fas fa-caret-square-left" onclick="showRecord()"></i></h3>
+        <h3 style="display: flex; align-items: center; justify-content: space-between;">
+          <span>Historial de pedidos</span>
+          <img src="img/history.png" style="width: 31px; height: auto; margin-left: 10px;" onclick="showRecord()">
+        </h3>
         <div id="dinamicHistory" style="display:none;"></div>
       </ons-card>
       <div id="dinamicOrder"></div>
@@ -187,6 +190,16 @@
   </ons-modal>
 
   <div id="dinamicDialog"></div>
+
+    <!-- Contenedor del diálogo personalizado -->
+  <div id="customConfirm" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px; border-radius:8px; max-width:300px; width:80%; box-shadow:0 2px 10px rgba(0,0,0,0.2); text-align:center;">
+      <p id="confirmMessage" style="margin-bottom:20px; font-family:Arial, sans-serif; font-size:16px; color:#333;"></p>
+      <button onclick="confirmResponse(true)" style="background-color: #4CAF50; color: white; padding:10px 20px; margin-right:10px; border:none; border-radius:4px; cursor:pointer;">Sí</button>
+      <button onclick="confirmResponse(false)" style="background-color: #f44336; color: white; padding:10px 20px; border:none; border-radius:4px; cursor:pointer;">No</button>
+    </div>
+  </div>
+
 
   <!-- Scripts finales -->
   <script src="cordova.js"></script>
@@ -243,20 +256,33 @@
             <span class="list-item__subtitle"></span><br />
             <small>${item.nameItem}<span class="list-item__subtitle"></span></small><br /><br />
             <span><strong> $ ${item.price.toFixed(2)}</strong></span><br /><br />
-            <div style="height: 25px; width: auto;">
-              <center>
-                <img onclick="plusUnit(${item.stack}, ${id})" style="width:6%; height:6%;" src="img/pluss_1.png" />
-                ${getData("amount_" + id) != null ? (() => {
-                  $("#units_" + id).val(parseInt(getData("amount_" + id)));
-                  return `<input type="number" value="${parseInt(getData("amount_" + id))}" placeholder="${parseInt(getData("amount_" + id))}" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_${id}">`;
-                })() : `<input type="number" placeholder="0" style="width:20%; height: 15%; color: black; border: none; text-align: center;" id="units_${id}">`}
-                <img onclick="lessUnit(${id})" style="width:6%; height:6%;" src="img/less_1.png" />
-              </center>
+
+            <!-- Diseño para los botones y cantidad -->
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+              <!-- Botón + -->
+              <button onclick="plusUnit(${item.stack}, ${id})" style="background-color: #4CAF50; border: none; color: white; padding: 8px 12px; border-radius: 4px; font-size: 16px; cursor: pointer;">
+                +
+              </button>
+
+              <!-- Input de cantidad -->
+              <input 
+                type="number" 
+                id="units_${id}" 
+                placeholder="0" 
+                style="width: 60px; height: 30px; text-align: center; font-size: 16px; border: none; background-color: transparent; outline: none; font-weight: bold;"
+                value="${getData("amount_" + id) != null ? parseInt(getData("amount_" + id)) : ''}"
+              />
+
+              <!-- Botón - -->
+              <button onclick="lessUnit(${id})" style="background-color: #f44336; border: none; color: white; padding: 8px 12px; border-radius: 4px; font-size: 16px; cursor: pointer;">
+                −
+              </button>
             </div>
-            <br />
+            <!-- Fin del diseño -->
+
             <div style="height: 50px; width: auto;">
               <center>
-                <ons-button onclick="addToCart(${item.price.toFixed(2)}, ${item.stack}, ${id})" style="background-color:teal; width: 60%;">Agregar</ons-button>
+                <button class="modern-button" onclick="addToCart(${item.price.toFixed(2)}, ${item.stack}, ${id})" style="background-color:teal; width: 60%;">Confirmar</button>
               </center>
             </div>
             <br />
@@ -290,6 +316,19 @@
         carousel.next();
       }
     }, 3000);
+
+    let confirmCallback;
+
+  function showCustomConfirm(message, callback) {
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('customConfirm').style.display = 'flex';
+    confirmCallback = callback;
+  }
+
+  function confirmResponse(response) {
+    document.getElementById('customConfirm').style.display = 'none';
+    if (confirmCallback) confirmCallback(response);
+  }
   </script>
 </body>
 </html>

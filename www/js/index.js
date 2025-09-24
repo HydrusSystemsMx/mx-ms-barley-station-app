@@ -21,6 +21,8 @@ var app = {
         cordova.plugins.backgroundMode.onactivate = function () {
 
         };
+
+        
     },
     receivedEvent: function(id) {
 
@@ -86,6 +88,11 @@ function getPosition() {
     const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 20.11697, lng: -98.73329 },
         zoom: 16,
+        disableDefaultUI: false, // activa los controles por defecto
+        zoomControl: true, // control de zoom visible
+        scrollwheel: true, // permite zoom con rueda del ratón
+        gestureHandling: 'auto', // permite gestos táctiles y de ratón normalmente
+        draggable: true // permite arrastrar el mapa
     });
     const card = document.getElementById("pac-card");
     const input = document.getElementById("pac-input");
