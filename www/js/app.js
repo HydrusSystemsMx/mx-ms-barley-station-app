@@ -1,4 +1,4 @@
-var baseUrl = "http://10.0.2.2:8081";
+var baseUrl = "https://freebee-caramel-stimulant.ngrok-free.dev";
 var pathItems = "/api/v1/barley/items";
 var pathUsers = "/api/v1/barley/users";
 var pathBrands = "/api/v1/barley/brand";
@@ -70,6 +70,12 @@ var time_delivery;
   }
 */
   //------------ |     GPS       ----------///
+
+  $.ajaxSetup({
+    headers: {
+        "ngrok-skip-browser-warning": "69420"
+    }
+  });
 
   var callbackFn = function(location) {
     cordova.plugins.backgroundMode.enable();
@@ -244,9 +250,7 @@ function perfilInfo(){
 		type: 'get',
 		data: null,
 		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
+			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
 		success: function (data) {        if (data.error == null) {
@@ -494,8 +498,6 @@ function loadBrands(){
 		data: null,
 		headers: {
 			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -543,9 +545,7 @@ function searchByIdBrand(){
       type: 'get',
       data: null,
       headers: {
-        "Content-Type": 'application/json',
-        "Content-Length": '1',
-        "Host": '1'
+        "Content-Type": 'application/json'
       },
       dataType: 'json',
       success: function (data) {
@@ -587,9 +587,7 @@ function loadCarousel(){
 		type: 'get',
 		data: null,
 		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
+			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -614,9 +612,7 @@ function loadItems(){
 		type: 'get',
 		data: null,
 		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
+			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -1140,9 +1136,7 @@ function sendOrder(orderRequest, idCart){
 		type: 'post',
 		data: JSON.stringify(orderRequest),
 		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
+			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -1240,9 +1234,7 @@ function retrievePed(validate, isClickFromMenu){
 		type: 'get',
 		data: null,
 		headers: {
-			"Content-Type": 'application/json',
-			"Content-Length": '1',
-			"Host": '1'
+			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
 		success: function (data) {
@@ -1318,9 +1310,7 @@ function rollbackOrder(idRequest){
       type: 'post',
       data: null,
       headers: {
-        "Content-Type": 'application/json',
-        "Content-Length": '1',
-        "Host": '1'
+        "Content-Type": 'application/json'
       },
       dataType: 'json',
       success: function (data) {
@@ -1387,9 +1377,7 @@ function showRecord(){
       type: 'get',
       data: null,
       headers: {
-        "Content-Type": 'application/json',
-        "Content-Length": '1',
-        "Host": '1'
+        "Content-Type": 'application/json'
       },
       dataType: 'json',
       success: function (data) {

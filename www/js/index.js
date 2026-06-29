@@ -12,8 +12,7 @@ var app = {
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
         createInternalBd();
-        getPosition();
-        alert("okas");
+        //getPosition();
         login();
 
         StatusBar.backgroundColorByHexString('#212121');
