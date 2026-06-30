@@ -517,7 +517,7 @@ function loadBrands(){
 function setBrands(data){
   var start = '<center><table><tr>';
   
-  var init = '<td><ons-select id="choose-sel" onchange="searchByIdBrand()"><option value="1000">Todos los productos.. <i class="fa-thin fa-magnifying-glass"></i></option>' ;
+  var init = '<td><ons-select id="choose-sel" onchange="searchByIdBrand()"><option value="1000">Todos... <i class="fa-thin fa-magnifying-glass"></i></option>' ;
   var tdsp="";
   var final = "</ons-select></td>";
     for(var i=0;i<data.length;i++){
@@ -1251,7 +1251,7 @@ function retrievePed(validate, isClickFromMenu){
           }
 
           setTimeout(function(){
-            var msgDelivery = (data.response[0].status.toString() === "0") ? "Buscando repartidor..." : "Preparando entrega...";
+            var msgDelivery = (data.response[0].status.toString() === "0") ? "Asignando pedido..." : "En camino...";
 
             var idOrder = parseInt(data.response[0].idRequest);
             tdsinfo = '<ons-card>\
