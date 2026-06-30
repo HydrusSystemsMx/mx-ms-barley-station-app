@@ -69,6 +69,21 @@ var time_delivery;
     $("#lista_log").prepend(txt+"</br>");
   }
 */
+  //------------ |     DATE       ----------///
+  const fechaHora = (ts) => {
+    const d = new Date(Number(ts));
+    
+    // Fuerza el ajuste de México (CST: UTC-6)
+    // Esto asegura que, sin importar el país, la hora sea la de México
+    const mexicoOffset = -6; 
+    const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    const nd = new Date(utc + (3600000 * mexicoOffset));
+
+    return nd.toLocaleString('es-MX', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false
+    }).replace(',', '');
+  };
   //------------ |     GPS       ----------///
 
   $.ajaxSetup({
@@ -1257,10 +1272,10 @@ function retrievePed(validate, isClickFromMenu){
             tdsinfo = '<ons-card>\
                 <div class="title center"><center> Pedido en curso... </div>\
                 <div class="content"><br>\
-                <label>Status: <b> ' + msgDelivery + '</b></center><img src="img/loading.gif" width="5%" heigth="5%"></label>\
-                <label>Fecha: <b>' + data.response[0].createdDate + '</b></center></label>\
-                <label>Descripcion: <b>' + data.response[0].total.toFixed(2) + '</b></center></label>\
-                <label>IDPEDIDO: <b>' + idOrder +'</b></center></label>\
+                <label>Status: <b> ' + msgDelivery + '</b></center><img src="img/loading.gif" width="5%" heigth="5%"></label><br>\
+                <label>Fecha: <b>' + fechaHora(data.response[0].createdDate) + '</b></center></label><br>\
+                <label>Descripcion: <b>' + data.response[0].total.toFixed(2) + '</b></center></label><br>\
+                <label>IDPEDIDO: <b>' + idOrder +'</b></center></label><br>\
                 <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + idOrder + ')"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
                 </div>\
               </ons-card>';
@@ -1454,3 +1469,4 @@ function loginWithGoogle(){
     }
   );
 }
+
