@@ -811,7 +811,7 @@ function loadItemsFromMemory(){
             </div></center>\
             <div class="content">\
             <ons-list>\
-            <ons-list-item>Precio unidad: $ ' + result.rows.item(index).price.toFixed(2) + '</ons-list-item>\
+            <ons-list-item>Precio: $ ' + result.rows.item(index).price.toFixed(2) + '</ons-list-item>\
             <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
             </ons-list>\
             <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
