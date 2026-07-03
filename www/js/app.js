@@ -177,8 +177,7 @@ var time_delivery;
         }
       }) */
 
-  
-      327527612
+
 
   function updatePositionBack(latitud,longitud) {
     console.log("FIRST ONE: "+ latitud +", "+ longitud);
@@ -186,12 +185,13 @@ var time_delivery;
 
 /* PROCESOS LOGIN */
 function login(){
+    /*
   cambiar_menu("page_menu");
   loadItems();
   loadBrands();
   loadCarousel();
 
-  /*
+
   email = $("#rep_correo").val();
   pass = $("#rep_pass").val();
 
@@ -259,7 +259,6 @@ function perfilInfo(){
   cambiar_menu('perfil');
 
   webservice = baseUrl + pathUsers + "/4";
-
 	$.ajax({
 		url: webservice,
 		type: 'get',
@@ -1455,18 +1454,15 @@ function showRecord(){
 
 function loginWithGoogle(){
   
-  window.plugins.googleplus.login(
-    {
-      'scopes': 'profile email', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
-      'webClientId': '278432192171-g54vtv17uiuujuamh9m8fskkaf2j540q.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
-      'offline': true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
-    },
-    function (obj) {
-      alert(JSON.stringify(obj)); // do something useful instead of alerting
-    },
-    function (msg) {
-      alerta('error: ' + msg);
-    }
-  );
+  window.plugins.googleplus.login({
+    'webClientId': '278432192171-14b4vq8klalpkao1940ra70fk32qd1rs.apps.googleusercontent.com', // AQUÍ VA TU CÓDIGO
+    'offline': true
+  }, function (obj) {
+      // Si entra aquí, es que funcionó
+      alerta("Login exitoso: " + obj.displayName);
+  }, function (err) {
+      // Si entra aquí, es que sigue habiendo un problema
+      alerta("Error de login: " + err);
+  });
 }
 
