@@ -5,7 +5,8 @@ var pathBrands = "/api/v1/barley/brand";
 var pathOrder = "/api/v1/barley/order";
 var pathBanner = "/api/v1/barley/banner";
 var BARLEYRQUEST = "BSV1";
-var currentYear = 2025;
+var googleWebClientId = "278432192171-14b4vq8klalpkao1940ra70fk32qd1rs.apps.googleusercontent.com";
+var currentYear = 2026;
 
 /*
 var idPedidoOnline=0;
@@ -268,7 +269,7 @@ function perfilInfo(){
 		},
 		dataType: 'json',
 		success: function (data) {        if (data.error == null) {
-				//document.querySelector('#myNavigator').pushPage('detailService.html');
+				document.querySelector('#myNavigator').pushPage('detailService.html');
 
         setTimeout(function(){
           var tdsinfo = '<ons-card>\
@@ -1455,13 +1456,47 @@ function showRecord(){
 function loginWithGoogle(){
   
   window.plugins.googleplus.login({
-    'webClientId': '278432192171-14b4vq8klalpkao1940ra70fk32qd1rs.apps.googleusercontent.com', // AQUÍ VA TU CÓDIGO
-    'offline': true
+    'webClientId': googleWebClientId, // AQUÍ VA TU CÓDIGO
+    'offline': true,
+    'forceWebLogin': false
   }, function (obj) {
-      // Si entra aquí, es que funcionó
-      alerta("Login exitoso: " + obj.displayName);
+      // Create user
+      const userRequest = {
+        name: (obj.givenName || "") + " " + (obj.familyName || ""),
+        nickname: obj.imageUrl || "",
+        mail: obj.email || "",
+        phone: "", 
+        address: ""
+      };
+    
+      // Esto imprimirá exactamente lo que tu backend necesita
+      console.log(JSON.stringify(userRequest));
+
+      webservice = baseUrl + pathUsers + "/create";
+      $.ajax({
+        url: webservice,
+        type: 'post',
+        data: JSON.stringify(userRequest),
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        dataType: 'json',
+        success: function (data) {        
+          if (data.error == null) {
+            setTimeout(function(){
+              //Orimer login dar la
+              cambiar_menu("page_menu");
+              loadItems();
+              loadBrands();
+              loadCarousel();
+            },200);
+          } else {
+            alerta(JSON.stringify(data.error));
+          }
+        }
+      });
+    
   }, function (err) {
-      // Si entra aquí, es que sigue habiendo un problema
       alerta("Error de login: " + err);
   });
 }
