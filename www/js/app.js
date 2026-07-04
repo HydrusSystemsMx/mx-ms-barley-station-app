@@ -259,7 +259,7 @@ function trigger_autologin(){
 function perfilInfo(){
   cambiar_menu('perfil');
 
-  webservice = baseUrl + pathUsers + "/4";
+  webservice = baseUrl + pathUsers + "/1";
 	$.ajax({
 		url: webservice,
 		type: 'get',
@@ -268,28 +268,49 @@ function perfilInfo(){
 			"Content-Type": 'application/json'
 		},
 		dataType: 'json',
-		success: function (data) {        if (data.error == null) {
-				document.querySelector('#myNavigator').pushPage('detailService.html');
-
+		success: function (data) {       
+        console.log(JSON.stringify(data));
         setTimeout(function(){
-          var tdsinfo = '<ons-card>\
-              <div class="title center"><center> ¡Hola!  <strong style="color: #F84C09"> ' + data.response.nickname + '</strong> </div>\
-              <div class="content"><br>\
-              <center><img id="img_rep" width="40%" height="40%" src="img/perfil.png" style="border-radius:10px;"></center><br><br><br>\
-              <label>Nombre: <b> ' + data.response.name + ' </b></center></label>\
-              <label>Número: <b> ' + data.response.phone + ' </b></center></label>\
-              <label>Correo: <b> ' + data.response.mail + ' </b></center></label>\
-              <label>Dirección: <b> ' + data.response.address + ' </b></center></label><br><br>\
-              <br><button class="button--cta" style=" width:100%;" onclick="cerrarSesion();"><i class="fa fa-check" aria-hidden="true"></i> Cerrar Sesión</button></center>\
-              </div>\
-            </ons-card>';
+          const val = (v) => (v && v !== "null" && v !== "undefined" && v !== "") ? v : "No registrado";
 
+          var tdsinfo = `
+          <div class="profile-card">
+              <div class="profile-main">
+                  <img src="${data.profileImage || 'https://ui-avatars.com/api/?name=' + data.name}" class="avatar">
+                  <h2 class="user-name">¡Hola, ${val(data.name).split(' ')[0]}!</h2>
+              </div>
+          
+              <div class="profile-details">
+                  <div class="row">
+                      <span class="label">Nombre </span>
+                      <span class="value">${val(data.name)}</span>
+                  </div>
+                  <div class="row">
+                      <span class="label">Teléfono</span>
+                      <span class="value">${val(data.phone)}</span>
+                  </div>
+                  <div class="row">
+                      <span class="label">Correo</span>
+                      <span class="value">${val(data.mail)}</span>
+                  </div>
+                  <div class="row">
+                      <span class="label">Dirección</span>
+                      <span class="value">${val(data.address)}</span>
+                  </div>
+              </div>
+          
+              <button class="btn-logout" onclick="cerrarSesion();">
+                  <i class="fa fa-power-off" style="margin-right: 8px;"></i> Cerrar Sesión
+              </button>
+          </div>`;
+          
           $("#lst_info").html(tdsinfo);
       },200);
-			} else {
-				alerta(JSON.stringify(data.error));
-			}
-		}
+		},
+    error: function (xhr, status, error) {
+        // Aquí solo entrará si el código es 4xx o 5xx
+        alerta("Error en el servidor: " + status);
+    }
 	});
 
   /* webservice =  web+"profile.php?jsoncallback=?";
@@ -1463,10 +1484,8 @@ function loginWithGoogle(){
       // Create user
       const userRequest = {
         name: (obj.givenName || "") + " " + (obj.familyName || ""),
-        nickname: obj.imageUrl || "",
+        profileImage: obj.imageUrl || "",
         mail: obj.email || "",
-        phone: "", 
-        address: ""
       };
     
       // Esto imprimirá exactamente lo que tu backend necesita
@@ -1477,27 +1496,25 @@ function loginWithGoogle(){
         url: webservice,
         type: 'post',
         data: JSON.stringify(userRequest),
-        headers: {
-          "Content-Type": 'application/json'
-        },
-        dataType: 'json',
-        success: function (data) {        
-          if (data.error == null) {
+        headers: { "Content-Type": 'application/json' },
+        dataType: 'text', // Cambiado a texto para evitar error de parseo
+        success: function (data) {
+            // Si entra aquí, el status fue 200-299
+            // data será una cadena vacía ""
             setTimeout(function(){
-              //Orimer login dar la
-              cambiar_menu("page_menu");
-              loadItems();
-              loadBrands();
-              loadCarousel();
-            },200);
-          } else {
-            alerta(JSON.stringify(data.error));
-          }
+                cambiar_menu("page_menu");
+                loadItems();
+                loadBrands();
+                loadCarousel();
+            }, 200);
+        },
+        error: function (xhr, status, error) {
+            // Aquí solo entrará si el código es 4xx o 5xx
+            alerta("Error en el servidor: " + status);
         }
-      });
+    });
     
   }, function (err) {
       alerta("Error de login: " + err);
   });
 }
-
