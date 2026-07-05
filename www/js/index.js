@@ -11,28 +11,35 @@ var app = {
 
     onDeviceReady: function() {
         this.receivedEvent('deviceready');
+        
+        // 1. Primero preparamos la base de datos
         createInternalBd();
+        
+    
+        setTimeout(function() {
+            verificarSesion();
+        }, 300);
+
         getPosition();
-        login();
 
         StatusBar.backgroundColorByHexString('#212121');
 
         cordova.plugins.backgroundMode.onactivate = function () {
-
+            // Lógica de background si es necesaria
         };
-
-        
     },
+    
     receivedEvent: function(id) {
-
+        console.log('Evento recibido: ' + id);
     }
 };
 app.initialize();
 
-
 //---------------------|  PROCESOS SQL LITE  | ------------------------//
 
 function cerrarSesion() {
+    cleanData();
+    cerarSesionGoolge();
     navigator.app.exitApp();
 }
 
@@ -251,4 +258,30 @@ function persistChange() {
         }
     })
     .catch((e) => window.alert("Geocoder failed due to: " + e));
+}
+
+function verificarSesion() {
+    const user = getData("idUser");
+    if (user && user !== "undefined" && user !== "null") {
+        console.log("Sesión activa detectada, cargando app...");
+        cambiar_menu("page_menu");
+        loadItems();
+        loadBrands();
+        loadCarousel();
+    } else {
+        console.log("No hay sesión, mostrando login.");
+        cambiar_menu("page_login");
+    }
+}
+
+function cerarSesionGoolge() {
+    // 1. Intentamos desconectar de Google
+    window.plugins.googleplus.logout(
+        function (msg) {
+            console.log("Desconectado de Google: " + msg);
+        },
+        function (err) {
+            console.warn("No se pudo cerrar sesión en Google, forzando borrado local: " + err);
+        }
+    );
 }

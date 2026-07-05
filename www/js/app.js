@@ -259,7 +259,7 @@ function trigger_autologin(){
 function perfilInfo(){
   cambiar_menu('perfil');
 
-  webservice = baseUrl + pathUsers + "/1";
+  webservice = baseUrl + pathUsers + "/" + getData("idUser");
 	$.ajax({
 		url: webservice,
 		type: 'get',
@@ -1474,46 +1474,59 @@ function showRecord(){
   
 }
 
-function loginWithGoogle(){
-  
+function loginWithGoogle() {
   window.plugins.googleplus.login({
-    'webClientId': googleWebClientId, // AQUÍ VA TU CÓDIGO
-    'offline': true,
-    'forceWebLogin': false
+      'webClientId': googleWebClientId,
+      'offline': true,
+      'forceWebLogin': false
   }, function (obj) {
       // Create user
       const userRequest = {
-        name: (obj.givenName || "") + " " + (obj.familyName || ""),
-        profileImage: obj.imageUrl || "",
-        mail: obj.email || "",
+          name: (obj.givenName || "") + " " + (obj.familyName || ""),
+          profileImage: obj.imageUrl || "",
+          mail: obj.email || "",
       };
-    
-      // Esto imprimirá exactamente lo que tu backend necesita
+
       console.log(JSON.stringify(userRequest));
 
-      webservice = baseUrl + pathUsers + "/create";
+      var webservice = baseUrl + pathUsers + "/create";
       $.ajax({
-        url: webservice,
-        type: 'post',
-        data: JSON.stringify(userRequest),
-        headers: { "Content-Type": 'application/json' },
-        dataType: 'text', // Cambiado a texto para evitar error de parseo
-        success: function (data) {
-            // Si entra aquí, el status fue 200-299
-            // data será una cadena vacía ""
-            setTimeout(function(){
-                cambiar_menu("page_menu");
-                loadItems();
-                loadBrands();
-                loadCarousel();
+          url: webservice,
+          type: 'post',
+          data: JSON.stringify(userRequest),
+          headers: { "Content-Type": 'application/json' },
+          dataType: 'text',
+          success: function (data) {
+            var response;
+            try {
+                response = JSON.parse(data);
+            } catch (e) {
+                alerta("Error al procesar JSON");
+                return;
+            }
+        
+            setTimeout(function () {
+                try {
+                    // Guardado
+                    saveData("idUser", response.idUser);
+                    saveData("user", JSON.stringify(response));
+                    location.reload();
+                    cambiar_menu("page_menu");
+        
+                    // Ejecución blindada: si una falla, la siguiente continúa
+                    try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
+                    try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
+                    try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
+        
+                } catch (err) {
+                    alerta("Error crítico en el flujo: " + err.message);
+                }
             }, 200);
         },
-        error: function (xhr, status, error) {
-            // Aquí solo entrará si el código es 4xx o 5xx
-            alerta("Error en el servidor: " + status);
-        }
-    });
-    
+          error: function (xhr, status, error) {
+              alerta("Error en el servidor: " + status);
+          }
+      });
   }, function (err) {
       alerta("Error de login: " + err);
   });
