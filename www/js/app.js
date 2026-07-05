@@ -70,6 +70,81 @@ var time_delivery;
     $("#lista_log").prepend(txt+"</br>");
   }
 */
+  //------------ |     GLOBAL       ----------///
+  window.showImageModal = function(imageUrl) {
+    let scale = 1;
+    let posX = 0;
+    let posY = 0;
+    const bbvaBlue = "#004481";
+
+    const modal = document.createElement('ons-modal');
+    modal.style.zIndex = "9999";
+    
+    modal.innerHTML = `
+        <div style="width: 100vw; height: 100vh; position: relative; background: rgba(0,0,0,0.9); overflow: hidden;">
+            
+            <!-- Botón X: Siempre presente -->
+            <div onclick="this.closest('ons-modal').hide()" 
+                 style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; 
+                 background: ${bbvaBlue}; color: white; border-radius: 50%; display: flex; 
+                 align-items: center; justify-content: center; cursor: pointer; z-index: 10000; font-size: 20px;">
+                &times;
+            </div>
+
+            <!-- Contenedor del área arrastrable -->
+            <div id="drag-container" style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <img id="zoom-img" src="${imageUrl}" 
+                     style="max-width: 80%; transition: transform 0.1s; cursor: grab; position: relative; left: 0px; top: 0px;">
+            </div>
+
+            <!-- Botones -->
+            <div style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; background: white; padding: 10px; border-radius: 30px; z-index: 9999;">
+                <button id="btn-zoom-out" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: ${bbvaBlue}; color: white; font-size: 24px;">−</button>
+                <button id="btn-zoom-in" style="width: 50px; height: 50px; border-radius: 50%; border: none; background: ${bbvaBlue}; color: white; font-size: 24px;">+</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.show();
+
+    const img = modal.querySelector('#zoom-img');
+    const container = modal.querySelector('#drag-container');
+
+    const updateTransform = () => {
+        img.style.transform = `scale(${scale}) translate(${posX / scale}px, ${posY / scale}px)`;
+    };
+
+    modal.querySelector('#btn-zoom-in').onclick = () => { scale += 0.2; updateTransform(); };
+    modal.querySelector('#btn-zoom-out').onclick = () => { if (scale > 0.4) scale -= 0.2; updateTransform(); };
+
+    // Lógica de arrastre libre
+    let isDown = false;
+    let startX, startY;
+
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        img.style.cursor = 'grabbing';
+        startX = e.pageX - posX;
+        startY = e.pageY - posY;
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDown = false;
+        img.style.cursor = 'grab';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        posX = e.pageX - startX;
+        posY = e.pageY - startY;
+        updateTransform();
+    });
+    
+    modal.addEventListener('posthide', () => modal.remove());
+};
+
   //------------ |     DATE       ----------///
   const fechaHora = (ts) => {
     const d = new Date(Number(ts));
@@ -185,39 +260,17 @@ var time_delivery;
   } 
 
 /* PROCESOS LOGIN */
-function login(){
-    /*
-  cambiar_menu("page_menu");
-  loadItems();
-  loadBrands();
-  loadCarousel();
+function loginGuest(){
+  alerta("login gest")
+  const guestRequest = {
+    name: "Guest_" + Math.floor(Math.random() * 9000),
+    profileImage: "img/perfil.png", // <--- ESTO ES LO QUE DEBES PONER
+    mail: ""
+  };
 
+  createBarlayUser(guestRequest);
 
-  email = $("#rep_correo").val();
-  pass = $("#rep_pass").val();
-
-  webservice =  web+"login.php?jsoncallback=?";
-  $.getJSON(webservice,{email:email, pass:pass })
-  .done(function(data,err){
-    if(data.validacion){
-
-      saveData("user",email);
-      saveData("pass",pass);
-     // id_repartidor = data.id_repartidor;
-      navigator.vibrate(100);
-     
-      //console.log(data.lng_suc);
-      //getLocalStorage();
-      showAdvise("FillGas Repartidor",data.mensaje,"alerta");
-      cambiar_menu("page_menu");
-      //window.addEventListener("batterystatus", onBatteryStatus, false); 
-    }else{
-      showAdvise("FillGas Repartidor",data.mensaje,"alerta");
-      
-    }
-  }).fail(function(err){
-    alerta("Intentalo en un momento más");
-  }) */
+  
 }
 
 function trigger_autologin(){
@@ -400,7 +453,7 @@ function showDialog(idItem, price, stack){
         </table>
         
         <br/>
-<button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
+  <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">DSSD</button>
         
         <ons-button 
           id="close-btn-dialog" 
@@ -441,7 +494,8 @@ function lessUnit(idItem){
   }
 }
 
-function addToCart(price, stack, idItem){
+// 1. Recibimos imageUrl como nuevo parámetro
+function addToCart(price, stack, idItem, imageUrl, details) {
 
   var cartElement = "";
   var units = $("#units_" + idItem).val();
@@ -454,8 +508,10 @@ function addToCart(price, stack, idItem){
     ons.notification.toast('La cantidad no puede ser 0', { timeout: 1500, animation: 'ascend' })
     $("#units_" + idItem).val(1);
   } else {
-      var img = $('#img_'+ idItem).val();
-      var dtl = $('#dtl_'+ idItem).val();
+      // 2. Usamos directamente imageUrl que recibimos del botón
+      // var img = $('#img_'+ idItem).val(); // Ya no dependemos de este input oculto
+      var img = imageUrl; 
+      var dtl = details;
 
       myDB.transaction(function(transaction) {
         var executeQuery = "SELECT * FROM CART WHERE idItem=? and status=?";
@@ -480,6 +536,7 @@ function addToCart(price, stack, idItem){
                 ons.notification.toast("Aún cuentas con un pedido en curso...", { timeout: 1500, animation: 'ascend' })
                 setTimeout(function(){ $('#wrapper').trigger('click'); }, 100);
               } else{
+                // 3. Pasamos la variable 'img' que contiene la URL recibida
                 instertIntoMemory(idItem, 4, units, img, price, dtl);
               }
             }, 400);
@@ -511,16 +568,25 @@ function updateAmountItem(idItem, amount){
 
 function instertIntoMemory(idItem, idUser, units, img, price, details){
   myDB.transaction(function (transaction) {
+    // Aseguramos que los parámetros coincidan con los 7 campos de la tabla
     var executeQuery = "INSERT INTO CART (idItem, idUser, amount, image, price, detail, status) VALUES (?,?,?,?,?,?,?)";
-    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details, 0]
-    , function(tx, result) {
-      cambiar_menu('carrito')
+    
+    // img e details vienen ahora directamente desde addToCart()
+    transaction.executeSql(executeQuery, [idItem, idUser, units, img, price, details, 0], 
+    function(tx, result) {
+      // Éxito: navegamos y actualizamos memoria
+      cambiar_menu('carrito');
       saveData("amount_" + idItem, units);
-      loadItemsFromMemory();
+      
+      // Asegúrate de que esta función recargue la vista correctamente
+      if (typeof loadItemsFromMemory === 'function') {
+        loadItemsFromMemory();
+      }
     },
     function(error){
-      er = JSON.stringify(error);
-      alerta('Error occurred');
+      // Error: mostramos el error específico para depuración
+      console.error("Error SQL:", error);
+      alerta('Error al guardar el producto en el carrito');
     });
   });
 }
@@ -663,122 +729,57 @@ function loadItems(){
 			}
 		}
 	});
+}
 
 
-  function setItems(data){
-
-    var tdsp="";
-    var tdsp2="";
-    var inptItems = "";
-    var middleListLength = data.length / 2;
-
-    setTimeout(function(){ $("#dinamicItemsBrand").html(""); }, 100);
-
-    for (var i=0; i<data.length; i++) {
-      var itemId = data[i].id;
-      if (i <= (Math.round(middleListLength) - 1)) {
-        tdsp += `
-        <div style="height:30%;">
-          <ons-card id="item_${data[i].id}">
-            <table>
-              <tr>
-                <td>
-                  <center>
-                    <div>
-                      <input type="text" id="img_${data[i].id}" style="display: none;" value="${data[i].image}">
-                      <input type="text" id="dtl_${data[i].id}" style="display: none;" value="${data[i].details}">
-                      <img style="width:30%; height:50%;" src="${data[i].image}">
-                    </div>
-                    <span><strong></strong> ${data[i].details}</span>
-                    <span class="list-item__subtitle"></span><br>
-                    <small>${data[i].nameItem}<span class="list-item__subtitle"></span></small><br><br>
-                    <span><strong> $ ${data[i].price.toFixed(2)}</strong></span><br><br>
-                    <!-- Diseño de botones + y - con input -->
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 25px;">
-                      <!-- Botón + -->
-                      <button onclick="plusUnit(${data[i].stack}, ${data[i].id})" style="background-color:#4CAF50; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
-                        +
-                      </button>
-                      
-                      <!-- Input cantidad -->
-                      ${getData("amount_" + data[i].id) != null ? (() => {
-                        $("#units_" + data[i].id).val(parseInt(getData("amount_" + data[i].id)));
-                        return `<input type="number" value="${parseInt(getData("amount_" + data[i].id))}" placeholder="${parseInt(getData("amount_" + data[i].id))}" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`;
-                      })() : `<input type="number" placeholder="1" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`}
-                      
-                      <!-- Botón - -->
-                      <button onclick="lessUnit(${data[i].id})" style="background-color:#f44336; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
-                        −
-                      </button>
-                    </div>
-                    <br>
-                    <div style="height:50px;">
-                      <center>
-                        <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
-                      </center>
-                    </div>
-                    <br>
-                  </center>
-                </td>
-              </tr>
-            </table>
-          </ons-card>
-        </div>`;
-      } else {
-        tdsp2 += `
-        <div style="height:30%;">
-          <ons-card id="item_${data[i].id}">
-            <table>
-              <tr>
-                <td>
-                  <center>
-                    <div>
-                      <input type="text" id="img_${data[i].id}" style="display: none;" value="${data[i].image}">
-                      <input type="text" id="dtl_${data[i].id}" style="display: none;" value="${data[i].details}">
-                      <img style="width:30%; height:30%;" src="${data[i].image}">
-                    </div>
-                    <span>${data[i].details}</span>
-                    <span class="list-item__subtitle"></span><br>
-                    <small>${data[i].nameItem}<span class="list-item__subtitle"></span></small><br><br>
-                    <span><strong> $ ${data[i].price.toFixed(2)}</strong></span><br><br>
-                    <!-- Diseño de botones + y - con input -->
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 25px;">
-                      <!-- Botón + -->
-                      <button onclick="plusUnit(${data[i].stack}, ${data[i].id})" style="background-color:#4CAF50; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
-                        +
-                      </button>
-                      
-                      <!-- Input cantidad -->
-                      ${getData("amount_" + data[i].id) != null ? (() => {
-                        $("#units_" + data[i].id).val(parseInt(getData("amount_" + data[i].id)));
-                        return `<input type="number" value="${parseInt(getData("amount_" + data[i].id))}" placeholder="${parseInt(getData("amount_" + data[i].id))}" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`;
-                      })() : `<input type="number" placeholder="1" style="width:20%; height: 25px; text-align:center; font-size:16px; border: none; background-color: transparent; outline: none; font-weight: bold;" id="units_${data[i].id}">`}
-                      
-                      <!-- Botón - -->
-                      <button onclick="lessUnit(${data[i].id})" style="background-color:#f44336; border:none; color:white; padding:5px 10px; border-radius:4px; font-size:16px; cursor:pointer;">
-                        −
-                      </button>
-                    </div>
-                    <br>
-                    <div style="height:50px;">
-                      <center>
-                      <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
-                      </center>
-                    </div>
-                    <br>
-                  </center>
-                </td>
-              </tr>
-            </table>
-          </ons-card>
-        </div>`;
+  function setItems(data) {
+      let tdsp = "";
+      let tdsp2 = "";
+      const middleListLength = data.length / 2;
+  
+      // Limpiamos contenedor de marcas
+      setTimeout(function() { $("#dinamicItemsBrand").html(""); }, 100);
+  
+      for (var i = 0; i < data.length; i++) {
+          const item = data[i];
+          const amount = getData("amount_" + item.id) || 1;
+  
+          const cardHTML = `
+          <ons-card class="card-modern" id="item_${item.id}">
+              <div style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 5px;">
+                  <div onclick="showImageModal('${item.image}')" style="cursor: pointer; padding: 5px;">
+                      <ons-icon icon="md-search" size="24px" style="color: #4CAF50;"></ons-icon>
+                  </div>
+              </div>
+              <img class="img-product" src="${item.image}">
+              <div style="width: 100%; text-align: center;">
+                  <h3 style="margin: 5px 0; font-size: 1.1em;">${item.nameItem}</h3>
+                  <p style="color: #666; font-size: 0.85em; margin: 0;">${item.details}</p>
+                  <p style="font-size: 1.2em; font-weight: bold; margin: 10px 0;">$ ${item.price.toFixed(2)}</p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
+                  <button class="btn-qty" style="background-color:#f44336;" onclick="lessUnit(${item.id})">−</button>
+                  <input type="number" value="${amount}" id="units_${item.id}" style="width: 40px; text-align:center; border: 1px solid #ddd; border-radius: 8px;">
+                  <button class="btn-qty" style="background-color:#4CAF50;" onclick="plusUnit(${item.stack}, ${item.id})">+</button>
+              </div>
+              <button class="modern-button" onclick="addToCart(${item.price.toFixed(2)}, ${item.stack}, ${item.id}, '${item.image}', '${item.nameItem} ${item.details}')">
+                  Confirmar
+              </button>
+          </ons-card>`;
+  
+          if (i <= (Math.round(middleListLength) - 1)) {
+              tdsp += cardHTML;
+          } else {
+              tdsp2 += cardHTML;
+          }
       }
-    }
-    // Luego, asignas los resultados al DOM
-    setTimeout(function() { $("#dinamicItems").html(tdsp); }, 100);
-    setTimeout(function() { $("#dinamicItems2").html(tdsp2); }, 100);
-    
-  }
+  
+      // Renderizado al DOM (Ahora sí está dentro de la función)
+      setTimeout(function() { 
+          $("#dinamicItems").html(tdsp); 
+          $("#dinamicItems2").html(tdsp2); 
+      }, 100);
+  } // <--- ESTA ES LA ÚNICA LLAVE QUE CIERRA LA FUNCIÓN setItems
 
   function noItemsFound(){
     var tdsp="";
@@ -801,7 +802,7 @@ function loadItems(){
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
   }
 
-}
+
 
 function loadLogic(){
   loadBrands();
@@ -1480,54 +1481,55 @@ function loginWithGoogle() {
       'offline': true,
       'forceWebLogin': false
   }, function (obj) {
-      // Create user
-      const userRequest = {
-          name: (obj.givenName || "") + " " + (obj.familyName || ""),
-          profileImage: obj.imageUrl || "",
-          mail: obj.email || "",
-      };
-
-      console.log(JSON.stringify(userRequest));
-
-      var webservice = baseUrl + pathUsers + "/create";
-      $.ajax({
-          url: webservice,
-          type: 'post',
-          data: JSON.stringify(userRequest),
-          headers: { "Content-Type": 'application/json' },
-          dataType: 'text',
-          success: function (data) {
-            var response;
-            try {
-                response = JSON.parse(data);
-            } catch (e) {
-                alerta("Error al procesar JSON");
-                return;
-            }
-        
-            setTimeout(function () {
-                try {
-                    // Guardado
-                    saveData("idUser", response.idUser);
-                    saveData("user", JSON.stringify(response));
-                    location.reload();
-                    cambiar_menu("page_menu");
-        
-                    // Ejecución blindada: si una falla, la siguiente continúa
-                    try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
-                    try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
-                    try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
-        
-                } catch (err) {
-                    alerta("Error crítico en el flujo: " + err.message);
-                }
-            }, 200);
-        },
-          error: function (xhr, status, error) {
-              alerta("Error en el servidor: " + status);
-          }
-      });
+    const userRequest = {
+      name: (obj.givenName || "") + " " + (obj.familyName || ""),
+      profileImage: obj.imageUrl || "",
+      mail: obj.email || "",
+    };
+    createBarlayUser(userRequest);
   }, function (err) {
       alerta("Error de login: " + err);
   });
+}
+
+function createBarlayUser(userRequest){
+   // Create user
+    var webservice = baseUrl + pathUsers + "/create";
+    $.ajax({
+        url: webservice,
+        type: 'post',
+        data: JSON.stringify(userRequest),
+        headers: { "Content-Type": 'application/json' },
+        dataType: 'text',
+        success: function (data) {
+          var response;
+          try {
+              response = JSON.parse(data);
+          } catch (e) {
+              alerta("Error al procesar JSON");
+              return;
+          }
+      
+          setTimeout(function () {
+              try {
+                  // Guardado
+                  saveData("idUser", response.idUser);
+                  saveData("user", JSON.stringify(response));
+                  location.reload();
+                  cambiar_menu("page_menu");
+      
+                  // Ejecución blindada: si una falla, la siguiente continúa
+                  try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
+                  try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
+                  try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
+      
+              } catch (err) {
+                  alerta("Error crítico en el flujo: " + err.message);
+              }
+          }, 200);
+      },
+        error: function (xhr, status, error) {
+            alerta("Error en el servidor: " + status);
+        }
+    });
 }

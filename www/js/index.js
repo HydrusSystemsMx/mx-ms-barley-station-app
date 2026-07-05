@@ -38,9 +38,12 @@ app.initialize();
 //---------------------|  PROCESOS SQL LITE  | ------------------------//
 
 function cerrarSesion() {
+    setTimeout(function(){     TruncatePrueba();
+        navigator.app.exitApp(); }, 200);
+
     cleanData();
     cerarSesionGoolge();
-    navigator.app.exitApp();
+
 }
 
 function networkInfo() {
@@ -58,6 +61,7 @@ function networkInfo() {
 }
 
 function createInternalBd() {
+
     myDB = window.sqlitePlugin.openDatabase({name: "BarleyStation.db", location: 'default'});
     myDB.transaction(function(transaction) {
         transaction.executeSql(

@@ -1351,3 +1351,71 @@ input:disabled + .switch__toggle {
   transform: scale(0.98);
   background: #f1f2f6;
 }
+
+/* Estilos modernos para tus tarjetas */
+.card-modern {
+  border-radius: 16px !important;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important;
+  padding: 16px;
+  margin: 12px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.img-product {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.btn-qty {
+  border: none;
+  color: white;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modern-button {
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
+}
+
+.card-modern {
+  position: relative; /* CRUCIAL: Mantiene todo dentro de la tarjeta */
+  border-radius: 16px !important;
+  padding: 16px;
+  margin: 10px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lupa-container {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  z-index: 10;
+  /* Quitamos el fondo y padding excesivo si estaba ocupando espacio */
+  background: transparent; 
+}
