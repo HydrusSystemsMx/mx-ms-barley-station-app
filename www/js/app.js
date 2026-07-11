@@ -453,7 +453,7 @@ function showDialog(idItem, price, stack){
         </table>
         
         <br/>
-  <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">DSSD</button>
+  <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
         
         <ons-button 
           id="close-btn-dialog" 

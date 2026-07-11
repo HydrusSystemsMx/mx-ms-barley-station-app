@@ -38,12 +38,10 @@ app.initialize();
 //---------------------|  PROCESOS SQL LITE  | ------------------------//
 
 function cerrarSesion() {
-    setTimeout(function(){     TruncatePrueba();
-        navigator.app.exitApp(); }, 200);
-
+    TruncatePrueba();
     cleanData();
     cerarSesionGoolge();
-
+    navigator.app.exitApp();
 }
 
 function networkInfo() {

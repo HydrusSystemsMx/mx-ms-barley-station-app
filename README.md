@@ -6,3 +6,7 @@
         <application android:networkSecurityConfig="@xml/network_security_config" />
     </edit-config>
 # filtro de busqueda en index.html
+# Ejecutar server de ngrok para cors
+# lisar keystore keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+# npx nodemon 
+# Acualizado fingerprin en firebase y enlazado con oauth android en google console
