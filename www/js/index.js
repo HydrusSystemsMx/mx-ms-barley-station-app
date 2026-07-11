@@ -143,6 +143,7 @@ function getPosition() {
         infowindow.close();
         marker.setVisible(false);
         const place = autocomplete.getPlace();
+        document.getElementById('confirm-btn-header').style.display = 'flex';
 
         if (!place.geometry || !place.geometry.location) {
             // User entered the name of a Place that was not suggested and
@@ -260,6 +261,8 @@ function persistChange() {
         }
     })
     .catch((e) => window.alert("Geocoder failed due to: " + e));
+
+    document.getElementById('confirm-btn-header').style.display = 'flex';
 }
 
 function verificarSesion() {

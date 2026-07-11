@@ -136,3 +136,21 @@ var DistanciaGPS = function(lat1,lon1,lat2,lon2){
 var rad = function(x) {
     return x*Math.PI/180;
 }
+
+const input = document.getElementById('pac-input');
+
+// Bloquea el evento de pegar completamente
+input.addEventListener('paste', (e) => {
+    e.preventDefault();
+    console.log("Acción de pegar bloqueada");
+});
+
+// Opcional: Si quieres limpiar el texto después de que peguen algo:
+input.addEventListener('input', (e) => {
+    // Si meten emojis o caracteres raros, los borra al instante
+    const cleanValue = e.target.value.replace(/[^\w\s,.-]/gi, '');
+    if (e.target.value !== cleanValue) {
+        e.target.value = cleanValue;
+    }
+});
+

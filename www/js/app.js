@@ -864,69 +864,39 @@ function loadItemsFromMemory(){
         }
 
         addressDelivery += `
-        <ons-card>
-          <h1 style="display: flex; align-items: center; justify-content: space-between; position: relative; margin-bottom: 10px;">
-            Entregar en:
-            <i 
-              class="fas fa-pencil-alt" 
-              style="font-size: 16px; cursor: pointer; color: #333; vertical-align: middle;"
-              onclick="showMapDelivery()" 
-              title="Editar dirección"
-            ></i>
-          </h1>
-          ${loadAddres}
-          <div id="mapDelivery" style="display: none; margin-top: 10px; border: 1px solid #ccc; border-radius: 8px; padding: 10px;">
-            <div style="display: none;">
-              <div id="title" style="font-weight: bold; margin-bottom: 10px;">Autocomplete search</div>
-              <div id="type-selector" class="pac-controls" style="margin-bottom: 10px;">
-                <label style="margin-right: 10px;">
-                  <input type="radio" name="type" id="changetype-all" checked />
-                  All
-                </label>
-                <label style="margin-right: 10px;">
-                  <input type="radio" name="type" id="changetype-establishment" />
-                  Establecimientos
-                </label>
-                <label style="margin-right: 10px;">
-                  <input type="radio" name="type" id="changetype-address" />
-                  Direcciones
-                </label>
-                <label>
-                  <input type="radio" name="type" id="changetype-geocode" />
-                  Geocodes
-                </label>
-              </div>
-              <div id="strict-bounds-selector" class="pac-controls" style="margin-bottom: 10px;">
-                <label style="margin-right: 15px;">
-                  <input type="checkbox" id="use-location-bias" checked />
-                  Bias a la vista del mapa
-                </label>
-                <label>
-                  <input type="checkbox" id="use-strict-bounds" />
-                  Limitar límites
-                </label>
-              </div>
-            </div>
-            <div id="map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px;"></div>
-            <div id="pac-container" style="margin-bottom: 10px;">
-              <input 
-                id="pac-input" 
-                type="text" 
-                placeholder="O ingresa una nueva dirección de entrega..." 
-                style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box;"
-              />
-            </div>
-            <div id="infowindow-content" style="margin-top: 10px;">
-              <span id="place-name" class="title" style="font-weight: bold;"></span><br />
-              <span id="place-address"></span>
-            </div>
-            <div style="margin-top: 15px; text-align: center;">
-              <ons-button onclick="confirmNewAddress()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
-                Confirmar
-              </ons-button>
-            </div>
+        <ons-card class="delivery-card">
+        <!-- Cabecera con 3 botones rápidos -->
+        <div class="delivery-header">
+        <span class="delivery-label">Entregar en:</span>
+        <div class="actions-wrapper">
+          <!-- Botón para abrir el mapa -->
+          <button class="action-btn" onclick="showMapDelivery()">
+            <i class="fas fa-map-marker-alt"></i> Cambiar
+          </button>
+      
+          <!-- Botón Confirmar (Oculto inicialmente) -->
+          <button id="confirm-btn-header" class="action-btn confirm-action" 
+                  onclick="confirmNewAddress()" style="display: none;">
+            <i class="fas fa-check"></i> Confirmar
+          </button>
+        </div>
+      </div>
+        
+        <div id="address-display" class="address-text">${loadAddres}</div>
+      
+        <!-- Contenedor del mapa -->
+        <div id="mapDelivery" class="map-container" style="display: none;">
+          <div id="pac-container" class="search-box-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input id="pac-input" type="search" placeholder="Escribe la dirección..." autocomplete="off" />
           </div>
-        </ons-card>
+          <div id="map" class="map-view"></div>
+          <div id="infowindow-content" class="info-card">
+            <div id="place-name" style="font-weight: 600;"></div>
+            <div id="place-address" style="font-size: 0.85rem; color: #666;"></div>
+          </div>
+        </div>
+      </ons-card>
         `;
 
         payMethod += '<ons-card><center><h1>Método de pago </h1></center><br>\
@@ -977,6 +947,14 @@ function confirmNewAddress(){
     var finalLat = "";
     var finalLng = "";
 
+    const btnConfirm = document.getElementById('confirm-btn-header');
+    btnConfirm.style.display = 'none'; 
+    
+    // 3. Cerrar el mapa
+    document.getElementById('mapDelivery').style.display = 'none';
+    
+    console.log("¡Confirmado y botón ocultado!");
+
     if(getData("isFromMarker") == 1){
       var coordsString = JSON.stringify(getData("newLocation")).split(",", 3);
 
@@ -1006,7 +984,7 @@ function confirmNewAddress(){
       finalLng = lng[1].toString();
 
       saveData("mainAddress", parseFloat(finalLat)+","+parseFloat(finalLng));
-
+    
     }
     
     const latlng = {
@@ -1056,17 +1034,23 @@ function geocodificacion_inversa(lat, lng) {
     return resultado;
 }
 
-function showMapDelivery(){
-
-  if (getData("hiddenMap") === "hide"){
-
-    document.getElementById("mapDelivery").style.display = "none";
-    document.getElementById("address").style.color = "Black";
-    saveData("hiddenMap", "show");
-  } else{
-    document.getElementById("address").style.color = "Red";
-    document.getElementById("mapDelivery").style.display = "block";
-    saveData("hiddenMap", "hide");
+function showMapDelivery() {
+  const mapContainer = document.getElementById('mapDelivery');
+  
+  // Verificamos si está oculto o visible
+  if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+      mapContainer.style.display = 'block';
+      
+      // --- TRUCO IMPORTANTE ---
+      // Si usas Google Maps, el mapa necesita "saber" que ahora es visible
+      // para renderizarse correctamente. Si el objeto 'map' ya existe, le notificamos el cambio:
+      if (typeof map !== 'undefined') {
+          google.maps.event.trigger(map, 'resize');
+          // Opcional: Centrarlo de nuevo en la posición actual
+          map.setCenter(map.getCenter()); 
+      }
+  } else {
+      mapContainer.style.display = 'none';
   }
 }
 
