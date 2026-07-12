@@ -79,18 +79,19 @@
   <!-- Página principal -->
   <template id="home.html">
     <ons-page>
-      <ons-toolbar>
-        <div style="width: 80%;">
-          <span style="min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -142px; float: left; font-family: Franklin Gothic Medium; font-size: 24px;"></span>
-        </div>
-        <div align="right" style="width: 20%;">
-          <img src="img/drunk-cheers.gif" style="size: auto;" />
+      <!-- Toolbar moderna -->
+      <ons-toolbar class="modern-toolbar">
+        <div class="center brand-title">TuMarca</div>
+        <div class="right">
+          <img src="img/drunk-cheers.gif" class="header-gif" />
         </div>
       </ons-toolbar>
-
-      <ons-tabbar swipeable position="auto">
-        <ons-tab page="tab1.html" label="Bebidas" onclick="refreshMenu()" active></ons-tab>
-        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed(false, 1)"></ons-tab>
+    
+      <!-- Tabbar modernizada -->
+      <ons-tabbar swipeable position="auto" class="modern-tabbar">
+        <!-- Agrega el atributo "no-ripple" a tus tabs -->
+        <ons-tab page="tab1.html" label="Bebidas" onclick="refreshMenu()" active no-ripple></ons-tab>
+        <ons-tab page="tab2.html" label="Pedidos" id="wrapper" onclick="retrievePed(false, 1)" no-ripple></ons-tab>
       </ons-tabbar>
     </ons-page>
   </template>
@@ -127,6 +128,11 @@
   <!-- Tabs -->
   <template id="tab1.html">
     <ons-page id="Tab1">
+      <!-- El Dock ahora vive aquí, justo después del carrusel -->
+      <div class="modern-dock">
+        <button class="dock-item" onclick="perfilInfo()"><i class="fas fa-user"></i></button>
+        <button class="dock-item" onclick="goToCart()"><i class="fas fa-shopping-cart"></i></button>
+      </div>
       <div id="dinamicCarousel"></div>
       
       <div class="wave-filter-wrapper">
@@ -145,14 +151,12 @@
           <div id="dinamicItems2"></div>
         </div>
       </div>
-      
-      <ons-speed-dial position="bottom right" direction="up">
-        <ons-fab><i class="fas fa-beer"></i></ons-fab>
-        <ons-speed-dial-item><i class="fas fa-user" onclick="perfilInfo();"></i></ons-speed-dial-item>
-        <ons-speed-dial-item><i class="fas fa-shopping-cart" onclick="goToCart()"></i></ons-speed-dial-item>
-        <ons-speed-dial-item><i class="fas fa-share-alt"></i></ons-speed-dial-item>
-        <ons-speed-dial-item><i class="fas fa-question"></i></ons-speed-dial-item>
-      </ons-speed-dial>
+
+      <!-- Menú flotante minimalista -->
+      <div id="extra-menu" class="floating-menu">
+        <div class="menu-option"><i class="fas fa-share-alt"></i> Compartir</div>
+        <div class="menu-option"><i class="fas fa-question"></i> Ayuda</div>
+      </div>
     </ons-page>
   </template>
 

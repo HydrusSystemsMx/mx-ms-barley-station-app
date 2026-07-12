@@ -154,3 +154,49 @@ input.addEventListener('input', (e) => {
     }
 });
 
+document.querySelectorAll('.modern-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelector('.modern-dial').hideItems();
+    });
+  });
+
+  const speedDial = document.querySelector('.modern-dial');
+let lastScrollTop = 0;
+
+document.getElementById('btn-toggle-menu').addEventListener('click', function() {
+    const menu = document.getElementById('extra-menu');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+});
+
+function toggleExtraMenu() {
+    const menu = document.getElementById('extra-menu');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+// Obtén la referencia a tu barra
+const dock = document.querySelector('.modern-dock');
+const pageContent = document.querySelector('#Tab1 .page__content'); // O el contenedor donde haces scroll
+
+
+
+pageContent.addEventListener('scroll', () => {
+    let lastScrollTop = 0;
+    let currentScroll = pageContent.scrollTop;
+
+    // Si el scroll es mayor al anterior, el usuario está bajando
+    if (currentScroll > lastScrollTop && currentScroll > 50) {
+        dock.classList.add('dock-hidden');
+    } else {
+        // El usuario está subiendo
+        dock.classList.remove('dock-hidden');
+    }
+    
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+}, false);
+
+document.addEventListener('scroll', function (event) {
+    // Si el evento viene de un scroll en la página
+    if (event.target.id === 'Tab1') {
+        // ... misma lógica del if/else anterior ...
+    }
+}, true);
