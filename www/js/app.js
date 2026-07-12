@@ -831,13 +831,13 @@ function loadItemsFromMemory(){
     , function(tx, result) {
       var len = result.rows.length;
       if(len < 1){
-        itensInCart += '<ons-card>\
-          <center><strong>No cuentas con productos tu carrito!</strong>\
-          <br>\
-          <br>\
-          <img src="img/empty_cart.png" width="100px"><br>\
-          </center>\
-          </ons-card>';
+        itensInCart += '<ons-card class="empty-state-card">\
+        <div class="empty-state-content">\
+          <i class="fas fa-shopping-basket"></i>\
+          <p class="empty-title">Tu carrito está vacío</p>\
+          <p class="empty-subtitle">¡Tus productos te esperan!</p>\
+        </div>\
+      </ons-card>';
       } else{
         for (let index = 0; index < result.rows.length; index++) {
           var priceItem = result.rows.item(index).price;
