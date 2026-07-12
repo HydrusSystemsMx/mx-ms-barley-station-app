@@ -819,6 +819,7 @@ function loadItemsFromMemory(){
     var itensInCart = "";
     var addressDelivery = "";
     var payMethod = "";
+    var payButton = "";
     var total = 0;
     var address = (getData("mainAddress") != null ) ? getData("mainAddress") : "Porfavor establece un punto de entrega";
   
@@ -841,20 +842,31 @@ function loadItemsFromMemory(){
         for (let index = 0; index < result.rows.length; index++) {
           var priceItem = result.rows.item(index).price;
           var itemTotal = (result.rows.item(index).amount * priceItem).toFixed(2);
-          itensInCart +=  '<ons-card>\
-            <center><img src="'+ result.rows.item(index).image +'" alt="Onsen UI" style="width: 50%">\
-            <div class="title">\
-            <strong> ' + result.rows.item(index).detail +' </strong>\
-            </div></center>\
-            <div class="content">\
-            <ons-list>\
-            <ons-list-item>Precio: $ ' + result.rows.item(index).price.toFixed(2) + '</ons-list-item>\
-            <ons-list-item>Seleccionados: ' + result.rows.item(index).amount + '</ons-list-item>\
-            </ons-list>\
-            <ons-list-header><span><strong style="font-family: Arial; font-size:17px;"> $ '+ itemTotal  +'</strong></span><ons-button  style="float: right; position:relative;" id="trash_item" onclick="deleteItemFromMemory('+ result.rows.item(index).idItem +')"><div> <i class="fas fa-trash-alt"></i></div></ons-button></ons-list-header>\
-            </div>\
-            </ons-card>\
-          ';
+          itensInCart += `
+          <ons-card class="modern-card">
+            <div class="card-content-wrapper">
+              <!-- Imagen -->
+              <div class="card-image">
+                <img src="${result.rows.item(index).image}" alt="Producto">
+              </div>
+          
+              <!-- Info -->
+              <div class="card-details">
+                <div class="product-title">${result.rows.item(index).detail}</div>
+                <div class="product-meta">
+                  <span>$${result.rows.item(index).price.toFixed(2)} x ${result.rows.item(index).amount}</span>
+                </div>
+                
+                <!-- Footer de la Card -->
+                <div class="card-actions">
+                  <strong class="total-price">$${itemTotal}</strong>
+                  <ons-button modifier="quiet" class="trash-btn" onclick="deleteItemFromMemory(${result.rows.item(index).idItem})">
+                    <i class="fas fa-trash-alt"></i>
+                  </ons-button>
+                </div>
+              </div>
+            </div>
+          </ons-card>`;
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
         if(address.includes(",")){
@@ -899,30 +911,47 @@ function loadItemsFromMemory(){
       </ons-card>
         `;
 
-        payMethod += '<ons-card><center><h1>Método de pago </h1></center><br>\
-        <div style="margin-bottom:10px;">\
-          <label class="radio-button radio-button--material">\
-            <input type="radio" class="radio-button__input radio-button--material__input" id="debit_radio" name="r" checked="checked">\
-            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-            Tarjeta de Credito/Debito\
-          </label>\
-        </div>\
-        <div style="margin-bottom:10px;">\
-          <label class="radio-button radio-button--material">\
-            <input type="radio" class="radio-button__input radio-button--material__input" id="cash_radio" name="r" >\
-            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-            Pago en Efectivo\
-          </label>\
-        </div>\
-        <div style="margin-bottom:10px;">\
-          <label class="radio-button radio-button--material">\
-            <input type="radio" class="radio-button__input radio-button--material__input" id="transfer_radio" name="r">\
-            <div class="radio-button__checkmark radio-button--material__checkmark"></div>\
-            Transferencia Bancaria\
-          </label>\
-        </div></ons-card>';
+        payMethod += `
+        <ons-card class="payment-card">
+          <div class="card-title-modern">Método de pago</div>
+          <div class="payment-options">
+            
+            <label class="payment-option">
+              <input type="radio" name="payment" id="debit_radio" checked>
+              <div class="option-content">
+                <i class="fas fa-credit-card"></i>
+                <span>Tarjeta Crédito/Débito</span>
+              </div>
+            </label>
+        
+            <label class="payment-option">
+              <input type="radio" name="payment" id="cash_radio">
+              <div class="option-content">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Pago en Efectivo</span>
+              </div>
+            </label>
+        
+            <label class="payment-option">
+              <input type="radio" name="payment" id="transfer_radio">
+              <div class="option-content">
+                <i class="fas fa-university"></i>
+                <span>Transferencia</span>
+              </div>
+            </label>
+        
+          </div>
+        </ons-card>`;
 
-        itensInCart += addressDelivery + payMethod + '<ons-list-header style="background-color: white;"><center><ons-button onclick="startOrder('+ total.toFixed(2) +')" style="width:100%;"><strong style="font-family: Arial; font-size: 20px;"> PAGAR $ '+ total.toFixed(2) +'  MXN</strong></center></ons-button></ons-list-header>';
+        payButton += `
+        <div class="fixed-bottom-action">
+          <ons-button class="pay-btn-modern" onclick="startOrder(${total.toFixed(2)})">
+            <span class="pay-text">PAGAR</span>
+            <span class="pay-amount">$${total.toFixed(2)} MXN</span>
+          </ons-button>
+        </div>`;
+
+        itensInCart += addressDelivery + payMethod + payButton;
       }
     },
     function(error){
@@ -1039,8 +1068,18 @@ function showMapDelivery() {
   
   // Verificamos si está oculto o visible
   if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+      // 1. Mostrar el mapa
       mapContainer.style.display = 'block';
-      
+              
+      // 2. Notificar a Google Maps que el contenedor cambió de tamaño
+      google.maps.event.trigger(map, 'resize');
+
+      // 3. Hacer scroll suave hacia el contenedor del mapa dentro del .page__content
+      // Usamos offsetTop respecto al padre para saber a qué altura está
+      pageContent.scrollTo({
+          top: mapContainer.offsetTop - 10, // Un pequeño margen de 10px arriba
+          behavior: 'smooth'
+      });
       // --- TRUCO IMPORTANTE ---
       // Si usas Google Maps, el mapa necesita "saber" que ahora es visible
       // para renderizarse correctamente. Si el objeto 'map' ya existe, le notificamos el cambio:

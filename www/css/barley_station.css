@@ -3,6 +3,35 @@
   src: url("College Block.otf") format("opentype");
 }
 
+/* TOOLSBARS */
+/* Limpieza total de los estilos por defecto de Onsen */
+.modern-toolbar {
+  border: none !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05); /* Sombra muy sutil */
+  padding: 0 5px;
+}
+
+/* Título moderno */
+.toolbar-title {
+  font-family: Arial, sans-serif;
+  font-weight: 700; /* Bold fuerte */
+  font-size: 1.1rem;
+  color: white; /* Azul BBVA */
+  letter-spacing: -0.2px; /* Un poco más comprimido para verse más pro */
+}
+
+/* Botón de atrás (Back Button) */
+.back-btn-modern {
+  color: #004481 !important;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+}
+
+/* Eliminamos el borde innecesario que suele poner Onsen */
+.ons-toolbar__left, .ons-toolbar__center, .ons-toolbar__right {
+  border: none !important;
+}
+
 .button3 {
   background-color: #f84c09; /* Green */
   border: none;
@@ -1597,6 +1626,25 @@ input:disabled + .switch__toggle {
   transition: all 0.3s ease;
 }
 
+/* Ocultar el botón de "Ampliar mapa" o leyendas extras si aparecen */
+.gm-fullscreen-control, 
+.gm-svpc, 
+.gm-style-cc {
+    display: none !important;
+}
+
+/* Si quieres que el logo de Google sea más pequeño o esté en otra posición */
+.gmnoprint {
+    margin: 5px !important;
+}
+
+#mapDelivery {
+  width: 100%;
+  min-height: 300px; /* Dale una altura mínima para que el scroll tenga a dónde ir */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 /* El botón de confirmar resalta más */
 .confirm-action {
   background: #004481 !important;
@@ -1608,4 +1656,155 @@ input:disabled + .switch__toggle {
   color: #004481; /* Azul BBVA */
   font-weight: 600;
   margin-top: 15px;
+}
+
+/* Itmes in cart */
+.modern-card {
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card-content-wrapper {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.card-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.card-details {
+  flex-grow: 1;
+}
+
+.product-title {
+  font-family: Arial, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.product-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-price {
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  color: #004481; /* Tu Azul BBVA */
+}
+
+.trash-btn {
+  color: #ff4d4f !important; /* Rojo moderno */
+  padding: 0 10px !important;
+}
+
+/* Payment */
+.payment-card {
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card-title-modern {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #004481; /* Azul BBVA */
+  margin-bottom: 15px;
+  font-family: Arial, sans-serif;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+/* Ocultamos el radio button real pero mantenemos su funcionalidad */
+.payment-option input {
+  display: none;
+}
+
+.option-content {
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  font-family: Arial, sans-serif;
+  color: #555;
+}
+
+/* Estado cuando está seleccionado */
+.payment-option input:checked + .option-content {
+  border-color: #004481;
+  background-color: #f0f7ff;
+  color: #004481;
+  font-weight: 600;
+}
+
+.option-content i {
+  font-size: 1.2rem;
+  width: 25px;
+}
+
+.fixed-bottom-action {
+  padding: 15px;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+.pay-btn-modern {
+  width: 100%;
+  height: 55px;
+  background-color: #004481 !important; /* Azul BBVA */
+  border-radius: 12px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0 20px !important;
+  box-shadow: 0 4px 15px rgba(0, 68, 129, 0.3);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.pay-btn-modern:active {
+  transform: scale(0.98);
+}
+
+.pay-text {
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.pay-amount {
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 12px;
+  border-radius: 8px;
 }

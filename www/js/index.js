@@ -96,6 +96,13 @@ function getPosition() {
     const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 20.11697, lng: -98.73329 },
         zoom: 16,
+        disableDoubleClickZoom: true,
+        streetViewControl: false,
+        fullscreenControl: false,
+        navigationControl: false,
+        disableDefaultUI: true,
+        mapTypeControl: false,
+        panControl: false,
         disableDefaultUI: false, // activa los controles por defecto
         zoomControl: true, // control de zoom visible
         scrollwheel: true, // permite zoom con rueda del ratón
@@ -130,8 +137,13 @@ function getPosition() {
         position:  { lat: 20.11697, lng: -98.73329 },
         map,
         anchorPoint: new google.maps.Point(0, -29),
-        draggable: true
+        draggable: true,
+        // Esto lo pone azul
+        fillColor: "#004481"
     });
+
+    // Bloquear eventos nativos de Google Maps
+    google.maps.event.clearListeners(marker, 'click');
 
     google.maps.event.addListener(marker, 'dragend', function(ev){
         saveData("newLocation", marker.getPosition());
@@ -172,6 +184,26 @@ function getPosition() {
         infowindowContent.children["place-address"].textContent = place.formatted_address;
         infowindow.open(map, marker);
     });
+
+    // Listener para el evento doble clic en el mapa
+    google.maps.event.addListener(map, "dblclick", (event) => {
+        // 1. Cierra CUALQUIER ventana abierta
+        infowindow.close(); 
+        
+        // 2. Mueve tu marcador personalizado
+        marker.setPosition(event.latLng);
+        marker.setVisible(true);
+        map.panTo(event.latLng);
+        map.setZoom(17);
+    
+        // 3. Muestra tu propio botón de confirmación
+        document.getElementById('confirm-btn-header').style.display = 'flex';
+    
+        saveData("newLocation", event.latLng);
+        saveData("isFromMarker", 0);
+        persistChange();
+    });
+    
 
     // Sets a listener on a radio button to change the filter type on Places Autocomplete.
     function setupClickListener(id, types) {
