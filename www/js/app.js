@@ -453,7 +453,7 @@ function showDialog(idItem, price, stack){
         </table>
         
         <br/>
-  <button class="modern-button" onclick="addToCart(${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
+  <button class="modern-button" onclick="handleAddToCart(this, ${data[i].price.toFixed(2)}, ${data[i].stack}, ${data[i].id})">Confirmar</button>
         
         <ons-button 
           id="close-btn-dialog" 
@@ -762,7 +762,7 @@ function loadItems(){
                   <input type="number" value="${amount}" id="units_${item.id}" style="width: 40px; text-align:center; border: 1px solid #ddd; border-radius: 8px;">
                   <button class="btn-qty" style="background-color:#4CAF50;" onclick="plusUnit(${item.stack}, ${item.id})">+</button>
               </div>
-              <button class="modern-button" onclick="addToCart(${item.price.toFixed(2)}, ${item.stack}, ${item.id}, '${item.image}', '${item.nameItem} ${item.details}')">
+              <button class="modern-button" onclick="handleAddToCart(this, ${item.price.toFixed(2)}, ${item.stack}, ${item.id}, '${item.image}', '${item.nameItem} ${item.details}')">
                   Confirmar
               </button>
           </ons-card>`;
@@ -781,6 +781,22 @@ function loadItems(){
       }, 100);
   } // <--- ESTA ES LA ÚNICA LLAVE QUE CIERRA LA FUNCIÓN setItems
 
+  function handleAddToCart(btn, price, stack, id, image, nameItem, details) {
+      // 1. Desactivar el botón inmediatamente
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+      btn.innerText = "Agregando...";
+
+      // 2. Ejecutar tu lógica original
+      addToCart(price, stack, id, image, nameItem, details);
+
+      // 3. Opcional: reactivarlo después de 2 segundos (si no cambias de pantalla)
+      setTimeout(() => {
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          btn.innerText = "Confirmar";
+      }, 2000);
+  }
   function noItemsFound(){
     var tdsp="";
 
@@ -1126,42 +1142,39 @@ charactersLength));
 }
 
 
-function startOrder(total){
-  var payMethod = "";
+function startOrder(total) {
+  // 1. Primero, obtenemos y validamos la dirección ANTES de tocar la DB
+  var deliveryAddress = getData("mainAddress");
+
+  if (!deliveryAddress || !deliveryAddress.includes(",")) {
+    ons.notification.toast("Agrega una dirección de entrega válida...", { timeout: 1500, animation: 'ascend' });
+    return; // AQUÍ SE DETIENE: No hace nada más si la validación falla
+  }
+
+  // 2. Si pasó la validación, procedemos con el resto de la lógica
   var debit_radio = $("#debit_radio").is(':checked');
   var cash_radio = $("#cash_radio").is(':checked');
-  var itensInCart = "";
-  var payMethod = "";
-  var orderRequest = "";
+  var payMethod = debit_radio ? 1 : (cash_radio ? 2 : 3);
+  
   var orderList = new Array();
-  var deliveryAddress = getData("mainAddress");
   var randomId = retrieveRandomId();
-  var letterPx = lastPartRequest(2);
   var idRequest = randomId + currentYear;
-
-  if(debit_radio == true){
-    payMethod = 1;
-  } else if(cash_radio === true){
-    payMethod = 2;
-  } else{
-    payMethod = 3;
-  }
 
   myDB.transaction(function(transaction) {
     var executeQuery = "SELECT * FROM CART WHERE idUser=? and status=?";
-    transaction.executeSql(executeQuery, [4, 0]
-    , function(tx, result) {
+    transaction.executeSql(executeQuery, [4, 0], function(tx, result) {
       var len = result.rows.length;
-      var idCart = "";
-      if(len > 0){
+      if (len > 0) {
+        let idCart = "";
         for (let index = 0; index < result.rows.length; index++) {
-          orderList.push(result.rows.item(index));
-          idCart = result.rows.item(index).idCart;
+          let item = result.rows.item(index);
+          orderList.push(item);
+          idCart = item.idCart;
           updateInternalStatus(idCart);
-          updateInternalIdRequest(idRequest,idCart);
-          //alert(JSON.stringify(result.rows.item(index)));
+          updateInternalIdRequest(idRequest, idCart);
         }
-        orderRequest = {
+
+        var orderRequest = {
           idRequest: idRequest,
           idUser: 4,
           payMethod: payMethod,
@@ -1170,21 +1183,13 @@ function startOrder(total){
           orderList: orderList
         };
 
-        if(orderRequest.deliveryLocation != null && orderRequest.deliveryLocation.includes(",") === true){
-          sendOrder(orderRequest,idCart);
-        } else{
-          ons.notification.toast("Agrega una dirección de entrega...", { timeout: 1500, animation: 'ascend' })
-        }
-        
+        // Como ya validamos arriba, aquí podemos enviar directamente
+        sendOrder(orderRequest, idCart);
       }
-    },
-    function(error){
-      er = JSON.stringify(error);
-      alerta(er);
+    }, function(error) {
+      alerta(JSON.stringify(error));
     });
   });
-
-  
 }
 
 function sendOrder(orderRequest, idCart){
