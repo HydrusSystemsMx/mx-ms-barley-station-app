@@ -3,6 +3,153 @@
   src: url("College Block.otf") format("opentype");
 }
 
+/* PEDIDOS CARDS */ 
+/* CSS sugerido para cada fila de pedido dinámico */
+.order-item {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #f9f9f9;
+}
+/* Limpieza de la Card nativa de Onsen */
+.modern-card {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  padding: 16px !important;
+  margin: 20px 10px !important;
+  transition: transform 0.2s ease;
+}
+
+/* Header de la Card */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: -0.5px;
+}
+
+.history-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.history-icon:active {
+  opacity: 0.5;
+}
+
+/* Contenedor de lista */
+.order-list-wrapper {
+  padding: 0 10px;
+}
+
+/* Animación de entrada para el historial */
+.content-toggle {
+  margin-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+.empty-state-card {
+  border-radius: 20px !important;
+  box-shadow: none !important; /* Quitamos la sombra pesada */
+  border: 2px dashed #e0e0e0 !important; /* Borde punteado suave */
+  padding: 40px 20px !important;
+  text-align: center;
+  background: #fafafa !important;
+  margin: 20px !important;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-content i {
+  font-size: 50px;
+  color: #cccccc; /* Un gris muy suave */
+  margin-bottom: 15px;
+}
+
+.empty-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #555;
+  margin: 0;
+}
+
+.empty-subtitle {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 8px;
+  max-width: 250px;
+}
+
+.order-card {
+  border-radius: 20px !important;
+  padding: 20px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+  margin: 15px !important;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.order-status-tag {
+  font-weight: 800;
+  color: #004481;
+  font-size: 1.1rem;
+}
+
+.loading-gif { width: 25px; height: 25px; }
+
+.order-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.info-row b { color: #333; }
+
+.btn-cancel {
+  background: #ffeded !important;
+  color: #d93025 !important;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn-cancel:active { background: #ffdada !important; }
+/* PEDIDOS CARDS END */
+
 /* Esto asegura que la página y el cuerpo de la página ocupen el 100% */
 #login, #login .page__content {
   height: 100% !important;

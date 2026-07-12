@@ -162,14 +162,18 @@
 
   <template id="tab2.html">
     <ons-page id="Tab2">
-      <ons-card>
-        <h3 style="display: flex; align-items: center; justify-content: space-between;">
-          <span>Historial de pedidos</span>
-          <img src="img/history.png" style="width: 31px; height: auto; margin-left: 10px;" onclick="showRecord()">
-        </h3>
-        <div id="dinamicHistory" style="display:none;"></div>
+      <!-- Card de Historial Estilizada -->
+      <ons-card class="modern-card">
+        <div class="card-header" onclick="showRecord()">
+          <span class="card-title">Mis Pedidos</span>
+          <!-- Icono moderno, vectorial y escalable -->
+          <i class="fas fa-history" style="color: #004481; font-size: 24px;"></i>
+      </div>
+        <div id="dinamicHistory" class="content-toggle"></div>
       </ons-card>
-      <div id="dinamicOrder"></div>
+  
+      <!-- Contenedor de pedidos dinámicos -->
+      <div id="dinamicOrder" class="order-list-wrapper"></div>
     </ons-page>
   </template>
 

@@ -362,7 +362,7 @@ function perfilInfo(){
 		},
     error: function (xhr, status, error) {
         // Aquí solo entrará si el código es 4xx o 5xx
-        alerta("Error en el servidor: " + status);
+        ons.notification.toast("Error en el servidor: " + status, { timeout: 15000, animation: 'ascend' })
     }
 	});
 
@@ -1173,7 +1173,7 @@ function startOrder(total){
         if(orderRequest.deliveryLocation != null && orderRequest.deliveryLocation.includes(",") === true){
           sendOrder(orderRequest,idCart);
         } else{
-          alert("Ingresa una direccion de entrega");
+          ons.notification.toast("Agrega una dirección de entrega...", { timeout: 1500, animation: 'ascend' })
         }
         
       }
@@ -1314,16 +1314,36 @@ function retrievePed(validate, isClickFromMenu){
             var msgDelivery = (data.response[0].status.toString() === "0") ? "Asignando pedido..." : "En camino...";
 
             var idOrder = parseInt(data.response[0].idRequest);
-            tdsinfo = '<ons-card>\
-                <div class="title center"><center> Pedido en curso... </div>\
-                <div class="content"><br>\
-                <label>Status: <b> ' + msgDelivery + '</b></center><img src="img/loading.gif" width="5%" heigth="5%"></label><br>\
-                <label>Fecha: <b>' + fechaHora(data.response[0].createdDate) + '</b></center></label><br>\
-                <label>Descripcion: <b>' + data.response[0].total.toFixed(2) + '</b></center></label><br>\
-                <label>IDPEDIDO: <b>' + idOrder +'</b></center></label><br>\
-                <br><button class="button--cta" style=" width:100%;" onclick="rollbackOrder(' + idOrder + ')"><i class="fa fa-cancel" aria-hidden="true"></i> Cancelar</button></center>\
-                </div>\
-              </ons-card>';
+            tdsinfo = `
+            <ons-card class="order-card">
+              <div class="order-header">
+                <span class="order-status-tag">Pedido en curso</span>
+                <img src="img/loading.gif" class="loading-gif">
+              </div>
+              
+              <div class="order-body">
+                <div class="info-row">
+                  <span>Status</span>
+                  <b>${msgDelivery}</b>
+                </div>
+                <div class="info-row">
+                  <span>Fecha</span>
+                  <b>${fechaHora(data.response[0].createdDate)}</b>
+                </div>
+                <div class="info-row">
+                  <span>Total</span>
+                  <b>$${data.response[0].total.toFixed(2)}</b>
+                </div>
+                <div class="info-row">
+                  <span>ID Pedido</span>
+                  <b class="order-id">#${idOrder}</b>
+                </div>
+              </div>
+            
+              <button class="btn-cancel" onclick="rollbackOrder(${idOrder})">
+                <i class="fa fa-times-circle"></i> Cancelar pedido
+              </button>
+            </ons-card>`;
         
             $("#dinamicOrder").html(tdsinfo);
           },200);
@@ -1361,35 +1381,37 @@ function retrievePed(validate, isClickFromMenu){
 }
 
 function rollbackOrder(idRequest){
-  var r = confirm("¿Realmente deseas cancelar este pedido?");
-  if (r == true) {
-    webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
+  var r = showCustomConfirm("¿Realmente deseas cancelar este pedido?",
+  function(r) {
+      if (r) {
+        webservice = baseUrl + pathOrder + "/rollback/" + idRequest;
 
-    $.ajax({
-      url: webservice,
-      type: 'post',
-      data: null,
-      headers: {
-        "Content-Type": 'application/json'
-      },
-      dataType: 'json',
-      success: function (data) {
-        if (data.error == null) {
-
-          //document.querySelector('#myNavigator').pushPage('detailService.html');
-          setTimeout(function(){
-            retrievePed(false);
-            updateInternalRollBack(idRequest);
-            ons.notification.toast("Pedido cancelado exitosamente!", { timeout: 3000, animation: 'ascend' })
-          },200);
-          
-        } else {
-          alerta(JSON.stringify(data.error));
-        }
+        $.ajax({
+          url: webservice,
+          type: 'post',
+          data: null,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          dataType: 'json',
+          success: function (data) {
+            if (data.error == null) {
+    
+              //document.querySelector('#myNavigator').pushPage('detailService.html');
+              setTimeout(function(){
+                retrievePed(false);
+                updateInternalRollBack(idRequest);
+                ons.notification.toast("Pedido cancelado exitosamente!", { timeout: 3000, animation: 'ascend' })
+              },200);
+              
+            } else {
+              alerta(JSON.stringify(data.error));
+            }
+          }
+        });
       }
-    });
-  }
-
+    }
+  );
 }
 
 
@@ -1479,10 +1501,14 @@ function showRecord(){
       },
       statusCode: {
         404: function(responseObject, textStatus, jqXHR) {
-          tdsinfo = '<ons-card>\
-                  <div class="title center"><center>Aún no has realizado pedidos</div>\
-                  </div>\
-                </ons-card>';
+          tdsinfo = `
+          <ons-card class="empty-state-card">
+            <div class="empty-state-content">
+              <i class="fas fa-shopping-basket"></i>
+              <p class="empty-title">Sin pedidos aún</p>
+              <p class="empty-subtitle">¡Tu historial se llenará con tus próximas bebidas!</p>
+            </div>
+          </ons-card>`;
           
               $("#dinamicHistory").html(tdsinfo);
         },
@@ -1547,12 +1573,12 @@ function createBarlayUser(userRequest){
                   try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
       
               } catch (err) {
-                  alerta("Error crítico en el flujo: " + err.message);
+                ons.notification.toast("Error crítico en el flujo: ", { timeout: 1500, animation: 'ascend' })
               }
           }, 200);
       },
         error: function (xhr, status, error) {
-            alerta("Error en el servidor: " + status);
+          ons.notification.toast("Error en el servidor: " + status, { timeout: 15000, animation: 'ascend' })
         }
     });
 }
