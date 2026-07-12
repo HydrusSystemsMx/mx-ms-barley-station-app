@@ -62,8 +62,8 @@ var DistanciaGPS = function(lat1,lon1,lat2,lon2){
 
 // Función para cerrar sesión
 function cerrarSesion(){ //COMPARA SI NO HAY PEDIDOS EN RUTA O PEND DE ENVIAR ANTES DE HACER PŔOCESO
-  navigator.app.exitApp();
-  cleanData();
+    cleanData();
+    navigator.app.exitApp();
 }
 
 // Función para mostrar alerta personalizada

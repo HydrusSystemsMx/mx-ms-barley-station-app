@@ -261,7 +261,7 @@ var time_delivery;
 
 /* PROCESOS LOGIN */
 function loginGuest(){
-  alerta("login gest")
+
   const guestRequest = {
     name: "Guest_" + Math.floor(Math.random() * 9000),
     profileImage: "img/perfil.png", // <--- ESTO ES LO QUE DEBES PONER

@@ -22,7 +22,10 @@ function removeData(name){
 }
 
 function cleanData(){
-    window.localStorage.clear();
+    setTimeout(function() {
+        window.localStorage.clear();
+        console.log("Local storage limpiado");
+    }, 2000); // 5000 milisegundos = 5 segundos
 }
 
 //this function detect id data is a valid JSON

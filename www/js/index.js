@@ -38,10 +38,12 @@ app.initialize();
 //---------------------|  PROCESOS SQL LITE  | ------------------------//
 
 function cerrarSesion() {
+    setTimeout(function() {
+        navigator.app.exitApp();
+    }, 2000); // 5000 milisegundos = 5 segundos
     TruncatePrueba();
     cleanData();
     cerarSesionGoolge();
-    navigator.app.exitApp();
 }
 
 function networkInfo() {
@@ -80,7 +82,6 @@ function TruncatePrueba() {
         var executeQuery = "DELETE FROM CART";
         transaction.executeSql(executeQuery, [],
             function(tx, result) {
-                alert("truncate success");
                 console.log('Table deleted successfully.');
             },
             function(error) {
