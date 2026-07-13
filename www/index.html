@@ -38,11 +38,11 @@
           <img src="img/beer.png" alt="Logo" style="width: 150px; height: auto; margin-bottom: 20px;" />
 
           <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-            <ons-button style="background-color: #DB4437; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginWithGoogle()">
+            <ons-button class="btn-login btn-google" style="background-color: #DB4437; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginWithGoogle()">
               <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Google" style="height:20px; margin-right:12px;" /> Iniciar con Google
             </ons-button>
 
-            <ons-button style="background-color: #555555; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginGuest()">
+            <ons-button class="btn-login btn-guest" style="background-color: #555555; color: white; display: flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; width: 100%;" onclick="loginGuest()">
               <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Invitado" style="height:20px; margin-right:12px;" /> Invitado
             </ons-button>
           </div>
@@ -199,12 +199,11 @@
       </p>
     </div>
   </ons-dialog>
+  
 
-  <ons-modal direction="up">
-    <div style="text-align: center">
-      <p>
-        <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Espera un momento...
-      </p>
+  <ons-modal id="modal-cargando">
+    <div class="modal__content">
+      <ons-icon icon="md-spinner" spin></ons-icon>
     </div>
   </ons-modal>
 

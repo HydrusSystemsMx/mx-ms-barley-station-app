@@ -3,6 +3,37 @@
   src: url("College Block.otf") format("opentype");
 }
 
+.btn-login.oculto {
+  display: none !important;
+}
+
+.btn-login:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  background-color: #999999 !important; /* Un gris neutro */
+}
+
+#modal-cargando {
+  /* Fondo casi invisible, solo para bloquear clics */
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(4px); /* Cristal esmerilado muy fino */
+  transition: opacity 0.5s ease-in-out !important;
+}
+
+#modal-cargando .modal__content {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: rgba(0, 0, 0, 0.6); /* Spinner oscuro o claro según tu app */
+}
+
+/* Spinner estilizado */
+#modal-cargando ons-icon {
+  font-size: 24px !important;
+  opacity: 0.8;
+}
+
 /* PEDIDOS CARDS */ 
 /* CSS sugerido para cada fila de pedido dinámico */
 .order-item {

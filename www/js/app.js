@@ -261,6 +261,12 @@ var time_delivery;
 
 /* PROCESOS LOGIN */
 function loginGuest(){
+  const todosLosBotones = document.querySelectorAll('.btn-login');
+
+  // 2. Ocultamos cada uno de ellos, incluyendo el que fue presionado
+  todosLosBotones.forEach(btn => {
+      btn.style.display = 'none';
+  });
 
   const guestRequest = {
     name: "Guest_" + Math.floor(Math.random() * 9000),
@@ -269,7 +275,6 @@ function loginGuest(){
   };
 
   createBarlayUser(guestRequest);
-
   
 }
 
@@ -297,9 +302,8 @@ function trigger_autologin(){
           //showAdvise("FillGas Repartidor",data.validacion,"alerta");
           //id_repartidor = data.id_repartidor;
           cambiar_menu('page_menu');
-
         }else{
-        showAdvise("FillGas Repartidor",data.mensaje,"alerta");          
+          showAdvise("FillGas Repartidor",data.mensaje,"alerta");          
       }
       
     })
@@ -1218,13 +1222,34 @@ function sendOrder(orderRequest, idCart){
 }
 
 function updateInternalStatus(idCart){
+  // 1. Rescatamos los datos vitales
+  const savedIdUser = localStorage.getItem("idUser");
+  const savedMainAddress = localStorage.getItem("mainAddress");
+
   myDB.transaction(function (transaction) {
     var executeQuery = "UPDATE CART SET status=? WHERE idCart=?";
     transaction.executeSql(executeQuery, [1, idCart]
     , function(tx, result) {
-      var presistMainAddres = getData("mainAddress");
-      cleanData();
-      saveData("mainAddress",presistMainAddres);
+      //REMOVER SOLO DATA DE CARRITO Y PEDIDO EN CACHE
+      const llavesABorrar = [
+        "hiddenMap",
+        "isFromClickMenu",
+        "isFromClickOrder",
+        "isClickFromMenu",
+        "flagAlready",
+        "eventRecord",
+        "user",
+        "newLocation",
+        "isFromMarker",
+        "place",
+        "direccionConfirm",
+        "IngCoords"
+    ];
+
+    // Ejecutamos removeData para cada una
+    llavesABorrar.forEach(key => {
+        removeData(key); // Asumiendo que esta es tu función equivalente a localStorage.removeItem
+    });
     },
     function(error){
       console.log('Error occurred');
@@ -1530,6 +1555,25 @@ function showRecord(){
 }
 
 function loginWithGoogle() {
+  const todosLosBotones = document.querySelectorAll('.btn-login');
+
+  // 2. Ocultamos cada uno de ellos, incluyendo el que fue presionado
+  todosLosBotones.forEach(btn => {
+      btn.style.display = 'none';
+  });
+
+  setTimeout(() => {
+    // Solo los mostramos si siguen existiendo en el DOM
+    const botones = document.querySelectorAll('.btn-login');
+    if (botones.length > 0) {
+        botones.forEach(btn => {
+            btn.style.display = 'flex'; // Usamos 'flex' porque es como estaban originalmente
+        });
+        
+        console.warn("Tiempo de espera agotado: Botones restaurados.");
+    }
+}, 5000);
+
   window.plugins.googleplus.login({
       'webClientId': googleWebClientId,
       'offline': true,
@@ -1540,9 +1584,76 @@ function loginWithGoogle() {
       profileImage: obj.imageUrl || "",
       mail: obj.email || "",
     };
-    createBarlayUser(userRequest);
+
+    validateBarlayUserExists(userRequest);
+    
   }, function (err) {
-      alerta("Error de login: " + err);
+      alerta("Error de login con Google: " + err);
+  });
+}
+
+function validateBarlayUserExists(userRequest){
+  var webservice = baseUrl + pathUsers + "/search/?email=" + userRequest.mail;
+  $.ajax({
+      url: webservice,
+      type: 'get',
+      data: null,
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      dataType: 'json',
+      success: function (data) {
+    
+        setTimeout(function () {
+   
+            try {
+                ons.notification.toast("!Hola de nuevo: "+ data.name + "!" , { timeout: 15000, animation: 'ascend' });
+          
+                saveData("idUser", data.idUser);
+                saveData("user", data);
+
+     
+            } catch (err) {
+              alerta(err);
+            }
+        }, 500);
+
+        setTimeout(function () {
+   
+          try {
+            location.reload();
+            cambiar_menu("page_menu");
+              // Ejecución blindada: si una falla, la siguiente continúa
+              try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
+              try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
+              try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
+
+   
+          } catch (err) {
+            alerta(err);
+          }
+      }, 1000);
+
+    },
+      error: function (xhr, status, error) {
+        const match = JSON.stringify(xhr).match(/"statusText":"([^"]+)"/);
+    
+        if (match) {
+          const errorValue = match[1];
+          
+          if(errorValue === "error"){
+            alerta(errorValue);
+            ons.notification.toast("Error en el servidor: ", { timeout: 15000, animation: 'ascend' });
+          
+          }
+
+          // Si quieres que ejecute algo solo cuando sea "error":
+          if (errorValue != "error") {
+              // 200 data vacia
+              createBarlayUser(userRequest);
+          }
+        }
+      }
   });
 }
 
@@ -1571,19 +1682,38 @@ function createBarlayUser(userRequest){
                   saveData("user", JSON.stringify(response));
                   location.reload();
                   cambiar_menu("page_menu");
-      
+
                   // Ejecución blindada: si una falla, la siguiente continúa
                   try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
                   try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
                   try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
-      
+
               } catch (err) {
                 ons.notification.toast("Error crítico en el flujo: ", { timeout: 1500, animation: 'ascend' })
               }
           }, 200);
+
       },
         error: function (xhr, status, error) {
-          ons.notification.toast("Error en el servidor: " + status, { timeout: 15000, animation: 'ascend' })
+          const match = JSON.stringify(xhr).match(/"statusText":"([^"]+)"/);
+          if (match) {
+            const errorValue = match[1];
+  
+            if(errorValue === "error"){
+              ons.notification.toast("Error en el servidor: ", { timeout: 15000, animation: 'ascend' });
+              setTimeout(function () {
+                ocultarModal();
+              }, 5000);
+            }
+
+  
+            if (errorValue != "error") {
+              setTimeout(function () {
+                ocultarModal();
+              }, 5000);
+                return;  
+            }
+          }
         }
     });
 }

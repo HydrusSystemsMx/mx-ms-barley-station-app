@@ -1,4 +1,4 @@
-var web = "https://www.farmamigoexpress.com/isaac/test/FillApp/ws/";
+const web = "https://www.farmamigoexpress.com/isaac/test/FillApp/ws/";
 
 // Función para remover panel o página
 function removePanel(page){
@@ -60,12 +60,6 @@ var DistanciaGPS = function(lat1,lon1,lat2,lon2){
     return parseFloat(d.toFixed(1));
 } 
 
-// Función para cerrar sesión
-function cerrarSesion(){ //COMPARA SI NO HAY PEDIDOS EN RUTA O PEND DE ENVIAR ANTES DE HACER PŔOCESO
-    cleanData();
-    navigator.app.exitApp();
-}
-
 // Función para mostrar alerta personalizada
 function alerta(msg){
   $("#text-msg").text(msg);
@@ -77,9 +71,34 @@ function alertpivote(){
     document.getElementById("alert-pivote").show();   
 }
 
-// Función para cambiar de menú/página
-function cambiar_menu(pagina){          
-  document.querySelector('#myNavigator').pushPage(pagina+'.html', {data: {title: pagina}});
+function cambiar_menu(pagina) {
+    mostrarModal();
+
+    const nav = document.querySelector('#myNavigator');
+
+    // Función de cierre segura
+    const cerrarModalSeguro = () => {
+        ocultarModal();
+        nav.removeEventListener('postpush', cerrarModalSeguro);
+    };
+
+    // 1. Escuchamos el evento
+    nav.addEventListener('postpush', cerrarModalSeguro);
+
+    // 2. Timeout de seguridad: Si en 3 segundos no cargó, lo cerramos forzosamente
+    // Esto evita que se quede "trabado" si algo falla en la transición
+    setTimeout(() => {
+        if (document.getElementById('modal-cargando').visible) {
+            console.warn("El modal se cerró por timeout de seguridad");
+            ocultarModal();
+            nav.removeEventListener('postpush', cerrarModalSeguro);
+        }
+    }, 3000);
+
+    // 3. Ejecutamos la navegación
+    nav.pushPage(pagina + '.html', {
+        data: { title: pagina }
+    });
 }
 
 // Funciones para ocultar diálogos
@@ -200,3 +219,20 @@ document.addEventListener('scroll', function (event) {
         // ... misma lógica del if/else anterior ...
     }
 }, true);
+
+function mostrarModal() {
+    const modal = document.getElementById('modal-cargando');
+    if (modal) {
+        modal.show();
+    } else {
+        console.error("El modal con ID 'modal-cargando' no se encontró en el HTML.");
+    }
+}
+
+// Para ocultarlo
+function ocultarModal() {
+    const modal = document.getElementById('modal-cargando');
+    if (modal) {
+        modal.hide();
+    }
+}

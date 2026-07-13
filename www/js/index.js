@@ -17,8 +17,9 @@ var app = {
         
     
         setTimeout(function() {
+            mostrarModal();
             verificarSesion();
-        }, 300);
+        }, 1000);
 
         getPosition();
 
@@ -38,12 +39,14 @@ app.initialize();
 //---------------------|  PROCESOS SQL LITE  | ------------------------//
 
 function cerrarSesion() {
-    setTimeout(function() {
-        navigator.app.exitApp();
-    }, 2000); // 5000 milisegundos = 5 segundos
+    mostrarModal();
     TruncatePrueba();
     cleanData();
     cerarSesionGoolge();
+    setTimeout(function() {
+        ocultarModal();
+        navigator.app.exitApp();
+    }, 2500); // 5000 milisegundos = 5 segundos
 }
 
 function networkInfo() {
@@ -309,6 +312,14 @@ function verificarSesion() {
     } else {
         console.log("No hay sesión, mostrando login.");
         cambiar_menu("page_login");
+
+        setTimeout(function(){
+            try { loadItems(); } catch(e) { console.error("Error en loadItems:", e); }
+            try { loadBrands(); } catch(e) { console.error("Error en loadBrands:", e); }
+            try { loadCarousel(); } catch(e) { console.error("Error en loadCarousel:", e); }
+
+        },1000);
+
     }
 }
 
