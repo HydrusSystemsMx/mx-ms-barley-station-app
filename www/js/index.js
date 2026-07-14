@@ -20,6 +20,7 @@ var app = {
             mostrarModal();
             verificarSesion();
             verificarEstadoBotones();
+            actualizarBadgeCarrito();
         }, 1000);
 
         getPosition();

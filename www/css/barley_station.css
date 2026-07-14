@@ -3,6 +3,43 @@
   src: url("College Block.otf") format("opentype");
 }
 
+.cart-icon-container {
+  position: relative;
+  display: inline-flex; /* Cambiado para mejor alineación */
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;          /* Ajustado para que quede arriba */
+  right: -8px;        /* Ajustado para que quede a la derecha */
+  
+  /* Color que resalta mucho */
+  background-color: #007bff; /* Azul Eléctrico vibrante */
+  color: #ffffff;
+  
+  font-family: 'Arial', sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  
+  /* Tamaño exacto para que el número se vea centrado */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Borde blanco para separarlo del icono (efecto sticker) */
+  border: 2px solid #ffffff; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 10;
+  min-width: 20px; /* Asegura que el círculo no se aplaste con el 0 */
+  height: 20px;
+}
+
 .btn-cancel {
   /* Deja esto limpio, no le pongas ocultar nada */
   display: inline-block;

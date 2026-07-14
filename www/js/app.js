@@ -890,6 +890,9 @@ function loadItemsFromMemory(){
           </ons-card>`;
           total = parseFloat(total) + (parseFloat(itemTotal));
         }
+
+        actualizarBadgeCarrito();
+
         if(address.includes(",")){
           loadAddres = '<hr><strong><span id="address" style="font-style: italic; color: black;"><img src="img/loading.gif" width="5%" heigth="5%"></span> </strong><br>';
         } else{
@@ -1214,6 +1217,7 @@ function sendOrder(orderRequest, idCart){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         document.querySelector('#myNavigator').popPage();
         setTimeout(function(){ $('#wrapper').trigger('click'); }, 500);
+        actualizarBadgeCarrito();
         setTimeout(function(){ ons.notification.toast('¡Pedido confirmado!', { timeout: 3000, animation: 'ascend' }) }, 300);
 			} else {
 				alerta(JSON.stringify(data.error));
@@ -1265,6 +1269,7 @@ function deleteItemFromMemory(idItem){
       function(tx, result) {
         saveData("amount_" + idItem, null);
         loadItemsFromMemory();
+        actualizarBadgeCarrito();
         console.log('Table deleted successfully.');
       },
       function(error){

@@ -140,7 +140,13 @@
       <!-- El Dock ahora vive aquí, justo después del carrusel -->
       <div class="modern-dock">
         <button class="dock-item" onclick="perfilInfo()"><i class="fas fa-user"></i></button>
-        <button class="dock-item" onclick="goToCart()"><i class="fas fa-shopping-cart"></i></button>
+        <button class="dock-item" onclick="goToCart()">
+          <div class="cart-icon-container">
+            <i class="fas fa-shopping-cart"></i>
+            <!-- Inicializado en 0 y visible -->
+            <span id="cart-badge" class="cart-badge">0</span>
+          </div>
+        </button>
       </div>
       <div id="dinamicCarousel"></div>
       

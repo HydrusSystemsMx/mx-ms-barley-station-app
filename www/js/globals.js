@@ -250,3 +250,23 @@ function verificarEstadoBotones() {
         }
     });
 }
+
+function actualizarBadgeCarrito() {
+    myDB.transaction(function(transaction) {
+      var executeQuery = "SELECT amount FROM CART WHERE idUser=? and status=?";
+      transaction.executeSql(executeQuery, [4, 0], function(tx, result) {
+        let totalElementos = 0;
+        
+        for (let i = 0; i < result.rows.length; i++) {
+          totalElementos += result.rows.item(i).amount;
+        }
+        
+        const badge = document.getElementById("cart-badge");
+        if (badge) {
+          // YA NO OCULTAMOS EL BADGE, SIEMPRE LO MOSTRAMOS
+          badge.textContent = totalElementos;
+          badge.style.display = "flex"; 
+        }
+      });
+    });
+  }
