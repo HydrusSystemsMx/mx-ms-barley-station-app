@@ -19,6 +19,7 @@ var app = {
         setTimeout(function() {
             mostrarModal();
             verificarSesion();
+            verificarEstadoBotones();
         }, 1000);
 
         getPosition();

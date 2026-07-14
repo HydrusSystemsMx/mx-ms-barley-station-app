@@ -236,3 +236,17 @@ function ocultarModal() {
         modal.hide();
     }
 }
+
+function verificarEstadoBotones() {
+    document.querySelectorAll('.btn-cancel').forEach(boton => {
+        const idOrder = boton.id.split('-')[2]; 
+        const expiracion = localStorage.getItem(`expiracion-${idOrder}`);
+        
+        // Verificamos el estado y bloqueamos o iniciamos el contador sin retardos
+        if (expiracion && Date.now() > parseInt(expiracion)) {
+            bloquearBoton(boton, idOrder);
+        } else {
+            iniciarContadorCancelacion(idOrder);
+        }
+    });
+}

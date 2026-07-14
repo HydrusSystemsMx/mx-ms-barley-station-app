@@ -821,6 +821,7 @@ function loadItems(){
     
     setTimeout(function(){ $("#dinamicItems").html(tdsp); }, 100);
   }
+  
 
 
 
@@ -1213,7 +1214,7 @@ function sendOrder(orderRequest, idCart){
 				//document.querySelector('#myNavigator').pushPage('detailService.html');
         document.querySelector('#myNavigator').popPage();
         setTimeout(function(){ $('#wrapper').trigger('click'); }, 500);
-        setTimeout(function(){ ons.notification.toast('Gracias! tu pedido se ha enviado correctamente', { timeout: 3000, animation: 'ascend' }) }, 300);
+        setTimeout(function(){ ons.notification.toast('¡Pedido confirmado!', { timeout: 3000, animation: 'ascend' }) }, 300);
 			} else {
 				alerta(JSON.stringify(data.error));
 			}
@@ -1370,12 +1371,13 @@ function retrievePed(validate, isClickFromMenu){
                 </div>
               </div>
             
-              <button class="btn-cancel" onclick="rollbackOrder(${idOrder})">
-                <i class="fa fa-times-circle"></i> Cancelar pedido
+              <button id="btn-cancel-${idOrder}" class="btn-cancel" onclick="rollbackOrder(${idOrder})">
+                <i class="fa fa-times-circle"></i> Cancelar pedido <span id="timer-${idOrder}">(4s)</span>
               </button>
             </ons-card>`;
         
             $("#dinamicOrder").html(tdsinfo);
+            iniciarContadorCancelacion(idOrder);
           },200);
         } else{
           setTimeout(function(){
@@ -1408,6 +1410,79 @@ function retrievePed(validate, isClickFromMenu){
     }
 	});
   
+}
+
+function activarBotonSecreto(boton, idOrder) {
+  let pressTimer;
+
+  // Cuando presionan el botón deshabilitado
+  boton.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => {
+          // Acción secreta
+          if (confirm("¿Acceder al menú secreto de cancelación?")) {
+              rollbackOrder(idOrder);
+          }
+      }, 20000); // 20 segundos
+  });
+
+  // Si sueltan antes de los 20 segundos, cancelamos el timer
+  boton.addEventListener('mouseup', () => {
+      clearTimeout(pressTimer);
+  });
+  
+  // Para móviles (pantallas táctiles)
+  boton.addEventListener('touchstart', () => {
+      pressTimer = setTimeout(() => {
+          rollbackOrder(idOrder);
+      }, 11000);
+  });
+  
+  boton.addEventListener('touchend', () => {
+      clearTimeout(pressTimer);
+  });
+}
+
+function iniciarContadorCancelacion(idOrder) {
+  const tiempoGuardado = localStorage.getItem(`expiracion-${idOrder}`);
+  const ahora = Date.now();
+  const expiracion = tiempoGuardado ? parseInt(tiempoGuardado) : ahora + 4000;
+  
+  if (!tiempoGuardado) {
+      localStorage.setItem(`expiracion-${idOrder}`, expiracion);
+  }
+
+  const boton = document.getElementById(`btn-cancel-${idOrder}`);
+  const spanTimer = document.getElementById(`timer-${idOrder}`);
+
+  // Si ya expiró, bloqueamos al instante
+  if (ahora >= expiracion) {
+      bloquearBoton(boton, idOrder);
+      return;
+  }
+
+  // Si no, iniciamos el intervalo inmediatamente
+  const intervalo = setInterval(() => {
+      const tiempoRestante = Math.round((expiracion - Date.now()) / 1000);
+      if (tiempoRestante <= 0) {
+          clearInterval(intervalo);
+          bloquearBoton(boton, idOrder);
+      } else if (spanTimer) {
+          spanTimer.textContent = `(${tiempoRestante}s)`;
+      }
+  }, 1000);
+}
+
+function bloquearBoton(boton, idOrder) {
+  if (!boton) return;
+  
+  boton.disabled = true;
+  boton.style.display = "inline-block"; // Asegura que se vea
+  boton.style.opacity = "1";            // Asegura que no sea invisible
+  boton.innerHTML = '<i class="fa fa-lock"></i> No se puede cancelar';
+  boton.style.backgroundColor = '#ccc';
+  
+  // Aquí mantienes tu mecanismo secreto
+  activarBotonSecreto(boton, idOrder);
 }
 
 function rollbackOrder(idRequest){
@@ -1535,7 +1610,7 @@ function showRecord(){
           <ons-card class="empty-state-card">
             <div class="empty-state-content">
               <i class="fas fa-shopping-basket"></i>
-              <p class="empty-title">Sin pedidos aún</p>
+              <p class="empty-title">Sin pedidos completados aún</p>
               <p class="empty-subtitle">¡Tu historial se llenará con tus próximas bebidas!</p>
             </div>
           </ons-card>`;

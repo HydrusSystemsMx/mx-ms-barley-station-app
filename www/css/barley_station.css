@@ -3,6 +3,257 @@
   src: url("College Block.otf") format("opentype");
 }
 
+.btn-cancel {
+  /* Deja esto limpio, no le pongas ocultar nada */
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff4d4d; /* Tu color original */
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.5s ease, opacity 0.5s ease;
+}
+
+/* Solo este estilo para cuando esté bloqueado */
+.btn-cancel:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed !important;
+}
+.entrada-animada {
+  animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Aplicamos retrasos (Staggering) para el efecto BBVA */
+.logo-animated { animation: slideUp 1s ease-out forwards; }
+.btn-google { animation: slideUp 1s ease-out 0.3s forwards; opacity: 0; }
+.btn-guest { animation: slideUp 1s ease-out 0.5s forwards; opacity: 0; }
+
+/* Animación de entrada suave */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aplicamos la animación a los elementos */
+.logo-animated {
+  animation: float 3s ease-in-out infinite, fadeInUp 1s ease-out forwards;
+}
+
+.welcome-text {
+  animation: fadeInUp 1s ease-out 0.2s forwards;
+  opacity: 0; /* Necesario para que el 'forwards' funcione */
+}
+
+.btn-google {
+  animation: fadeInUp 1s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+.btn-guest {
+  animation: fadeInUp 1s ease-out 0.6s forwards;
+  opacity: 0;
+}
+/* --- Estructura General --- */
+.login-page {
+  /* Fondo azul profundo y vibrante (Asegúrate de recargar para verlo) */
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) !important;
+  background-size: 400% 400% !important;
+  animation: gradientBG 15s ease infinite !important;
+  height: 100vh !important;
+  width: 100% !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tarjeta Glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08) !important; /* Vidrio muy sutil */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  padding: 40px;
+  width: 85%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* Logo Animado */
+.logo-animated {
+  width: 120px; /* Tamaño fijo */
+  height: auto;
+  margin-bottom: 25px;
+  /* Animación de flotar suave */
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.welcome-text {
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  font-size: 1.4rem;
+}
+
+/* --- Estilos de Botones (Aquí arreglamos los iconos) --- */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espacio entre botones */
+}
+
+.btn-modern {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  
+  /* Flexbox para alinear icono y texto */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  
+  /* Transiciones suaves */
+  transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-modern:active {
+  transform: scale(0.97); /* Efecto de presión */
+}
+
+/* --- CORRECCIÓN CRÍTICA DE ICONOS --- */
+.btn-modern img {
+  /* IMPORTANTE: Fijamos el tamaño del icono */
+  width: 22px !important;
+  height: 22px !important;
+  
+  /* Asegura que la imagen no se deforme si no es cuadrada */
+  object-fit: contain; 
+  
+  /* Espacio entre el icono y el texto */
+  margin-right: 12px; 
+  
+  /* Esto es opcional: asegura que la imagen no tenga bordes raros */
+  border: none;
+}
+
+/* --- Variaciones de Color --- */
+
+/* Botón Google: Fondo blanco, texto oscuro */
+.btn-google {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.btn-google:hover {
+  background-color: #f2f2f2 !important;
+}
+
+/* Botón Invitado: Fondo semitransparente oscuro, texto claro */
+.btn-guest {
+  background-color: rgba(0,0,0,0.2) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-guest:hover {
+  background-color: rgba(0,0,0,0.3) !important;
+}
+
+/* Animación del fondo */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.version-tag {
+  color: rgba(255,255,255,0.5);
+  margin-top: 25px;
+  font-size: 0.75rem;
+}
+/* Toast Premium Moderno */
+.toast {
+  /* Fondo con Glassmorphism */
+  background: rgba(20, 20, 20, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  
+  /* Píldora perfecta */
+  border-radius: 999px !important;
+  padding: 12px 28px !important;
+  
+  /* Tamaño dinámico */
+  min-width: 160px !important;
+  width: fit-content !important;
+  max-width: 90% !important;
+  
+  /* Centrado preciso */
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 24px !important;
+  transform: translateX(-50%) !important;
+  
+  /* Estética visual */
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.2px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset !important;
+  
+  /* Animación de entrada suave */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  
+  /* Reset de estilos de Onsen */
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+}
+
+/* Ajuste para el texto interno */
+.toast div {
+  color: #ffffff !important;
+  white-space: nowrap !important; /* Evita saltos de línea raros */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .btn-login.oculto {
   display: none !important;
 }
